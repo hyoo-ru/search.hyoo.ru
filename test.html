@@ -1,0 +1,31 @@
+<!doctype html>
+<html style=" height: 100%; width: 100% ">
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+		<meta name="mobile-web-app-capable" content="yes">
+	</head>
+
+	<body style=" padding: 0; margin: 0; height: 100%; width: 100% ">
+		<div mol_view_root="$hyoo_search"></div>
+		<script src="web.js" charset="utf-8"></script>
+	
+				<script src="/mol/build/client/client.js" charset="utf-8"></script>
+				<script>
+					setTimeout( ()=> {
+
+						const test = document.createElement( 'script' )
+						test.src = 'web.test.js'
+						
+						const audit =  document.createElement( 'script' )
+						audit.src = 'web.audit.js'
+						
+						test.onload = ()=> document.head.appendChild( audit )
+						document.head.appendChild( test )
+
+					}, 250 )
+				</script>
+				</body>
+
+</html>
