@@ -5681,7 +5681,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/search.view.css", "[hyoo_search_body] {\n\tpadding: 0;\n}\n\n[hyoo_search_result_item] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_result_image] {\n\twidth: 3rem;\n\theight: 3rem;\n\tmargin: var(--mol_gap_block);\n\tbackground: var(--mol_theme_line);\n\tflex: none;\n}\n\n[hyoo_search_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_result_title] {\n\tmargin: var(--mol_gap_text);\n\t/* text-shadow: 0 0; */\n}\n\n[hyoo_search_result_descr] {\n\tmargin: var(--mol_gap_text);\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_foot] {\n\tpadding: var(--mol_gap_block);\n}\n");
+    $.$mol_style_attach("hyoo/search/search.view.css", "[hyoo_search_result_item] {\n\tpadding: .5rem;\n}\n\n[hyoo_search_result_image] {\n\twidth: 3rem;\n\theight: 3rem;\n\tmargin: .25rem;\n\tflex: none;\n}\n\n[hyoo_search_result_info] {\n\tflex: 1 1 auto;\n\tpadding: .25rem;\n}\n\n[hyoo_search_result_title] {\n\t/* text-shadow: 0 0; */\n}\n\n[hyoo_search_result_descr] {\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_foot] {\n\tpadding: var(--mol_gap_block);\n}\n");
 })($ || ($ = {}));
 //search.view.css.js.map
 ;
