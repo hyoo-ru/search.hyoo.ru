@@ -39,6 +39,17 @@ namespace $.$$ {
 	export class $hyoo_search extends $.$hyoo_search {
 		
 		@ $mol_mem
+		autofocus() {
+			if( this.title() ) return null
+			this.Title().focused( true )
+			return null
+		}
+		
+		auto() {
+			this.autofocus()
+		}
+		
+		@ $mol_mem
 		title( next?: string ) {
 			const query = this.$.$mol_state_arg.value( 'query', next ) ?? ''
 			if( next !== '' ) this.google_api()?.execute( query )
