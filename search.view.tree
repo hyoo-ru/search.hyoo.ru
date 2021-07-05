@@ -1,0 +1,34 @@
+$hyoo_search $mol_page
+	plugins /
+		<= Theme $mol_theme_auto
+	Title $mol_string_button
+		hint @ \Search..
+		value?val <=> title?val \
+	tools /
+		<= Sources $mol_link_source
+			uri \https://github.com/hyoo-ru/search.hyoo.ru
+		<= Lights $mol_lights_toggle
+	body /
+		<= Result_list $mol_list
+			rows <= result_list /
+	Result_item!index $mol_link
+		uri <= result_uri!index \xxx
+		sub /
+			<= Result_image!index $mol_image
+				uri <= result_image!index \
+				title \
+			<= Result_info!index $mol_list
+				rows /
+					<= Result_title!index $mol_paragraph
+						title <= result_title!index \
+					<= Result_descr!index $mol_paragraph
+						title <= result_descr!index \
+	searcher_data *
+		google \https://www.google.com/search?q=
+		duckduckgo \https://duckduckgo.com/?q=
+		bing \https://www.bing.com/search?q=
+		yandex \https://yandex.ru/search/?text=
+	foot <= searcher_list /
+	Searcher_link!id $mol_link_iconed
+		title \
+		uri <= searcher_link!id \
