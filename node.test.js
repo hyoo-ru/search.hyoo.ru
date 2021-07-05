@@ -5878,6 +5878,15 @@ var $;
             visibleUrl: $.$mol_data_string,
         }));
         class $hyoo_search extends $.$hyoo_search {
+            autofocus() {
+                if (this.title())
+                    return null;
+                this.Title().focused(true);
+                return null;
+            }
+            auto() {
+                this.autofocus();
+            }
             title(next) {
                 const query = this.$.$mol_state_arg.value('query', next) ?? '';
                 if (next !== '')
@@ -5950,6 +5959,9 @@ var $;
                 return this.title() ? super.Foot() : null;
             }
         }
+        __decorate([
+            $.$mol_mem
+        ], $hyoo_search.prototype, "autofocus", null);
         __decorate([
             $.$mol_mem
         ], $hyoo_search.prototype, "title", null);

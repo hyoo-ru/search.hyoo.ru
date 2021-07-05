@@ -1969,6 +1969,8 @@ declare namespace $.$$ {
         }>[];
     };
     export class $hyoo_search extends $.$hyoo_search {
+        autofocus(): null;
+        auto(): void;
         title(next?: string): string;
         google_api(next?: GCS): GCS | null;
         results_data(next?: typeof Results.Value): readonly Readonly<{
