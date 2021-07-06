@@ -189,6 +189,11 @@ namespace $.$$ {
 			return new URL( this.results_raw()[ index ].url ).searchParams.get( 'q' )!
 		}
 		
+		@ $mol_mem_key
+		result_uri_view( index: number ) {
+			return decodeURI( this.result_uri( index ) )
+		}
+		
 		@ $mol_mem
 		searcher_list() {
 			const query = this.query()
