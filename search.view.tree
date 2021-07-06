@@ -1,20 +1,41 @@
-$hyoo_search $mol_page
+$hyoo_search $mol_book2
 	plugins /
 		<= Theme $mol_theme_auto
-	title \Search.HyOO.ru
-	Title $mol_string_button
-		hint @ \Search..
-		value?val <=> query?val \
-	tools /
-		<= Sources $mol_link_source
-			uri \https://github.com/hyoo-ru/search.hyoo.ru
-		<= Lights $mol_lights_toggle
-	body /
-		<= Result_list $mol_list
-			rows <= result_list /
-			- Empty <= Result_list_empty $mol_row
-				sub /
-					<= result_list_empty @ \No result.
+	Placeholder null
+	pages /
+		<= Main $mol_page
+			title <= query
+			Title <= Query $mol_string_button
+				hint @ \Search..
+				value?val <=> query?val \
+			tools /
+				<= Settings_open $mol_link
+					arg * settings \
+					sub /
+						<= Settings_open_icon $mol_icon_settings
+			body /
+				<= Result_list $mol_list
+					rows <= result_list /
+					- Empty <= Result_list_empty $mol_row
+						sub /
+							<= result_list_empty @ \No result.
+			foot <= searcher_list /
+		<= Settings $mol_page
+			title @ \Settings
+			tools /
+				<= Sources $mol_link_source
+					uri \https://github.com/hyoo-ru/search.hyoo.ru
+				<= Lights $mol_lights_toggle
+				<= Settings_close $mol_link
+					arg * settings null
+					sub /
+						<= Settings_close_icon $mol_icon_close
+			body /
+				<= Blacklist_field $mol_form_field
+					name @ \Domain Black List
+					control <= Blacklist $mol_textarea
+						value?next <=> blacklist?next \
+							\pinterest.com
 	Result_item!index $mol_link
 		uri <= result_uri!index \xxx
 		sub /
@@ -36,7 +57,6 @@ $hyoo_search $mol_page
 		Wolfram|Alpha \https://www.wolframalpha.com/input/?i=
 		Bing \https://www.bing.com/search?q=
 		Yandex \https://yandex.ru/search/?text=
-	foot <= searcher_list /
 	Searcher_link!id $mol_link_iconed
 		title \
 		hint <= searcher_hint!id \

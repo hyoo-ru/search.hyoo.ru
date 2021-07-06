@@ -41,7 +41,7 @@ namespace $.$$ {
 		@ $mol_mem
 		autofocus() {
 			if( this.query() ) return null
-			this.Title().focused( true )
+			this.Query().focused( true )
 			return null
 		}
 		
@@ -53,15 +53,30 @@ namespace $.$$ {
 		query( next?: string ) {
 			const query = this.$.$mol_state_arg.value( 'query', next ) ?? ''
 			if( next !== '' ) this.google_api()?.execute( query )
-			if( next !== undefined ) this.results_data([])
+			if( next !== undefined ) this.results_raw([])
 			return query
 		}
 		
-		title() {
+		blacklist( next?: string ) {
+			return this.$.$mol_state_local.value( 'blacklist', next ) ?? super.blacklist()
+		}
+		
+		@ $mol_mem
+		settings( next?: boolean ) {
+			const str = next == undefined ? undefined : String( next )
+			return this.$.$mol_state_arg.value( 'settings', str ) !== null
+		}
+
+		@ $mol_mem
+		pages() {
 			return [
-				... $mol_maybe( this.query() ),
-				super.title(),
-			].join( ' | ' )
+				this.Main(),
+				... this.settings() ? [ this.Settings() ] : [],
+			]
+		}
+		
+		title() {
+			return `${ super.title() } | Search.HyOO.ru`
 		}
 		
 		@ $mol_mem
@@ -98,7 +113,7 @@ namespace $.$$ {
 							results: typeof Results.Value,
 							div: Element
 						)=> {
-							this.results_data( results )
+							this.results_raw( results )
 							return true
 						},
 						
@@ -114,36 +129,54 @@ namespace $.$$ {
 		}
 		
 		@ $mol_mem
-		results_data( next?: typeof Results.Value ) {
+		results_raw( next?: typeof Results.Value ) {
 			return next ?? []
 		}
 		
 		@ $mol_mem
+		forbidden() {
+			return new $mol_regexp(
+				this.blacklist()
+				.split( $mol_regexp.line_end )
+				.map( domain => domain.trim() )
+				.filter( Boolean )
+				.map( domain => $mol_regexp.from( domain ).source )
+				.join( $mol_regexp.or.source )
+			)
+		}
+		
+		@ $mol_mem
+		results_filtered() {
+			const forbidden = this.forbidden()
+			return this.results_raw().filter( res => !forbidden.test( res.visibleUrl ) )
+		}
+		
+		@ $mol_mem
 		result_list() {
-			return this.results_data()?.map( (_,i)=> this.Result_item(i) ) ?? []
+			return this.results_filtered()?.map( (_,i)=> this.Result_item(i) ) ?? []
 		}
 		
 		result_image( index: number ) {
-			const res = this.results_data()[ index ]
+			const res = this.results_filtered()[ index ]
 			return res.thumbnailImage?.url ?? this.result_icon( index )
 		}
 		
 		result_icon( index: number ) {
-			const res = this.results_data()[ index ]
+			const res = this.results_filtered()[ index ]
 			return `https://favicon.yandex.net/favicon/${ res.visibleUrl }?color=0,0,0,0&size=32&stub=1`
 		}
 		
 		result_title( index: number ) {
-			return this.results_data()[ index ].titleNoFormatting
+			return this.results_filtered()[ index ].titleNoFormatting
 		}
 		
 		result_descr( index: number ) {
-			return this.results_data()[ index ].contentNoFormatting
+			return this.results_filtered()[ index ].contentNoFormatting
 		}
 		
 		@ $mol_mem_key
 		result_uri( index: number ) {
-			return new URL( this.results_data()[ index ].url ).searchParams.get( 'q' )!
+			return new URL( this.results_filtered()[ index ].url ).searchParams.get( 'q' )!
 		}
 		
 		@ $mol_mem

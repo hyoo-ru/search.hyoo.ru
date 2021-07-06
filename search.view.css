@@ -1,4 +1,12 @@
-[hyoo_search_body] {
+[hyoo_search_main] {
+	flex: 1 0 40rem;
+}
+	
+[hyoo_search_settings] {
+	flex: 0 0 20rem;
+}
+	
+[hyoo_search_main_body] {
 	padding: 0;
 }
 	
@@ -31,6 +39,6 @@
 	margin: .5rem .75rem;
 }
 
-[hyoo_search_foot] {
+[hyoo_search_main_foot] {
 	padding: var(--mol_gap_block);
 }
