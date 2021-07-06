@@ -180,6 +180,10 @@ namespace $.$$ {
 			return this.results_raw()[ index ].contentNoFormatting ?? ''
 		}
 		
+		result_host( index: number ) {
+			return this.results_raw()[ index ].visibleUrl ?? ''
+		}
+		
 		@ $mol_mem_key
 		result_uri( index: number ) {
 			return new URL( this.results_raw()[ index ].url ).searchParams.get( 'q' )!

@@ -44,7 +44,7 @@ $hyoo_search $mol_book2
 							Content <= Query_dump $mol_text_code
 								text <= query_dump \
 	Result_item!index $mol_link
-		uri <= result_uri!index \xxx
+		uri <= result_uri!index \
 		sub /
 			<= Result_info!index $mol_list
 				rows /
@@ -56,6 +56,9 @@ $hyoo_search $mol_book2
 							<= Result_title!index $mol_dimmer
 								haystack <= result_title!index \
 								needle <= query
+					<= Result_host!index $mol_dimmer
+						haystack <= result_uri!index
+						needle <= query
 					<= Result_descr!index $mol_dimmer
 						haystack <= result_descr!index \
 						needle <= query
