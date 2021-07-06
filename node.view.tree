@@ -206,7 +206,7 @@ $mol_list $mol_view
 
 $mol_paragraph $mol_view
 	line_height 24
-	letter_width 8
+	letter_width 7
 	width_limit Infinity
 	sub / <= title
 
@@ -230,13 +230,15 @@ $hyoo_search $mol_page
 	Result_item!index $mol_link
 		uri <= result_uri!index \xxx
 		sub /
-			<= Result_image!index $mol_image
-				uri <= result_image!index \
-				title \
 			<= Result_info!index $mol_list
 				rows /
-					<= Result_title!index $mol_paragraph
-						title <= result_title!index \
+					<= Result_main!index $mol_view
+						sub /
+							<= Result_image!index $mol_image
+								uri <= result_image!index \
+								title \
+							<= Result_title!index $mol_paragraph
+								title <= result_title!index \
 					<= Result_descr!index $mol_paragraph
 						title <= result_descr!index \
 	searcher_data *

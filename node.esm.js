@@ -5332,7 +5332,7 @@ var $;
             return 24;
         }
         letter_width() {
-            return 8;
+            return 7;
         }
         width_limit() {
             return Infinity;
@@ -5425,7 +5425,6 @@ var $;
             const obj = new this.$.$mol_link();
             obj.uri = () => this.result_uri(index);
             obj.sub = () => [
-                this.Result_image(index),
                 this.Result_info(index)
             ];
             return obj;
@@ -5501,6 +5500,14 @@ var $;
             obj.title = () => this.result_title(index);
             return obj;
         }
+        Result_main(index) {
+            const obj = new this.$.$mol_view();
+            obj.sub = () => [
+                this.Result_image(index),
+                this.Result_title(index)
+            ];
+            return obj;
+        }
         result_descr(index) {
             return "";
         }
@@ -5512,7 +5519,7 @@ var $;
         Result_info(index) {
             const obj = new this.$.$mol_list();
             obj.rows = () => [
-                this.Result_title(index),
+                this.Result_main(index),
                 this.Result_descr(index)
             ];
             return obj;
@@ -5560,6 +5567,9 @@ var $;
     __decorate([
         $.$mol_mem_key
     ], $hyoo_search.prototype, "Result_title", null);
+    __decorate([
+        $.$mol_mem_key
+    ], $hyoo_search.prototype, "Result_main", null);
     __decorate([
         $.$mol_mem_key
     ], $hyoo_search.prototype, "Result_descr", null);
@@ -5877,7 +5887,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/search.view.css", "[hyoo_search_result_item] {\n\tpadding: .5rem;\n}\n\n[hyoo_search_result_image] {\n\twidth: 3rem;\n\theight: 3rem;\n\tmargin: .25rem;\n\tflex: none;\n}\n\n[hyoo_search_result_info] {\n\tflex: 1 1 auto;\n\tpadding: .25rem;\n}\n\n[hyoo_search_result_title] {\n\t/* text-shadow: 0 0; */\n}\n\n[hyoo_search_result_descr] {\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_foot] {\n\tpadding: var(--mol_gap_block);\n}\n");
+    $.$mol_style_attach("hyoo/search/search.view.css", "[hyoo_search_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_result_item] {\n\tpadding: .75rem;\n}\n\n[hyoo_search_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tmargin: .75rem;\n\tflex: none;\n}\n\n[hyoo_search_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n}\n\n[hyoo_search_result_descr] {\n\tcolor: var(--mol_theme_text);\n\tmargin: .5rem .75rem;\n}\n\n[hyoo_search_foot] {\n\tpadding: var(--mol_gap_block);\n}\n");
 })($ || ($ = {}));
 //search.view.css.js.map
 ;

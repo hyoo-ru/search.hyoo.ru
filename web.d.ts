@@ -1324,6 +1324,8 @@ declare namespace $ {
         static link(next: {
             [key: string]: string;
         }): string;
+        static prolog: string;
+        static separator: string;
         static make_link(next: {
             [key: string]: string | null;
         }): string;
@@ -1718,6 +1720,7 @@ declare namespace $ {
         Result_image(index: any): $mol_image;
         result_title(index: any): string;
         Result_title(index: any): $$.$mol_paragraph;
+        Result_main(index: any): $mol_view;
         result_descr(index: any): string;
         Result_descr(index: any): $$.$mol_paragraph;
         Result_info(index: any): $$.$mol_list;
