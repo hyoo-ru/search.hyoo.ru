@@ -5440,7 +5440,7 @@ var $;
         }
         Powered() {
             const obj = new this.$.$mol_link_iconed();
-            obj.title = () => this.$.$mol_locale.text('$hyoo_search_Powered_title');
+            obj.title = () => "Programmable Search Engine";
             obj.uri = () => "https://programmablesearchengine.google.com/";
             return obj;
         }
