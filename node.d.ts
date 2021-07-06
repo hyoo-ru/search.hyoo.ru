@@ -2325,10 +2325,10 @@ declare namespace $ {
         result_image(index: any): string;
         Result_image(index: any): $mol_image;
         result_title(index: any): string;
-        Result_title(index: any): $$.$mol_paragraph;
+        Result_title(index: any): $$.$mol_dimmer;
         Result_main(index: any): $mol_view;
         result_descr(index: any): string;
-        Result_descr(index: any): $$.$mol_paragraph;
+        Result_descr(index: any): $$.$mol_dimmer;
         Result_info(index: any): $$.$mol_list;
         searcher_hint(id: any): string;
         searcher_link(id: any): string;
