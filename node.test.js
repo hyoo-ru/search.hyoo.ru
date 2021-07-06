@@ -7611,7 +7611,7 @@ var $;
             return obj;
         }
         result_uri(index) {
-            return "xxx";
+            return "";
         }
         result_image(index) {
             return "";
@@ -7639,6 +7639,12 @@ var $;
             ];
             return obj;
         }
+        Result_host(index) {
+            const obj = new this.$.$mol_dimmer();
+            obj.haystack = () => this.result_uri(index);
+            obj.needle = () => this.query();
+            return obj;
+        }
         result_descr(index) {
             return "";
         }
@@ -7652,6 +7658,7 @@ var $;
             const obj = new this.$.$mol_list();
             obj.rows = () => [
                 this.Result_main(index),
+                this.Result_host(index),
                 this.Result_descr(index)
             ];
             return obj;
@@ -7735,6 +7742,9 @@ var $;
     __decorate([
         $.$mol_mem_key
     ], $hyoo_search.prototype, "Result_main", null);
+    __decorate([
+        $.$mol_mem_key
+    ], $hyoo_search.prototype, "Result_host", null);
     __decorate([
         $.$mol_mem_key
     ], $hyoo_search.prototype, "Result_descr", null);
@@ -8169,6 +8179,9 @@ var $;
             }
             result_descr(index) {
                 return this.results_raw()[index].contentNoFormatting ?? '';
+            }
+            result_host(index) {
+                return this.results_raw()[index].visibleUrl ?? '';
             }
             result_uri(index) {
                 return new URL(this.results_raw()[index].url).searchParams.get('q');

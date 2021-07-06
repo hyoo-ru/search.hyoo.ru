@@ -2327,6 +2327,7 @@ declare namespace $ {
         result_title(index: any): string;
         Result_title(index: any): $$.$mol_dimmer;
         Result_main(index: any): $mol_view;
+        Result_host(index: any): $$.$mol_dimmer;
         result_descr(index: any): string;
         Result_descr(index: any): $$.$mol_dimmer;
         Result_info(index: any): $$.$mol_list;
@@ -2637,6 +2638,7 @@ declare namespace $.$$ {
         result_icon(index: number): string;
         result_title(index: number): string;
         result_descr(index: number): string;
+        result_host(index: number): string;
         result_uri(index: number): string;
         searcher_list(): $mol_link_iconed[];
         searcher_link(id: string): string;
