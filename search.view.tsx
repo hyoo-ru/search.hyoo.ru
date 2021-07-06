@@ -18,11 +18,13 @@ namespace $.$$ {
 	}
 	
 	const Results = $mol_data_array( $mol_data_record({
-		content: $mol_data_string,
-		contentNoFormatting: $mol_data_string,
-		richSnippet: $mol_data_record({
-			metatags: $mol_data_dict( $mol_data_string ),
-		}),
+		content: $mol_data_optional( $mol_data_string ),
+		contentNoFormatting: $mol_data_optional( $mol_data_string ),
+		richSnippet: $mol_data_optional(
+			$mol_data_record({
+				metatags: $mol_data_dict( $mol_data_string ),
+			})
+		),
 		thumbnailImage: $mol_data_optional(
 			$mol_data_record({
 				url: $mol_data_string,
@@ -125,7 +127,7 @@ namespace $.$$ {
 							results: typeof Results.Value,
 							div: Element
 						)=> {
-							this.results_raw( results )
+							this.results_raw( results[0].url ? Results( results ) : [] )
 							return true
 						},
 						
@@ -175,7 +177,7 @@ namespace $.$$ {
 		}
 		
 		result_descr( index: number ) {
-			return this.results_raw()[ index ].contentNoFormatting
+			return this.results_raw()[ index ].contentNoFormatting ?? ''
 		}
 		
 		@ $mol_mem_key
