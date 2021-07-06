@@ -38,6 +38,11 @@
 	align-self: center;
 }
 
+[hyoo_search_result_host] {
+	padding: .5rem .75rem;
+	align-self: center;
+}
+
 [hyoo_search_result_descr] {
 	color: var(--mol_theme_text);
 	margin: var(--mol_gap_text);

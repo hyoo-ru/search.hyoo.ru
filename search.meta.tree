@@ -1,3 +1,4 @@
 include \/mol/offline/install
 
 deploy \/hyoo/search/search_logo.svg
+deploy \/hyoo/search/search_plugin.xml
