@@ -499,7 +499,7 @@ $hyoo_search $mol_book2
 								haystack <= result_title!index \
 								needle <= query
 					<= Result_host!index $mol_dimmer
-						haystack <= result_uri!index
+						haystack <= result_uri_view!index \
 						needle <= query
 					<= Result_descr!index $mol_dimmer
 						haystack <= result_descr!index \
