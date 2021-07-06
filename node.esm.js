@@ -5401,10 +5401,13 @@ var $;
                 this.Theme()
             ];
         }
+        title() {
+            return "Search.HyOO.ru";
+        }
         Title() {
             const obj = new this.$.$mol_string_button();
             obj.hint = () => this.$.$mol_locale.text('$hyoo_search_Title_hint');
-            obj.value = (val) => this.title(val);
+            obj.value = (val) => this.query(val);
             return obj;
         }
         tools() {
@@ -5456,7 +5459,7 @@ var $;
             const obj = new this.$.$mol_theme_auto();
             return obj;
         }
-        title(val) {
+        query(val) {
             if (val !== undefined)
                 return val;
             return "";
@@ -5541,7 +5544,7 @@ var $;
     ], $hyoo_search.prototype, "Theme", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "title", null);
+    ], $hyoo_search.prototype, "query", null);
     __decorate([
         $.$mol_mem
     ], $hyoo_search.prototype, "Sources", null);
@@ -5901,7 +5904,7 @@ var $;
         }));
         class $hyoo_search extends $.$hyoo_search {
             autofocus() {
-                if (this.title())
+                if (this.query())
                     return null;
                 this.Title().focused(true);
                 return null;
@@ -5909,13 +5912,19 @@ var $;
             auto() {
                 this.autofocus();
             }
-            title(next) {
+            query(next) {
                 const query = this.$.$mol_state_arg.value('query', next) ?? '';
                 if (next !== '')
                     this.google_api()?.execute(query);
                 if (next !== undefined)
                     this.results_data([]);
                 return query;
+            }
+            title() {
+                return [
+                    ...$.$mol_maybe(this.query()),
+                    super.title(),
+                ].join(' | ');
             }
             google_api(next) {
                 if (next)
@@ -5969,7 +5978,7 @@ var $;
                 return new URL(this.results_data()[index].url).searchParams.get('q');
             }
             searcher_list() {
-                const query = this.title();
+                const query = this.query();
                 if (query) {
                     return Object.keys(this.searcher_data()).map(id => this.Searcher_link(id));
                 }
@@ -5978,7 +5987,7 @@ var $;
                 }
             }
             searcher_link(id) {
-                return this.searcher_data()[id] + encodeURIComponent(this.title());
+                return this.searcher_data()[id] + encodeURIComponent(this.query());
             }
             searcher_hint(id) {
                 return id;
@@ -5989,7 +5998,7 @@ var $;
         ], $hyoo_search.prototype, "autofocus", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "title", null);
+        ], $hyoo_search.prototype, "query", null);
         __decorate([
             $.$mol_mem
         ], $hyoo_search.prototype, "google_api", null);

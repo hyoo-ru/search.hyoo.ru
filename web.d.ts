@@ -1692,6 +1692,7 @@ declare namespace $.$$ {
 declare namespace $ {
     class $hyoo_search extends $mol_page {
         plugins(): readonly any[];
+        title(): string;
         Title(): $mol_string_button;
         tools(): readonly any[];
         body(): readonly any[];
@@ -1707,7 +1708,7 @@ declare namespace $ {
         Searcher_link(id: any): $$.$mol_link_iconed;
         Powered(): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
-        title(val?: any): string;
+        query(val?: any): string;
         Sources(): $mol_link_source;
         Lights(): $$.$mol_lights_toggle;
         result_list(): readonly any[];
@@ -1989,7 +1990,8 @@ declare namespace $.$$ {
     export class $hyoo_search extends $.$hyoo_search {
         autofocus(): null;
         auto(): void;
-        title(next?: string): string;
+        query(next?: string): string;
+        title(): string;
         google_api(next?: GCS): GCS | null;
         results_data(next?: typeof Results.Value): readonly Readonly<{
             content: string;

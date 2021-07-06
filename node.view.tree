@@ -213,9 +213,10 @@ $mol_paragraph $mol_view
 $hyoo_search $mol_page
 	plugins /
 		<= Theme $mol_theme_auto
+	title \Search.HyOO.ru
 	Title $mol_string_button
 		hint @ \Search..
-		value?val <=> title?val \
+		value?val <=> query?val \
 	tools /
 		<= Sources $mol_link_source
 			uri \https://github.com/hyoo-ru/search.hyoo.ru
