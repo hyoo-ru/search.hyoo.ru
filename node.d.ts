@@ -2316,6 +2316,10 @@ declare namespace $ {
         blacklist(next?: any): string;
         Blacklist(): $$.$mol_textarea;
         Blacklist_field(): $mol_form_field;
+        query_dump(): string;
+        Query_dump(): $$.$mol_text_code;
+        Query_dump_field(): $mol_labeler;
+        Settings_fields(): $$.$mol_list;
         Settings(): $$.$mol_page;
         result_uri(index: any): string;
         result_image(index: any): string;
@@ -2582,6 +2586,8 @@ declare namespace $.$$ {
         autofocus(): null;
         auto(): void;
         query(next?: string): string;
+        query_addon(): string;
+        query_dump(): string;
         blacklist(next?: string): string;
         settings(next?: boolean): boolean;
         pages(): $mol_page[];
@@ -2605,25 +2611,7 @@ declare namespace $.$$ {
             url: string;
             visibleUrl: string;
         }>[];
-        forbidden(): $mol_regexp<Record<string, string>>;
-        results_filtered(): Readonly<{
-            content: string;
-            contentNoFormatting: string;
-            richSnippet: Readonly<{
-                metatags: {
-                    [x: string]: string;
-                };
-            }>;
-            thumbnailImage?: Readonly<{
-                url: string;
-                height: string;
-                width: string;
-            }> | undefined;
-            title: string;
-            titleNoFormatting: string;
-            url: string;
-            visibleUrl: string;
-        }>[];
+        query_forbidden(): string;
         result_list(): $mol_link[];
         result_image(index: number): string;
         result_icon(index: number): string;

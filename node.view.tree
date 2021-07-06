@@ -473,12 +473,18 @@ $hyoo_search $mol_book2
 					sub /
 						<= Settings_close_icon $mol_icon_close
 			body /
-				<= Blacklist_field $mol_form_field
-					name @ \Domain Black List
-					control <= Blacklist $mol_textarea
-						hint @ \Every domain on new line
-						value?next <=> blacklist?next \
-							\pinterest.com
+				<= Settings_fields $mol_list
+					rows /
+						<= Blacklist_field $mol_form_field
+							name @ \Domain Black List
+							control <= Blacklist $mol_textarea
+								hint @ \Every domain on new line
+								value?next <=> blacklist?next \
+									\pinterest.com
+						<= Query_dump_field $mol_labeler
+							title @ \Query Dump
+							Content <= Query_dump $mol_text_code
+								text <= query_dump \
 	Result_item!index $mol_link
 		uri <= result_uri!index \xxx
 		sub /

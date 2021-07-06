@@ -7405,6 +7405,28 @@ var $;
             obj.control = () => this.Blacklist();
             return obj;
         }
+        query_dump() {
+            return "";
+        }
+        Query_dump() {
+            const obj = new this.$.$mol_text_code();
+            obj.text = () => this.query_dump();
+            return obj;
+        }
+        Query_dump_field() {
+            const obj = new this.$.$mol_labeler();
+            obj.title = () => this.$.$mol_locale.text('$hyoo_search_Query_dump_field_title');
+            obj.Content = () => this.Query_dump();
+            return obj;
+        }
+        Settings_fields() {
+            const obj = new this.$.$mol_list();
+            obj.rows = () => [
+                this.Blacklist_field(),
+                this.Query_dump_field()
+            ];
+            return obj;
+        }
         Settings() {
             const obj = new this.$.$mol_page();
             obj.title = () => this.$.$mol_locale.text('$hyoo_search_Settings_title');
@@ -7414,7 +7436,7 @@ var $;
                 this.Settings_close()
             ];
             obj.body = () => [
-                this.Blacklist_field()
+                this.Settings_fields()
             ];
             return obj;
         }
@@ -7520,6 +7542,15 @@ var $;
     __decorate([
         $.$mol_mem
     ], $hyoo_search.prototype, "Blacklist_field", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search.prototype, "Query_dump", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search.prototype, "Query_dump_field", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search.prototype, "Settings_fields", null);
     __decorate([
         $.$mol_mem
     ], $hyoo_search.prototype, "Settings", null);
@@ -7843,7 +7874,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/search.view.css", "[hyoo_search_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_settings] {\n\tflex: 0 0 20rem;\n}\n\t\n[hyoo_search_main_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_result_item] {\n\tpadding: .75rem;\n}\n\n[hyoo_search_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tmargin: .75rem;\n\tflex: none;\n}\n\n[hyoo_search_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n}\n\n[hyoo_search_result_descr] {\n\tcolor: var(--mol_theme_text);\n\tmargin: .5rem .75rem;\n}\n\n[hyoo_search_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n");
+    $.$mol_style_attach("hyoo/search/search.view.css", "[hyoo_search_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_settings] {\n\tflex: 0 0 25rem;\n}\n\t\n[hyoo_search_main_body] {\n\tpadding: 0;\n}\n\n[hyoo_search_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_result_item] {\n\tpadding: .75rem;\n}\n\n[hyoo_search_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tmargin: .75rem;\n\tflex: none;\n}\n\n[hyoo_search_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n}\n\n[hyoo_search_result_descr] {\n\tcolor: var(--mol_theme_text);\n\tmargin: var(--mol_gap_text);\n}\n\n[hyoo_search_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n");
 })($ || ($ = {}));
 //search.view.css.js.map
 ;
@@ -7881,10 +7912,19 @@ var $;
             query(next) {
                 const query = this.$.$mol_state_arg.value('query', next) ?? '';
                 if (next !== '')
-                    this.google_api()?.execute(query);
+                    this.google_api()?.execute(query + this.query_addon());
                 if (next !== undefined)
                     this.results_raw([]);
                 return query;
+            }
+            query_addon() {
+                return ' ' + this.query_forbidden();
+            }
+            query_dump() {
+                return (this.query() + ' ' + this.query_addon())
+                    .split(' ')
+                    .filter(a => a.trim())
+                    .join('\n');
             }
             blacklist(next) {
                 return this.$.$mol_state_local.value('blacklist', next) ?? super.blacklist();
@@ -7933,38 +7973,33 @@ var $;
             results_raw(next) {
                 return next ?? [];
             }
-            forbidden() {
-                return new $.$mol_regexp(this.blacklist()
+            query_forbidden() {
+                return this.blacklist()
                     .split($.$mol_regexp.line_end)
                     .map(domain => domain.trim())
                     .filter(Boolean)
-                    .map(domain => $.$mol_regexp.from(domain).source)
-                    .join($.$mol_regexp.or.source)
-                    || '$^');
-            }
-            results_filtered() {
-                const forbidden = this.forbidden();
-                return this.results_raw().filter(res => !forbidden.test(res.visibleUrl));
+                    .map(domain => '-site:' + domain)
+                    .join(' ');
             }
             result_list() {
-                return this.results_filtered()?.map((_, i) => this.Result_item(i)) ?? [];
+                return this.results_raw()?.map((_, i) => this.Result_item(i)) ?? [];
             }
             result_image(index) {
-                const res = this.results_filtered()[index];
+                const res = this.results_raw()[index];
                 return res.thumbnailImage?.url ?? this.result_icon(index);
             }
             result_icon(index) {
-                const res = this.results_filtered()[index];
+                const res = this.results_raw()[index];
                 return `https://favicon.yandex.net/favicon/${res.visibleUrl}?color=0,0,0,0&size=32&stub=1`;
             }
             result_title(index) {
-                return this.results_filtered()[index].titleNoFormatting;
+                return this.results_raw()[index].titleNoFormatting;
             }
             result_descr(index) {
-                return this.results_filtered()[index].contentNoFormatting;
+                return this.results_raw()[index].contentNoFormatting;
             }
             result_uri(index) {
-                return new URL(this.results_filtered()[index].url).searchParams.get('q');
+                return new URL(this.results_raw()[index].url).searchParams.get('q');
             }
             searcher_list() {
                 const query = this.query();
@@ -7990,6 +8025,9 @@ var $;
         ], $hyoo_search.prototype, "query", null);
         __decorate([
             $.$mol_mem
+        ], $hyoo_search.prototype, "query_dump", null);
+        __decorate([
+            $.$mol_mem
         ], $hyoo_search.prototype, "settings", null);
         __decorate([
             $.$mol_mem
@@ -8002,10 +8040,7 @@ var $;
         ], $hyoo_search.prototype, "results_raw", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "forbidden", null);
-        __decorate([
-            $.$mol_mem
-        ], $hyoo_search.prototype, "results_filtered", null);
+        ], $hyoo_search.prototype, "query_forbidden", null);
         __decorate([
             $.$mol_mem
         ], $hyoo_search.prototype, "result_list", null);
