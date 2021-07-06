@@ -40,7 +40,7 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		autofocus() {
-			if( this.title() ) return null
+			if( this.query() ) return null
 			this.Title().focused( true )
 			return null
 		}
@@ -50,11 +50,18 @@ namespace $.$$ {
 		}
 		
 		@ $mol_mem
-		title( next?: string ) {
+		query( next?: string ) {
 			const query = this.$.$mol_state_arg.value( 'query', next ) ?? ''
 			if( next !== '' ) this.google_api()?.execute( query )
 			if( next !== undefined ) this.results_data([])
 			return query
+		}
+		
+		title() {
+			return [
+				... $mol_maybe( this.query() ),
+				super.title(),
+			].join( ' | ' )
 		}
 		
 		@ $mol_mem
@@ -141,7 +148,7 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		searcher_list() {
-			const query = this.title()
+			const query = this.query()
 			if( query ) {
 				return Object.keys( this.searcher_data() ).map( id => this.Searcher_link( id ) )
 			} else {
@@ -151,7 +158,7 @@ namespace $.$$ {
 		
 		@ $mol_mem_key
 		searcher_link( id: string ) {
-			return this.searcher_data()[ id ] + encodeURIComponent( this.title() )
+			return this.searcher_data()[ id ] + encodeURIComponent( this.query() )
 		}
 		
 		@ $mol_mem_key
