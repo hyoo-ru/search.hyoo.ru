@@ -38,6 +38,6 @@ $hyoo_search $mol_page
 		hint <= searcher_hint!id \
 		uri <= searcher_link!id \
 	Powered $mol_link_iconed
-		title @ \Programmable Search Engine
+		title \Programmable Search Engine
 		uri \https://programmablesearchengine.google.com/
 	
