@@ -2441,6 +2441,13 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    function $mol_data_optional<Sub extends $mol_data_value>(sub: Sub): ((val: Parameters<Sub>[0] | undefined) => ReturnType<Sub> | undefined) & {
+        config: Sub;
+        Value: ReturnType<Sub> | undefined;
+    };
+}
+
+declare namespace $ {
     let $mol_data_string: (val: string) => string;
 }
 
@@ -2448,13 +2455,6 @@ declare namespace $ {
     function $mol_data_dict<Sub extends $mol_data_value>(sub: Sub): ((val: readonly Parameters<Sub>[0][] | unknown) => Readonly<Record<string, ReturnType<Sub>>>) & {
         config: Sub;
         Value: Readonly<Record<string, ReturnType<Sub>>>;
-    };
-}
-
-declare namespace $ {
-    function $mol_data_optional<Sub extends $mol_data_value>(sub: Sub): ((val: Parameters<Sub>[0] | undefined) => ReturnType<Sub> | undefined) & {
-        config: Sub;
-        Value: ReturnType<Sub> | undefined;
     };
 }
 
@@ -2474,13 +2474,13 @@ declare namespace $.$$ {
         execute: (query: string) => void;
     }
     const Results: ((val: unknown) => readonly Readonly<{
-        content: string;
-        contentNoFormatting: string;
-        richSnippet: Readonly<{
+        content?: string | undefined;
+        contentNoFormatting?: string | undefined;
+        richSnippet?: Readonly<{
             metatags: {
                 [x: string]: string;
             };
-        }>;
+        }> | undefined;
         thumbnailImage?: Readonly<{
             url: string;
             height: string;
@@ -2492,13 +2492,13 @@ declare namespace $.$$ {
         visibleUrl: string;
     }>[]) & {
         config: ((val: unknown) => Readonly<{
-            content: string;
-            contentNoFormatting: string;
-            richSnippet: Readonly<{
+            content?: string | undefined;
+            contentNoFormatting?: string | undefined;
+            richSnippet?: Readonly<{
                 metatags: {
                     [x: string]: string;
                 };
-            }>;
+            }> | undefined;
             thumbnailImage?: Readonly<{
                 url: string;
                 height: string;
@@ -2510,24 +2510,41 @@ declare namespace $.$$ {
             visibleUrl: string;
         }>) & {
             config: {
-                content: (val: string) => string;
-                contentNoFormatting: (val: string) => string;
+                content: ((val: string | undefined) => string | undefined) & {
+                    config: (val: string) => string;
+                    Value: string | undefined;
+                };
+                contentNoFormatting: ((val: string | undefined) => string | undefined) & {
+                    config: (val: string) => string;
+                    Value: string | undefined;
+                };
                 richSnippet: ((val: unknown) => Readonly<{
                     metatags: {
                         [x: string]: string;
                     };
-                }>) & {
-                    config: {
-                        metatags: ((val: unknown) => Readonly<Record<string, string>>) & {
-                            config: (val: string) => string;
-                            Value: Readonly<Record<string, string>>;
+                }> | undefined) & {
+                    config: ((val: unknown) => Readonly<{
+                        metatags: {
+                            [x: string]: string;
                         };
+                    }>) & {
+                        config: {
+                            metatags: ((val: unknown) => Readonly<Record<string, string>>) & {
+                                config: (val: string) => string;
+                                Value: Readonly<Record<string, string>>;
+                            };
+                        };
+                        Value: Readonly<{
+                            metatags: {
+                                [x: string]: string;
+                            };
+                        }>;
                     };
                     Value: Readonly<{
                         metatags: {
                             [x: string]: string;
                         };
-                    }>;
+                    }> | undefined;
                 };
                 thumbnailImage: ((val: unknown) => Readonly<{
                     url: string;
@@ -2562,13 +2579,13 @@ declare namespace $.$$ {
                 visibleUrl: (val: string) => string;
             };
             Value: Readonly<{
-                content: string;
-                contentNoFormatting: string;
-                richSnippet: Readonly<{
+                content?: string | undefined;
+                contentNoFormatting?: string | undefined;
+                richSnippet?: Readonly<{
                     metatags: {
                         [x: string]: string;
                     };
-                }>;
+                }> | undefined;
                 thumbnailImage?: Readonly<{
                     url: string;
                     height: string;
@@ -2581,13 +2598,13 @@ declare namespace $.$$ {
             }>;
         };
         Value: readonly Readonly<{
-            content: string;
-            contentNoFormatting: string;
-            richSnippet: Readonly<{
+            content?: string | undefined;
+            contentNoFormatting?: string | undefined;
+            richSnippet?: Readonly<{
                 metatags: {
                     [x: string]: string;
                 };
-            }>;
+            }> | undefined;
             thumbnailImage?: Readonly<{
                 url: string;
                 height: string;
@@ -2611,13 +2628,13 @@ declare namespace $.$$ {
         title(): string;
         google_api(next?: GCS): GCS | null;
         results_raw(next?: typeof Results.Value): readonly Readonly<{
-            content: string;
-            contentNoFormatting: string;
-            richSnippet: Readonly<{
+            content?: string | undefined;
+            contentNoFormatting?: string | undefined;
+            richSnippet?: Readonly<{
                 metatags: {
                     [x: string]: string;
                 };
-            }>;
+            }> | undefined;
             thumbnailImage?: Readonly<{
                 url: string;
                 height: string;

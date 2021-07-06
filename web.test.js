@@ -2660,6 +2660,26 @@ var $;
 var $;
 (function ($) {
     $.$mol_test({
+        'Is not present'() {
+            $.$mol_data_optional($.$mol_data_number)(undefined);
+        },
+        'Is present'() {
+            $.$mol_data_optional($.$mol_data_number)(0);
+        },
+        'Is null'() {
+            $.$mol_assert_fail(() => {
+                const Type = $.$mol_data_optional($.$mol_data_number);
+                Type(null);
+            }, 'null is not a number');
+        },
+    });
+})($ || ($ = {}));
+//optional.test.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_test({
         'Is empty dict'() {
             $.$mol_data_dict($.$mol_data_number)({});
         },
@@ -2684,26 +2704,6 @@ var $;
     });
 })($ || ($ = {}));
 //dict.test.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_test({
-        'Is not present'() {
-            $.$mol_data_optional($.$mol_data_number)(undefined);
-        },
-        'Is present'() {
-            $.$mol_data_optional($.$mol_data_number)(0);
-        },
-        'Is null'() {
-            $.$mol_assert_fail(() => {
-                const Type = $.$mol_data_optional($.$mol_data_number);
-                Type(null);
-            }, 'null is not a number');
-        },
-    });
-})($ || ($ = {}));
-//optional.test.js.map
 ;
 "use strict";
 var $;

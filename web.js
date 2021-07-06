@@ -7776,6 +7776,20 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_data_optional(sub) {
+        return $.$mol_data_setup((val) => {
+            if (val === undefined)
+                return undefined;
+            return sub(val);
+        }, sub);
+    }
+    $.$mol_data_optional = $mol_data_optional;
+})($ || ($ = {}));
+//optional.js.map
+;
+"use strict";
+var $;
+(function ($) {
     $.$mol_data_string = (val) => {
         if (typeof val === 'string')
             return val;
@@ -7810,20 +7824,6 @@ var $;
     $.$mol_data_dict = $mol_data_dict;
 })($ || ($ = {}));
 //dict.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_data_optional(sub) {
-        return $.$mol_data_setup((val) => {
-            if (val === undefined)
-                return undefined;
-            return sub(val);
-        }, sub);
-    }
-    $.$mol_data_optional = $mol_data_optional;
-})($ || ($ = {}));
-//optional.js.map
 ;
 "use strict";
 var $;
@@ -7884,11 +7884,11 @@ var $;
     var $$;
     (function ($$) {
         const Results = $.$mol_data_array($.$mol_data_record({
-            content: $.$mol_data_string,
-            contentNoFormatting: $.$mol_data_string,
-            richSnippet: $.$mol_data_record({
+            content: $.$mol_data_optional($.$mol_data_string),
+            contentNoFormatting: $.$mol_data_optional($.$mol_data_string),
+            richSnippet: $.$mol_data_optional($.$mol_data_record({
                 metatags: $.$mol_data_dict($.$mol_data_string),
-            }),
+            })),
             thumbnailImage: $.$mol_data_optional($.$mol_data_record({
                 url: $.$mol_data_string,
                 height: $.$mol_data_string,
@@ -7960,7 +7960,7 @@ var $;
                             starting: () => {
                             },
                             ready: (gname, query, promos, results, div) => {
-                                this.results_raw(results);
+                                this.results_raw(results[0].url ? Results(results) : []);
                                 return true;
                             },
                         },
@@ -7996,7 +7996,7 @@ var $;
                 return this.results_raw()[index].titleNoFormatting;
             }
             result_descr(index) {
-                return this.results_raw()[index].contentNoFormatting;
+                return this.results_raw()[index].contentNoFormatting ?? '';
             }
             result_uri(index) {
                 return new URL(this.results_raw()[index].url).searchParams.get('q');
