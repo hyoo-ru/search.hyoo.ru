@@ -1,3 +1,6 @@
 {
-	"$hyoo_search_Title_hint": "Поиск.."
+	"$hyoo_search_Query_hint": "Поиск..",
+	"$hyoo_search_Blacklist_hint": "Каждый домен на новой строке",
+	"$hyoo_search_Blacklist_field_name": "Чёрный Список Доменов",
+	"$hyoo_search_Settings_title": "Настройки"
 }
