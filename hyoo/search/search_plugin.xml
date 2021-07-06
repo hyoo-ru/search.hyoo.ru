@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OpenSearchDescription
-	xmlns="http://a9.com/-/spec/opensearch/1.1/"ZZ
+	xmlns="http://a9.com/-/spec/opensearch/1.1/"
 	>
 	<ShortName>$hyoo_search</ShortName>
 	<LongName>Search.HyOO.ru</LongName>
