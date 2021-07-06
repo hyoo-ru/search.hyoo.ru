@@ -52,9 +52,21 @@ namespace $.$$ {
 		@ $mol_mem
 		query( next?: string ) {
 			const query = this.$.$mol_state_arg.value( 'query', next ) ?? ''
-			if( next !== '' ) this.google_api()?.execute( query )
+			if( next !== '' ) this.google_api()?.execute( query + this.query_addon() )
 			if( next !== undefined ) this.results_raw([])
 			return query
+		}
+		
+		query_addon() {
+			return ' ' + this.query_forbidden()
+		}
+		
+		@ $mol_mem
+		query_dump() {
+			return ( this.query() + ' ' + this.query_addon() )
+				.split( ' ' )
+				.filter( a => a.trim() )
+				.join( '\n' )
 		}
 		
 		blacklist( next?: string ) {
@@ -134,50 +146,41 @@ namespace $.$$ {
 		}
 		
 		@ $mol_mem
-		forbidden() {
-			return new $mol_regexp(
-				this.blacklist()
+		query_forbidden() {
+			return this.blacklist()
 				.split( $mol_regexp.line_end )
 				.map( domain => domain.trim() )
 				.filter( Boolean )
-				.map( domain => $mol_regexp.from( domain ).source )
-				.join( $mol_regexp.or.source )
-				|| '$^'
-			)
-		}
-		
-		@ $mol_mem
-		results_filtered() {
-			const forbidden = this.forbidden()
-			return this.results_raw().filter( res => !forbidden.test( res.visibleUrl ) )
+				.map( domain => '-site:' + domain )
+				.join( ' ' )
 		}
 		
 		@ $mol_mem
 		result_list() {
-			return this.results_filtered()?.map( (_,i)=> this.Result_item(i) ) ?? []
+			return this.results_raw()?.map( (_,i)=> this.Result_item(i) ) ?? []
 		}
 		
 		result_image( index: number ) {
-			const res = this.results_filtered()[ index ]
+			const res = this.results_raw()[ index ]
 			return res.thumbnailImage?.url ?? this.result_icon( index )
 		}
 		
 		result_icon( index: number ) {
-			const res = this.results_filtered()[ index ]
+			const res = this.results_raw()[ index ]
 			return `https://favicon.yandex.net/favicon/${ res.visibleUrl }?color=0,0,0,0&size=32&stub=1`
 		}
 		
 		result_title( index: number ) {
-			return this.results_filtered()[ index ].titleNoFormatting
+			return this.results_raw()[ index ].titleNoFormatting
 		}
 		
 		result_descr( index: number ) {
-			return this.results_filtered()[ index ].contentNoFormatting
+			return this.results_raw()[ index ].contentNoFormatting
 		}
 		
 		@ $mol_mem_key
 		result_uri( index: number ) {
-			return new URL( this.results_filtered()[ index ].url ).searchParams.get( 'q' )!
+			return new URL( this.results_raw()[ index ].url ).searchParams.get( 'q' )!
 		}
 		
 		@ $mol_mem
