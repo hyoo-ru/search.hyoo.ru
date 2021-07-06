@@ -53,10 +53,12 @@ $hyoo_search $mol_book2
 							<= Result_image!index $mol_image
 								uri <= result_image!index \
 								title \
-							<= Result_title!index $mol_paragraph
-								title <= result_title!index \
-					<= Result_descr!index $mol_paragraph
-						title <= result_descr!index \
+							<= Result_title!index $mol_dimmer
+								haystack <= result_title!index \
+								needle <= query
+					<= Result_descr!index $mol_dimmer
+						haystack <= result_descr!index \
+						needle <= query
 	searcher_data *
 		DuckDuckGo \https://duckduckgo.com/?q=
 		Yahoo \https://search.yahoo.com/search?p=

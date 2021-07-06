@@ -50,3 +50,11 @@
 [hyoo_search_settings_fields] > * {
 	margin: var(--mol_gap_block);
 }
+
+[hyoo_search_result_title_low] {
+	opacity: 1;
+}
+
+[hyoo_search_result_descr_low] {
+	opacity: 1;
+}
