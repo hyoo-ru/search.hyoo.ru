@@ -2477,9 +2477,9 @@ declare namespace $.$$ {
         content?: string | undefined;
         contentNoFormatting?: string | undefined;
         richSnippet?: Readonly<{
-            metatags: {
+            metatags?: {
                 [x: string]: string;
-            };
+            } | undefined;
         }> | undefined;
         thumbnailImage?: Readonly<{
             url: string;
@@ -2495,9 +2495,9 @@ declare namespace $.$$ {
             content?: string | undefined;
             contentNoFormatting?: string | undefined;
             richSnippet?: Readonly<{
-                metatags: {
+                metatags?: {
                     [x: string]: string;
-                };
+                } | undefined;
             }> | undefined;
             thumbnailImage?: Readonly<{
                 url: string;
@@ -2519,31 +2519,34 @@ declare namespace $.$$ {
                     Value: string | undefined;
                 };
                 richSnippet: ((val: unknown) => Readonly<{
-                    metatags: {
+                    metatags?: {
                         [x: string]: string;
-                    };
+                    } | undefined;
                 }> | undefined) & {
                     config: ((val: unknown) => Readonly<{
-                        metatags: {
+                        metatags?: {
                             [x: string]: string;
-                        };
+                        } | undefined;
                     }>) & {
                         config: {
-                            metatags: ((val: unknown) => Readonly<Record<string, string>>) & {
-                                config: (val: string) => string;
-                                Value: Readonly<Record<string, string>>;
+                            metatags: ((val: unknown) => Readonly<Record<string, string>> | undefined) & {
+                                config: ((val: unknown) => Readonly<Record<string, string>>) & {
+                                    config: (val: string) => string;
+                                    Value: Readonly<Record<string, string>>;
+                                };
+                                Value: Readonly<Record<string, string>> | undefined;
                             };
                         };
                         Value: Readonly<{
-                            metatags: {
+                            metatags?: {
                                 [x: string]: string;
-                            };
+                            } | undefined;
                         }>;
                     };
                     Value: Readonly<{
-                        metatags: {
+                        metatags?: {
                             [x: string]: string;
-                        };
+                        } | undefined;
                     }> | undefined;
                 };
                 thumbnailImage: ((val: unknown) => Readonly<{
@@ -2582,9 +2585,9 @@ declare namespace $.$$ {
                 content?: string | undefined;
                 contentNoFormatting?: string | undefined;
                 richSnippet?: Readonly<{
-                    metatags: {
+                    metatags?: {
                         [x: string]: string;
-                    };
+                    } | undefined;
                 }> | undefined;
                 thumbnailImage?: Readonly<{
                     url: string;
@@ -2601,9 +2604,9 @@ declare namespace $.$$ {
             content?: string | undefined;
             contentNoFormatting?: string | undefined;
             richSnippet?: Readonly<{
-                metatags: {
+                metatags?: {
                     [x: string]: string;
-                };
+                } | undefined;
             }> | undefined;
             thumbnailImage?: Readonly<{
                 url: string;
@@ -2631,9 +2634,9 @@ declare namespace $.$$ {
             content?: string | undefined;
             contentNoFormatting?: string | undefined;
             richSnippet?: Readonly<{
-                metatags: {
+                metatags?: {
                     [x: string]: string;
-                };
+                } | undefined;
             }> | undefined;
             thumbnailImage?: Readonly<{
                 url: string;

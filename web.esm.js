@@ -7887,7 +7887,7 @@ var $;
             content: $.$mol_data_optional($.$mol_data_string),
             contentNoFormatting: $.$mol_data_optional($.$mol_data_string),
             richSnippet: $.$mol_data_optional($.$mol_data_record({
-                metatags: $.$mol_data_dict($.$mol_data_string),
+                metatags: $.$mol_data_optional($.$mol_data_dict($.$mol_data_string)),
             })),
             thumbnailImage: $.$mol_data_optional($.$mol_data_record({
                 url: $.$mol_data_string,
