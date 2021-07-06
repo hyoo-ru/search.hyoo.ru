@@ -7395,6 +7395,7 @@ var $;
         }
         Blacklist() {
             const obj = new this.$.$mol_textarea();
+            obj.hint = () => this.$.$mol_locale.text('$hyoo_search_Blacklist_hint');
             obj.value = (next) => this.blacklist(next);
             return obj;
         }
@@ -7938,7 +7939,8 @@ var $;
                     .map(domain => domain.trim())
                     .filter(Boolean)
                     .map(domain => $.$mol_regexp.from(domain).source)
-                    .join($.$mol_regexp.or.source));
+                    .join($.$mol_regexp.or.source)
+                    || '$^');
             }
             results_filtered() {
                 const forbidden = this.forbidden();
