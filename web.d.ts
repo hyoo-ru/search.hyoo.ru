@@ -1637,6 +1637,14 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $mol_row extends $mol_view {
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
     class $mol_list extends $mol_view {
         render_visible_only(): boolean;
         render_over(): number;
@@ -1700,6 +1708,7 @@ declare namespace $ {
             google: string;
             duckduckgo: string;
             bing: string;
+            yahoo: string;
             yandex: string;
         };
         foot(): readonly any[];
@@ -1709,6 +1718,8 @@ declare namespace $ {
         Sources(): $mol_link_source;
         Lights(): $$.$mol_lights_toggle;
         result_list(): readonly any[];
+        result_list_empty(): string;
+        Result_list_empty(): $mol_row;
         Result_list(): $$.$mol_list;
         result_uri(index: any): string;
         result_image(index: any): string;

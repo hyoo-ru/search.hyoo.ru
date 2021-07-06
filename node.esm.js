@@ -5115,6 +5115,22 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_row extends $.$mol_view {
+    }
+    $.$mol_row = $mol_row;
+})($ || ($ = {}));
+//row.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_style_attach("mol/row/row.view.css", "[mol_row] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\talign-items: flex-start;\n\talign-content: flex-start;\n\tjustify-content: flex-start;\n\tpadding: .5rem;\n\tflex: 0 0 auto;\n\tbox-sizing: border-box;\n\tmax-width: 100%;\n}\n\n[mol_row] > * {\n\tmargin: .25rem;\n\tmax-width: 100%;\n}\n");
+})($ || ($ = {}));
+//row.view.css.js.map
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_list extends $.$mol_view {
         render_visible_only() {
             return true;
@@ -5432,6 +5448,7 @@ var $;
                 google: "https://www.google.com/search?q=",
                 duckduckgo: "https://duckduckgo.com/?q=",
                 bing: "https://www.bing.com/search?q=",
+                yahoo: "https://search.yahoo.com/search?p=",
                 yandex: "https://yandex.ru/search/?text="
             };
         }
@@ -5465,9 +5482,20 @@ var $;
         result_list() {
             return [];
         }
+        result_list_empty() {
+            return this.$.$mol_locale.text('$hyoo_search_result_list_empty');
+        }
+        Result_list_empty() {
+            const obj = new this.$.$mol_row();
+            obj.sub = () => [
+                this.result_list_empty()
+            ];
+            return obj;
+        }
         Result_list() {
             const obj = new this.$.$mol_list();
             obj.rows = () => this.result_list();
+            obj.Empty = () => this.Result_list_empty();
             return obj;
         }
         result_uri(index) {
@@ -5534,6 +5562,9 @@ var $;
     __decorate([
         $.$mol_mem
     ], $hyoo_search.prototype, "Lights", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search.prototype, "Result_list_empty", null);
     __decorate([
         $.$mol_mem
     ], $hyoo_search.prototype, "Result_list", null);

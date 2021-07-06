@@ -193,6 +193,8 @@ $mol_lights_toggle $mol_check_icon
 	hint @ \Toggle lights
 	checked?val <=> lights?val false
 
+$mol_row $mol_view
+
 $mol_list $mol_view
 	render_visible_only true
 	render_over 0
@@ -223,6 +225,9 @@ $hyoo_search $mol_page
 	body /
 		<= Result_list $mol_list
 			rows <= result_list /
+			Empty <= Result_list_empty $mol_row
+				sub /
+					<= result_list_empty @ \No result.
 	Result_item!index $mol_link
 		uri <= result_uri!index \xxx
 		sub /
@@ -239,6 +244,7 @@ $hyoo_search $mol_page
 		google \https://www.google.com/search?q=
 		duckduckgo \https://duckduckgo.com/?q=
 		bing \https://www.bing.com/search?q=
+		yahoo \https://search.yahoo.com/search?p=
 		yandex \https://yandex.ru/search/?text=
 	foot <= searcher_list /
 	Searcher_link!id $mol_link_iconed
