@@ -2008,6 +2008,7 @@ declare namespace $.$$ {
         }>[];
         result_list(): $mol_link[];
         result_image(index: number): string;
+        result_icon(index: number): string;
         result_title(index: number): string;
         result_descr(index: number): string;
         result_uri(index: number): string;

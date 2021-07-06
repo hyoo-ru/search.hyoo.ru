@@ -5939,8 +5939,11 @@ var $;
             }
             result_image(index) {
                 const res = this.results_data()[index];
-                return res.thumbnailImage?.url ??
-                    `https://favicon.yandex.net/favicon/${res.visibleUrl}?color=0,0,0,0&size=32&stub=1`;
+                return res.thumbnailImage?.url ?? this.result_icon(index);
+            }
+            result_icon(index) {
+                const res = this.results_data()[index];
+                return `https://favicon.yandex.net/favicon/${res.visibleUrl}?color=0,0,0,0&size=32&stub=1`;
             }
             result_title(index) {
                 return this.results_data()[index].titleNoFormatting;
