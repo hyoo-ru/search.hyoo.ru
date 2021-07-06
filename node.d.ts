@@ -1686,6 +1686,7 @@ declare namespace $ {
             DuckDuckGo: string;
             Yahoo: string;
             Google: string;
+            "Wolfram|Alpha": string;
             Bing: string;
             Yandex: string;
         };
