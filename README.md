@@ -10,7 +10,8 @@ Best frontend for global search
 - Absolutely free to use
 - No any ads
 - Open Source
-- Search on type
+- Search on typing
 - Fast forward to other search services
-- Persistent domains blacklisting
+- Persistent domains blacklist
 - Results preview images
+- Direct links
