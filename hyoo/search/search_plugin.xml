@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription
+	xmlns="http://a9.com/-/spec/opensearch/1.1/"ZZ
+	>
+
+	<ShortName>$hyoo_search</ShortName>
+
+	<Description>User-friendly web Search from $hyoo_team</Description>
+	
+	<InputEncoding>UTF-8</InputEncoding>
+
+	<Image width="16" height="16" type="image/svg+xml">hyoo/search/search_logo.svg</Image>
+
+	<Url type="text/html" template="https://search.hyoo.ru/#!query={searchTerms}">
+		<!-- <Param name="xxx" value="{searchTerms}"/> -->
+	</Url>
+
+</OpenSearchDescription>
