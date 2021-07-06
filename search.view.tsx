@@ -142,6 +142,7 @@ namespace $.$$ {
 				.filter( Boolean )
 				.map( domain => $mol_regexp.from( domain ).source )
 				.join( $mol_regexp.or.source )
+				|| '$^'
 			)
 		}
 		
