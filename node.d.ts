@@ -1622,14 +1622,6 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    class $mol_row extends $mol_view {
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
     class $mol_list extends $mol_view {
         render_visible_only(): boolean;
         render_over(): number;
@@ -1690,21 +1682,20 @@ declare namespace $ {
         body(): readonly any[];
         Result_item(index: any): $$.$mol_link;
         searcher_data(): {
-            google: string;
-            duckduckgo: string;
-            bing: string;
-            yahoo: string;
-            yandex: string;
+            Google: string;
+            DuckDuckGo: string;
+            Yahoo: string;
+            Bing: string;
+            Yandex: string;
         };
         foot(): readonly any[];
         Searcher_link(id: any): $$.$mol_link_iconed;
+        Powered(): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
         title(val?: any): string;
         Sources(): $mol_link_source;
         Lights(): $$.$mol_lights_toggle;
         result_list(): readonly any[];
-        result_list_empty(): string;
-        Result_list_empty(): $mol_row;
         Result_list(): $$.$mol_list;
         result_uri(index: any): string;
         result_image(index: any): string;
@@ -1715,6 +1706,7 @@ declare namespace $ {
         Result_descr(index: any): $$.$mol_paragraph;
         Result_info(index: any): $$.$mol_list;
         searcher_list(): readonly any[];
+        searcher_hint(id: any): string;
         searcher_link(id: any): string;
     }
 }
@@ -2010,9 +2002,7 @@ declare namespace $.$$ {
         result_uri(index: number): string;
         searcher_list(): $mol_link_iconed[];
         searcher_link(id: string): string;
-        link_duckduckgo(): string;
-        link_yandex(): string;
-        Foot(): $mol_view;
+        searcher_hint(id: string): string;
     }
     export {};
 }
