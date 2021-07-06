@@ -11,7 +11,7 @@ $hyoo_search $mol_page
 	body /
 		<= Result_list $mol_list
 			rows <= result_list /
-			Empty <= Result_list_empty $mol_row
+			- Empty <= Result_list_empty $mol_row
 				sub /
 					<= result_list_empty @ \No result.
 	Result_item!index $mol_link
@@ -27,12 +27,17 @@ $hyoo_search $mol_page
 					<= Result_descr!index $mol_paragraph
 						title <= result_descr!index \
 	searcher_data *
-		google \https://www.google.com/search?q=
-		duckduckgo \https://duckduckgo.com/?q=
-		bing \https://www.bing.com/search?q=
-		yahoo \https://search.yahoo.com/search?p=
-		yandex \https://yandex.ru/search/?text=
+		Google \https://www.google.com/search?q=
+		DuckDuckGo \https://duckduckgo.com/?q=
+		Yahoo \https://search.yahoo.com/search?p=
+		Bing \https://www.bing.com/search?q=
+		Yandex \https://yandex.ru/search/?text=
 	foot <= searcher_list /
 	Searcher_link!id $mol_link_iconed
 		title \
+		hint <= searcher_hint!id \
 		uri <= searcher_link!id \
+	Powered $mol_link_iconed
+		title @ \Programmable Search Engine
+		uri \https://programmablesearchengine.google.com/
+	

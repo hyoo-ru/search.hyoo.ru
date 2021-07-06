@@ -141,7 +141,12 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		searcher_list() {
-			return Object.keys( this.searcher_data() ).map( id => this.Searcher_link( id ) )
+			const query = this.title()
+			if( query ) {
+				return Object.keys( this.searcher_data() ).map( id => this.Searcher_link( id ) )
+			} else {
+				return [ this.Powered() ]
+			}
 		}
 		
 		@ $mol_mem_key
@@ -149,16 +154,9 @@ namespace $.$$ {
 			return this.searcher_data()[ id ] + encodeURIComponent( this.title() )
 		}
 		
-		link_duckduckgo() {
-			return `https://duckduckgo.com/?q=${ encodeURIComponent( this.title() ) }`
-		}
-		
-		link_yandex() {
-			return `https://yandex.ru/search/?text=${ encodeURIComponent( this.title() ) }`
-		}
-		
-		Foot() {
-			return this.title() ? super.Foot() : null!
+		@ $mol_mem_key
+		searcher_hint( id: string ) {
+			return id
 		}
 		
 	}
