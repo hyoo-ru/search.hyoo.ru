@@ -239,9 +239,9 @@ $hyoo_search $mol_page
 					<= Result_descr!index $mol_paragraph
 						title <= result_descr!index \
 	searcher_data *
-		Google \https://www.google.com/search?q=
 		DuckDuckGo \https://duckduckgo.com/?q=
 		Yahoo \https://search.yahoo.com/search?p=
+		Google \https://www.google.com/search?q=
 		Bing \https://www.bing.com/search?q=
 		Yandex \https://yandex.ru/search/?text=
 	foot <= searcher_list /

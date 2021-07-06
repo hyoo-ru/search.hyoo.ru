@@ -1682,9 +1682,9 @@ declare namespace $ {
         body(): readonly any[];
         Result_item(index: any): $$.$mol_link;
         searcher_data(): {
-            Google: string;
             DuckDuckGo: string;
             Yahoo: string;
+            Google: string;
             Bing: string;
             Yandex: string;
         };

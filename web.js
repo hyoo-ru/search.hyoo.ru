@@ -5250,9 +5250,9 @@ var $;
         }
         searcher_data() {
             return {
-                Google: "https://www.google.com/search?q=",
                 DuckDuckGo: "https://duckduckgo.com/?q=",
                 Yahoo: "https://search.yahoo.com/search?p=",
+                Google: "https://www.google.com/search?q=",
                 Bing: "https://www.bing.com/search?q=",
                 Yandex: "https://yandex.ru/search/?text="
             };
