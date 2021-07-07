@@ -54,7 +54,7 @@ namespace $.$$ {
 		@ $mol_mem
 		query( next?: string ) {
 			const query = this.$.$mol_state_arg.value( 'query', next ) ?? ''
-			if( next !== '' ) this.google_api()?.execute( this.query_google( query ) )
+			if( next !== '' ) this.google_api()?.execute( query && this.query_google( query ) )
 			if( next !== undefined ) this.results_raw([])
 			return query
 		}
