@@ -2608,7 +2608,7 @@ declare namespace $.$$ {
         autofocus(): null;
         auto(): void;
         query(next?: string): string;
-        query_addon(): string;
+        query_google(query: string): string;
         query_dump(): string;
         blacklist(next?: string): string;
         settings(next?: boolean): boolean;
