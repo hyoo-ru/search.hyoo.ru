@@ -54,19 +54,20 @@ namespace $.$$ {
 		@ $mol_mem
 		query( next?: string ) {
 			const query = this.$.$mol_state_arg.value( 'query', next ) ?? ''
-			if( next !== '' ) this.google_api()?.execute( query + this.query_addon() )
+			if( next !== '' ) this.google_api()?.execute( this.query_google( query ) )
 			if( next !== undefined ) this.results_raw([])
 			return query
 		}
 		
-		query_addon() {
-			return ' ' + this.query_forbidden()
+		query_google( query: string ) {
+			query = query.trim()
+			return `( "${ query }" OR (${ query }) ) ${ this.query_forbidden() }`
 		}
 		
 		@ $mol_mem
 		query_dump() {
-			return ( this.query() + ' ' + this.query_addon() )
-				.split( ' ' )
+			return ( this.query_google( this.query() ) )
+				.split( /\s+/g )
 				.filter( a => a.trim() )
 				.join( '\n' )
 		}
@@ -191,7 +192,12 @@ namespace $.$$ {
 		
 		@ $mol_mem_key
 		result_uri_view( index: number ) {
-			return decodeURI( this.result_uri( index ) )
+			const uri = this.result_uri( index )
+			try {
+				return decodeURI( uri )
+			} catch( error ) {
+				return uri
+			}
 		}
 		
 		@ $mol_mem
