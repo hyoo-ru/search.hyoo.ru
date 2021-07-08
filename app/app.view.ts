@@ -1,44 +1,6 @@
-/** @jsx $mol_jsx */
 namespace $.$$ {
 	
-	interface GCS {
-		execute: ( query: string )=> void
-	}
-	
-	declare namespace google.search.cse.element {
-		
-		function getElement( gname: string ): GCS
-		
-		function render( options: {
-			div: Element
-			tag: 'search'
-			gname: string
-		} ): void
-		
-	}
-	
-	const Results = $mol_data_array( $mol_data_record({
-		content: $mol_data_optional( $mol_data_string ),
-		contentNoFormatting: $mol_data_optional( $mol_data_string ),
-		richSnippet: $mol_data_optional(
-			$mol_data_record({
-				metatags: $mol_data_optional( $mol_data_dict( $mol_data_string ) ),
-			})
-		),
-		thumbnailImage: $mol_data_optional(
-			$mol_data_record({
-				url: $mol_data_string,
-				height: $mol_data_string,
-				width: $mol_data_string,
-			}),
-		),
-		title: $mol_data_string,
-		titleNoFormatting: $mol_data_string,
-		url: $mol_data_string,
-		visibleUrl: $mol_data_string,
-	}) )
-	
-	export class $hyoo_search extends $.$hyoo_search {
+	export class $hyoo_search_app extends $.$hyoo_search_app {
 		
 		@ $mol_mem
 		autofocus() {
@@ -53,10 +15,7 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		query( next?: string ) {
-			const query = this.$.$mol_state_arg.value( 'query', next ) ?? ''
-			if( next !== '' ) this.google_api()?.execute( this.query_google( query ) )
-			if( next !== undefined ) this.results_raw([])
-			return query
+			return this.$.$mol_state_arg.value( 'query', next ) ?? ''
 		}
 		
 		query_google( query: string ) {
@@ -95,57 +54,8 @@ namespace $.$$ {
 		}
 		
 		@ $mol_mem
-		google_api( next?: GCS ) {
-			
-			if( next ) return next
-			
-			window['__gcse'] = {
-				
-				parsetags: 'explicit',
-				
-				initializationCallback: ()=> {
-					
-					google.search.cse.element.render({
-						div: <div></div>,
-						tag: 'search',
-						gname: this.toString(),
-					})
-					
-					this.google_api( google.search.cse.element.getElement( this.toString() ) )
-					
-				},
-				
-				searchCallbacks: {
-					web: {
-						
-						starting: ()=> {
-						},
-						
-						ready: (
-							gname: string,
-							query: string,
-							promos: typeof Results.Value,
-							results: typeof Results.Value,
-							div: Element
-						)=> {
-							this.results_raw( results[0].url ? Results( results ) : [] )
-							return true
-						},
-						
-					},
-				},
-				
-			};
-			
-			const uri = 'https://cse.google.com/cse.js?cx=002821183079327163555:WMX276788641&'
-			this.$.$mol_import.script( uri )
-			
-			return null
-		}
-		
-		@ $mol_mem
-		results_raw( next?: typeof Results.Value ) {
-			return next ?? []
+		results_raw() {
+			return this.$.$hyoo_search_api.execute( this.query_google( this.query() ) )
 		}
 		
 		@ $mol_mem
@@ -160,7 +70,7 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		result_list() {
-			return this.results_raw()?.map( (_,i)=> this.Result_item(i) ) ?? []
+			return this.results_raw().map( (_,i)=> this.Result_item(i) )
 		}
 		
 		result_image( index: number ) {
