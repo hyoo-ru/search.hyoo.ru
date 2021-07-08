@@ -18,15 +18,18 @@ namespace $.$$ {
 			return this.$.$mol_state_arg.value( 'query', next ) ?? ''
 		}
 		
-		query_google( query: string ) {
-			query = query.trim()
+		@ $mol_mem
+		query_backend() {
+			
+			const query = this.query().trim()
 			if( !query ) return ''
+			
 			return `( "${ query }" OR (${ query }) ) ${ this.query_forbidden() }`
 		}
 		
 		@ $mol_mem
 		query_dump() {
-			return ( this.query_google( this.query() ) )
+			return this.query_backend()
 				.split( /\s+/g )
 				.filter( a => a.trim() )
 				.join( '\n' )
@@ -56,7 +59,7 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		results_raw() {
-			return this.$.$hyoo_search_api.execute( this.query_google( this.query() ) )
+			return this.$.$hyoo_search_api.execute( this.query_backend() )
 		}
 		
 		@ $mol_mem
