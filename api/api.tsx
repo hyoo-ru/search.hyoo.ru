@@ -59,9 +59,9 @@ namespace $ {
 						gname: this.toString(),
 					})
 					
-					$mol_fiber_defer(()=> {
+					new $mol_after_frame( ()=> {
 						onDone( google.search.cse.element.getElement( this.toString() ) )
-					})
+					} )
 					
 				},
 				
