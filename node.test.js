@@ -7436,7 +7436,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $hyoo_search extends $.$mol_book2 {
+    class $hyoo_search_app extends $.$mol_book2 {
         plugins() {
             return [
                 this.Theme()
@@ -7493,7 +7493,7 @@ var $;
         }
         Query() {
             const obj = new this.$.$mol_string_button();
-            obj.hint = () => this.$.$mol_locale.text('$hyoo_search_Query_hint');
+            obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Query_hint');
             obj.value = (val) => this.query(val);
             return obj;
         }
@@ -7565,13 +7565,13 @@ var $;
         }
         Blacklist() {
             const obj = new this.$.$mol_textarea();
-            obj.hint = () => this.$.$mol_locale.text('$hyoo_search_Blacklist_hint');
+            obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Blacklist_hint');
             obj.value = (next) => this.blacklist(next);
             return obj;
         }
         Blacklist_field() {
             const obj = new this.$.$mol_form_field();
-            obj.name = () => this.$.$mol_locale.text('$hyoo_search_Blacklist_field_name');
+            obj.name = () => this.$.$mol_locale.text('$hyoo_search_app_Blacklist_field_name');
             obj.control = () => this.Blacklist();
             return obj;
         }
@@ -7585,7 +7585,7 @@ var $;
         }
         Query_dump_field() {
             const obj = new this.$.$mol_labeler();
-            obj.title = () => this.$.$mol_locale.text('$hyoo_search_Query_dump_field_title');
+            obj.title = () => this.$.$mol_locale.text('$hyoo_search_app_Query_dump_field_title');
             obj.Content = () => this.Query_dump();
             return obj;
         }
@@ -7599,7 +7599,7 @@ var $;
         }
         Settings() {
             const obj = new this.$.$mol_page();
-            obj.title = () => this.$.$mol_locale.text('$hyoo_search_Settings_title');
+            obj.title = () => this.$.$mol_locale.text('$hyoo_search_app_Settings_title');
             obj.tools = () => [
                 this.Sources(),
                 this.Lights(),
@@ -7675,88 +7675,88 @@ var $;
     }
     __decorate([
         $.$mol_mem_key
-    ], $hyoo_search.prototype, "Result_item", null);
+    ], $hyoo_search_app.prototype, "Result_item", null);
     __decorate([
         $.$mol_mem_key
-    ], $hyoo_search.prototype, "Searcher_link", null);
+    ], $hyoo_search_app.prototype, "Searcher_link", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Powered", null);
+    ], $hyoo_search_app.prototype, "Powered", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Theme", null);
+    ], $hyoo_search_app.prototype, "Theme", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "query", null);
+    ], $hyoo_search_app.prototype, "query", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Query", null);
+    ], $hyoo_search_app.prototype, "Query", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Settings_open_icon", null);
+    ], $hyoo_search_app.prototype, "Settings_open_icon", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Settings_open", null);
+    ], $hyoo_search_app.prototype, "Settings_open", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Result_list", null);
+    ], $hyoo_search_app.prototype, "Result_list", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Main", null);
+    ], $hyoo_search_app.prototype, "Main", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Sources", null);
+    ], $hyoo_search_app.prototype, "Sources", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Lights", null);
+    ], $hyoo_search_app.prototype, "Lights", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Settings_close_icon", null);
+    ], $hyoo_search_app.prototype, "Settings_close_icon", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Settings_close", null);
+    ], $hyoo_search_app.prototype, "Settings_close", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "blacklist", null);
+    ], $hyoo_search_app.prototype, "blacklist", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Blacklist", null);
+    ], $hyoo_search_app.prototype, "Blacklist", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Blacklist_field", null);
+    ], $hyoo_search_app.prototype, "Blacklist_field", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Query_dump", null);
+    ], $hyoo_search_app.prototype, "Query_dump", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Query_dump_field", null);
+    ], $hyoo_search_app.prototype, "Query_dump_field", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Settings_fields", null);
+    ], $hyoo_search_app.prototype, "Settings_fields", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search.prototype, "Settings", null);
+    ], $hyoo_search_app.prototype, "Settings", null);
     __decorate([
         $.$mol_mem_key
-    ], $hyoo_search.prototype, "Result_image", null);
+    ], $hyoo_search_app.prototype, "Result_image", null);
     __decorate([
         $.$mol_mem_key
-    ], $hyoo_search.prototype, "Result_title", null);
+    ], $hyoo_search_app.prototype, "Result_title", null);
     __decorate([
         $.$mol_mem_key
-    ], $hyoo_search.prototype, "Result_main", null);
+    ], $hyoo_search_app.prototype, "Result_main", null);
     __decorate([
         $.$mol_mem_key
-    ], $hyoo_search.prototype, "Result_host", null);
+    ], $hyoo_search_app.prototype, "Result_host", null);
     __decorate([
         $.$mol_mem_key
-    ], $hyoo_search.prototype, "Result_descr", null);
+    ], $hyoo_search_app.prototype, "Result_descr", null);
     __decorate([
         $.$mol_mem_key
-    ], $hyoo_search.prototype, "Result_info", null);
-    $.$hyoo_search = $hyoo_search;
+    ], $hyoo_search_app.prototype, "Result_info", null);
+    $.$hyoo_search_app = $hyoo_search_app;
 })($ || ($ = {}));
-//search.view.tree.js.map
+//app.view.tree.js.map
 ;
 "use strict";
 //deep.js.map
@@ -8059,32 +8059,96 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/search.view.css", "[hyoo_search_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_settings] {\n\tflex: 0 0 25rem;\n}\n\t\n[hyoo_search_main_body] {\n\tpadding: 0;\n}\n\n[hyoo_search_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_result_item] {\n\tpadding: .75rem;\n}\n\n[hyoo_search_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tmargin: .75rem;\n\tflex: none;\n}\n\n[hyoo_search_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n}\n\n[hyoo_search_result_host] {\n\tpadding: .5rem .75rem;\n\talign-self: center;\n}\n\n[hyoo_search_result_descr] {\n\tcolor: var(--mol_theme_text);\n\tmargin: var(--mol_gap_text);\n}\n\n[hyoo_search_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_result_descr_low] {\n\topacity: 1;\n}\n");
+    const Results = $.$mol_data_array($.$mol_data_record({
+        content: $.$mol_data_optional($.$mol_data_string),
+        contentNoFormatting: $.$mol_data_optional($.$mol_data_string),
+        richSnippet: $.$mol_data_optional($.$mol_data_record({
+            metatags: $.$mol_data_optional($.$mol_data_dict($.$mol_data_string)),
+        })),
+        thumbnailImage: $.$mol_data_optional($.$mol_data_record({
+            url: $.$mol_data_string,
+            height: $.$mol_data_string,
+            width: $.$mol_data_string,
+        })),
+        title: $.$mol_data_string,
+        titleNoFormatting: $.$mol_data_string,
+        url: $.$mol_data_string,
+        visibleUrl: $.$mol_data_string,
+    }));
+    class $hyoo_search_api extends $.$mol_object {
+        static backend() {
+            $.$mol_mem_persist();
+            let onDone;
+            window['__gcse'] = {
+                parsetags: 'explicit',
+                initializationCallback: () => {
+                    google.search.cse.element.render({
+                        div: $.$mol_jsx("div", null),
+                        tag: 'search',
+                        gname: this.toString(),
+                    });
+                    $.$mol_fiber_defer(() => {
+                        onDone(google.search.cse.element.getElement(this.toString()));
+                    });
+                },
+                searchCallbacks: {
+                    web: {
+                        starting: () => {
+                        },
+                        ready: (gname, query, promos, results, div) => {
+                            this.future(query).done(results[0].url ? Results(results) : []);
+                            return true;
+                        },
+                    },
+                },
+            };
+            const uri = 'https://cse.google.com/cse.js?cx=002821183079327163555:WMX276788641&';
+            this.$.$mol_import.script(uri);
+            return $.$mol_fiber_sync(() => new Promise(done => onDone = done))();
+        }
+        static future(query) {
+            let done;
+            let fail;
+            const promise = new Promise((d, f) => {
+                done = d;
+                fail = f;
+            });
+            return { done, fail, promise };
+        }
+        static execute(query) {
+            const backend = this.backend();
+            if (!query)
+                return [];
+            backend.execute(query);
+            return $.$mol_fiber_sync(() => this.future(query).promise)();
+        }
+    }
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search_api, "backend", null);
+    __decorate([
+        $.$mol_mem_key
+    ], $hyoo_search_api, "future", null);
+    __decorate([
+        $.$mol_mem_key
+    ], $hyoo_search_api, "execute", null);
+    $.$hyoo_search_api = $hyoo_search_api;
 })($ || ($ = {}));
-//search.view.css.js.map
+//api.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\t\n[hyoo_search_app_main_body] {\n\tpadding: 0;\n}\n\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tpadding: .75rem;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tmargin: .75rem;\n\tflex: none;\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_app_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_app_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n}\n\n[hyoo_search_app_result_host] {\n\tpadding: .5rem .75rem;\n\talign-self: center;\n}\n\n[hyoo_search_app_result_descr] {\n\tcolor: var(--mol_theme_text);\n\tmargin: var(--mol_gap_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n");
+})($ || ($ = {}));
+//app.view.css.js.map
 ;
 "use strict";
 var $;
 (function ($) {
     var $$;
     (function ($$) {
-        const Results = $.$mol_data_array($.$mol_data_record({
-            content: $.$mol_data_optional($.$mol_data_string),
-            contentNoFormatting: $.$mol_data_optional($.$mol_data_string),
-            richSnippet: $.$mol_data_optional($.$mol_data_record({
-                metatags: $.$mol_data_optional($.$mol_data_dict($.$mol_data_string)),
-            })),
-            thumbnailImage: $.$mol_data_optional($.$mol_data_record({
-                url: $.$mol_data_string,
-                height: $.$mol_data_string,
-                width: $.$mol_data_string,
-            })),
-            title: $.$mol_data_string,
-            titleNoFormatting: $.$mol_data_string,
-            url: $.$mol_data_string,
-            visibleUrl: $.$mol_data_string,
-        }));
-        class $hyoo_search extends $.$hyoo_search {
+        class $hyoo_search_app extends $.$hyoo_search_app {
             autofocus() {
                 if (this.query())
                     return null;
@@ -8095,19 +8159,16 @@ var $;
                 this.autofocus();
             }
             query(next) {
-                const query = this.$.$mol_state_arg.value('query', next) ?? '';
-                if (next !== '')
-                    this.google_api()?.execute(query && this.query_google(query));
-                if (next !== undefined)
-                    this.results_raw([]);
-                return query;
+                return this.$.$mol_state_arg.value('query', next) ?? '';
             }
-            query_google(query) {
-                query = query.trim();
+            query_backend() {
+                const query = this.query().trim();
+                if (!query)
+                    return '';
                 return `( "${query}" OR (${query}) ) ${this.query_forbidden()}`;
             }
             query_dump() {
-                return (this.query_google(this.query()))
+                return this.query_backend()
                     .split(/\s+/g)
                     .filter(a => a.trim())
                     .join('\n');
@@ -8128,36 +8189,8 @@ var $;
             title() {
                 return `${super.title()} | Search.HyOO.ru`;
             }
-            google_api(next) {
-                if (next)
-                    return next;
-                window['__gcse'] = {
-                    parsetags: 'explicit',
-                    initializationCallback: () => {
-                        google.search.cse.element.render({
-                            div: $.$mol_jsx("div", null),
-                            tag: 'search',
-                            gname: this.toString(),
-                        });
-                        this.google_api(google.search.cse.element.getElement(this.toString()));
-                    },
-                    searchCallbacks: {
-                        web: {
-                            starting: () => {
-                            },
-                            ready: (gname, query, promos, results, div) => {
-                                this.results_raw(results[0].url ? Results(results) : []);
-                                return true;
-                            },
-                        },
-                    },
-                };
-                const uri = 'https://cse.google.com/cse.js?cx=002821183079327163555:WMX276788641&';
-                this.$.$mol_import.script(uri);
-                return null;
-            }
-            results_raw(next) {
-                return next ?? [];
+            results_raw() {
+                return this.$.$hyoo_search_api.execute(this.query_backend());
             }
             query_forbidden() {
                 return this.blacklist()
@@ -8168,7 +8201,7 @@ var $;
                     .join(' ');
             }
             result_list() {
-                return this.results_raw()?.map((_, i) => this.Result_item(i)) ?? [];
+                return this.results_raw().map((_, i) => this.Result_item(i));
             }
             result_image(index) {
                 const res = this.results_raw()[index];
@@ -8217,53 +8250,50 @@ var $;
         }
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "autofocus", null);
+        ], $hyoo_search_app.prototype, "autofocus", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "query", null);
+        ], $hyoo_search_app.prototype, "query", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "query_dump", null);
+        ], $hyoo_search_app.prototype, "query_backend", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "settings", null);
+        ], $hyoo_search_app.prototype, "query_dump", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "pages", null);
+        ], $hyoo_search_app.prototype, "settings", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "google_api", null);
+        ], $hyoo_search_app.prototype, "pages", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "results_raw", null);
+        ], $hyoo_search_app.prototype, "results_raw", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "query_forbidden", null);
+        ], $hyoo_search_app.prototype, "query_forbidden", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "result_list", null);
+        ], $hyoo_search_app.prototype, "result_list", null);
         __decorate([
             $.$mol_mem_key
-        ], $hyoo_search.prototype, "result_uri", null);
+        ], $hyoo_search_app.prototype, "result_uri", null);
         __decorate([
             $.$mol_mem_key
-        ], $hyoo_search.prototype, "result_uri_view", null);
+        ], $hyoo_search_app.prototype, "result_uri_view", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search.prototype, "searcher_list", null);
+        ], $hyoo_search_app.prototype, "searcher_list", null);
         __decorate([
             $.$mol_mem_key
-        ], $hyoo_search.prototype, "searcher_link", null);
+        ], $hyoo_search_app.prototype, "searcher_link", null);
         __decorate([
             $.$mol_mem_key
-        ], $hyoo_search.prototype, "searcher_hint", null);
-        $$.$hyoo_search = $hyoo_search;
+        ], $hyoo_search_app.prototype, "searcher_hint", null);
+        $$.$hyoo_search_app = $hyoo_search_app;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
-//search.view.js.map
-;
-var $node = $node || {} ; $node[ "/hyoo/search/search_logo.svg" ] = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIxMTVweCIgaGVpZ2h0PSIxMTVweCIgdmlld0JveD0iLTAuNSAtMC41IDExNSAxMTUiPjxkZWZzLz48Zz48ZWxsaXBzZSBjeD0iNDciIGN5PSI0OCIgcng9IjQwIiByeT0iNDAiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZT0iIzZjOGViZiIgc3Ryb2tlLXdpZHRoPSIxNiIgcG9pbnRlci1ldmVudHM9ImFsbCIvPjxwYXRoIGQ9Ik0gMTEwLjE4IDEwMC41OCBMIDk5LjU4IDExMS4xOCBMIDYwLjc5IDcyLjQgTCA1MS42IDgxLjU5IEwgNDkuMTIgNTAuMTIgTCA4MC41OSA1Mi42IEwgNzEuNCA2MS43OSBaIiBmaWxsPSIjNmM4ZWJmIiBzdHJva2U9IiM2YzhlYmYiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBwb2ludGVyLWV2ZW50cz0iYWxsIi8+PC9nPjwvc3ZnPg=="
-
+//app.view.js.map
 ;
 "use strict";
 var $;

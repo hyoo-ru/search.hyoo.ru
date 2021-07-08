@@ -1,9 +1,9 @@
 {
-	"$hyoo_search_Blacklist_field_name": "Domain Black List",
-	"$hyoo_search_Blacklist_hint": "Every domain on new line",
-	"$hyoo_search_Query_dump_field_title": "Query Dump",
-	"$hyoo_search_Query_hint": "Search..",
-	"$hyoo_search_Settings_title": "Settings",
+	"$hyoo_search_app_Blacklist_field_name": "Domain Black List",
+	"$hyoo_search_app_Blacklist_hint": "Every domain on new line",
+	"$hyoo_search_app_Query_dump_field_title": "Query Dump",
+	"$hyoo_search_app_Query_hint": "Search..",
+	"$hyoo_search_app_Settings_title": "Settings",
 	"$mol_lights_toggle_hint": "Toggle lights",
 	"$mol_link_source_hint": "Source code"
 }

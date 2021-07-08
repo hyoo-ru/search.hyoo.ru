@@ -1,5 +1,5 @@
 {
-  "name": "hyoo_search",
+  "name": "hyoo_search_app",
   "version": "0.0.1",
   "main": "node.js",
   "module": "node.esm.js",

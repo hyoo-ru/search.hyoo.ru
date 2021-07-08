@@ -440,7 +440,7 @@ $mol_form_field $mol_labeler
 			sub / <= bid \
 	Content <= control null
 
-$hyoo_search $mol_book2
+$hyoo_search_app $mol_book2
 	plugins /
 		<= Theme $mol_theme_auto
 	Placeholder null

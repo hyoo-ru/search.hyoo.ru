@@ -1,9 +1,9 @@
 {
-	"$hyoo_search_Blacklist_field_name": "Чёрный Список Доменов",
-	"$hyoo_search_Blacklist_hint": "Каждый домен на новой строке",
-	"$hyoo_search_Query_dump_field_title": "Полный Запрос",
-	"$hyoo_search_Query_hint": "Поиск..",
-	"$hyoo_search_Settings_title": "Настройки",
+	"$hyoo_search_app_Blacklist_field_name": "Чёрный Список Доменов",
+	"$hyoo_search_app_Blacklist_hint": "Каждый домен на новой строке",
+	"$hyoo_search_app_Query_dump_field_title": "Полный Запрос",
+	"$hyoo_search_app_Query_hint": "Поиск..",
+	"$hyoo_search_app_Settings_title": "Настройки",
 	"$mol_lights_toggle_hint": "Переключатель света",
 	"$mol_link_source_hint": "Исходные коды"
 }

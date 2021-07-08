@@ -2302,7 +2302,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $hyoo_search extends $mol_book2 {
+    class $hyoo_search_app extends $mol_book2 {
         plugins(): readonly any[];
         Placeholder(): any;
         pages(): readonly any[];
@@ -2469,9 +2469,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-}
-
-declare namespace $.$$ {
     interface GCS {
         execute: (query: string) => void;
     }
@@ -2621,18 +2618,50 @@ declare namespace $.$$ {
             visibleUrl: string;
         }>[];
     };
-    export class $hyoo_search extends $.$hyoo_search {
+    export class $hyoo_search_api extends $mol_object {
+        static backend(): GCS;
+        static future(query: string): {
+            done: (res: typeof Results.Value) => void;
+            fail: (err: Error) => void;
+            promise: Promise<readonly Readonly<{
+                content?: string | undefined;
+                contentNoFormatting?: string | undefined;
+                richSnippet?: Readonly<{
+                    metatags?: {
+                        [x: string]: string;
+                    } | undefined;
+                }> | undefined;
+                thumbnailImage?: Readonly<{
+                    url: string;
+                    height: string;
+                    width: string;
+                }> | undefined;
+                title: string;
+                titleNoFormatting: string;
+                url: string;
+                visibleUrl: string;
+            }>[]>;
+        };
+        static execute(query: string): typeof Results.Value;
+    }
+    export {};
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $hyoo_search_app extends $.$hyoo_search_app {
         autofocus(): null;
         auto(): void;
         query(next?: string): string;
-        query_google(query: string): string;
+        query_backend(): string;
         query_dump(): string;
         blacklist(next?: string): string;
         settings(next?: boolean): boolean;
         pages(): $mol_page[];
         title(): string;
-        google_api(next?: GCS): GCS | null;
-        results_raw(next?: typeof Results.Value): readonly Readonly<{
+        results_raw(): readonly Readonly<{
             content?: string | undefined;
             contentNoFormatting?: string | undefined;
             richSnippet?: Readonly<{
@@ -2663,7 +2692,6 @@ declare namespace $.$$ {
         searcher_link(id: string): string;
         searcher_hint(id: string): string;
     }
-    export {};
 }
 
 declare namespace $ {

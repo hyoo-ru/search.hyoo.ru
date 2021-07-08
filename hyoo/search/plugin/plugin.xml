@@ -6,10 +6,8 @@
 	<LongName>Search.HyOO.ru</LongName>
 	<Description>User-friendly web Search from $hyoo_team</Description>
 	<InputEncoding>UTF-8</InputEncoding>
-	<Image width="16" height="16" type="image/svg+xml">hyoo/search/search_logo.svg</Image>
-	<Url type="text/html" template="https://search.hyoo.ru/#!query={searchTerms}">
-		<!-- <Param name="xxx" value="{searchTerms}"/> -->
-	</Url>
+	<Image width="16" height="16" type="image/svg+xml">../../../hyoo/search/logo/logo.svg</Image>
+	<Url type="text/html" template="https://search.hyoo.ru/#!query={searchTerms}" />
 	<Query role="example" searchTerms="$mol" />
 	<Tags>example web</Tags>
 	<Contact>search@hyoo.ru</Contact>
