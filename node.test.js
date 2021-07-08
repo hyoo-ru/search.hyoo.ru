@@ -8078,18 +8078,19 @@ var $;
     class $hyoo_search_api extends $.$mol_object {
         static backend() {
             $.$mol_mem_persist();
-            let onDone;
-            window['__gcse'] = {
+            let done;
+            const promise = $.$mol_fiber.run(() => new Promise(d => done = d));
+            window['__gcse'] = $.$mol_fiber.run(() => ({
                 parsetags: 'explicit',
                 initializationCallback: () => {
-                    google.search.cse.element.render({
+                    const api = google.search.cse.element;
+                    const gname = this.toString();
+                    api.render({
                         div: $.$mol_jsx("div", null),
                         tag: 'search',
-                        gname: this.toString(),
+                        gname,
                     });
-                    $.$mol_fiber_defer(() => {
-                        onDone(google.search.cse.element.getElement(this.toString()));
-                    });
+                    done(api.getElement(gname));
                 },
                 searchCallbacks: {
                     web: {
@@ -8101,10 +8102,10 @@ var $;
                         },
                     },
                 },
-            };
+            }));
             const uri = 'https://cse.google.com/cse.js?cx=002821183079327163555:WMX276788641&';
             this.$.$mol_import.script(uri);
-            return $.$mol_fiber_sync(() => new Promise(done => onDone = done))();
+            return $.$mol_fiber_sync(() => promise)();
         }
         static future(query) {
             let done;
