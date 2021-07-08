@@ -1,6 +1,6 @@
 # $hyoo_search
 
-Best frontend for global search
+Best frontend for global web search
 
 # Key features
 
@@ -15,3 +15,4 @@ Best frontend for global search
 - Persistent domains blacklist
 - Results preview images
 - Direct links
+- Large result set (20 items)
