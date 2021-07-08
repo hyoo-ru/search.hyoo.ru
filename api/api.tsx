@@ -45,23 +45,27 @@ namespace $ {
 			
 			$mol_mem_persist()
 			
-			let onDone: ( gcs: GCS )=> void
+			let done: ( gcs: GCS )=> void
+			const promise = $mol_fiber.run(
+				()=> new Promise< GCS >( d => done = d )
+			)
 			
-			window['__gcse'] = {
+			window['__gcse'] = $mol_fiber.run( ()=> ({
 				
 				parsetags: 'explicit',
 				
 				initializationCallback: ()=> {
 					
-					google.search.cse.element.render({
+					const api = google.search.cse.element
+					const gname = this.toString()
+					
+					api.render({
 						div: <div></div>,
 						tag: 'search',
-						gname: this.toString(),
+						gname,
 					})
 					
-					new $mol_after_frame( ()=> {
-						onDone( google.search.cse.element.getElement( this.toString() ) )
-					} )
+					done( api.getElement( gname ) )
 					
 				},
 				
@@ -85,14 +89,12 @@ namespace $ {
 					},
 				},
 				
-			};
+			}) )
 			
 			const uri = 'https://cse.google.com/cse.js?cx=002821183079327163555:WMX276788641&'
 			this.$.$mol_import.script( uri )
 			
-			return $mol_fiber_sync(
-				()=> new Promise< GCS >( done => onDone = done )
-			)()
+			return $mol_fiber_sync( ()=> promise )()
 			
 		}
 		
