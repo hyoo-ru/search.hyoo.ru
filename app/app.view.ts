@@ -20,6 +20,7 @@ namespace $.$$ {
 		
 		query_google( query: string ) {
 			query = query.trim()
+			if( !query ) return ''
 			return `( "${ query }" OR (${ query }) ) ${ this.query_forbidden() }`
 		}
 		

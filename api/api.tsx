@@ -112,8 +112,13 @@ namespace $ {
 		
 		@ $mol_mem_key
 		static execute( query: string ): typeof Results.Value {
-			this.backend().execute( query )
+			
+			const backend = this.backend()
+			if( !query ) return []
+			
+			backend.execute( query )
 			return $mol_fiber_sync( ()=> this.future( query ).promise )()
+			
 		}
 		
 	}
