@@ -2316,14 +2316,17 @@ declare namespace $ {
             Yandex: string;
         };
         Searcher_link(id: any): $$.$mol_link_iconed;
-        Powered(): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
         query(val?: any): string;
         Query(): $mol_string_button;
         Settings_open_icon(): $mol_icon_settings;
         Settings_open(): $$.$mol_link;
         result_list(): readonly any[];
+        result_list_empty(): string;
+        Result_list_empty(): $mol_view;
         Result_list(): $$.$mol_list;
+        Attribution(): $mol_view;
+        Attribution_loader(): $mol_view;
         searcher_list(): readonly any[];
         Main(): $$.$mol_page;
         Sources(): $mol_link_source;

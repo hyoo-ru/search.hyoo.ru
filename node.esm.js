@@ -7484,12 +7484,6 @@ var $;
             obj.uri = () => this.searcher_link(id);
             return obj;
         }
-        Powered() {
-            const obj = new this.$.$mol_link_iconed();
-            obj.title = () => "Programmable Search Engine";
-            obj.uri = () => "https://programmablesearchengine.google.com/";
-            return obj;
-        }
         Theme() {
             const obj = new this.$.$mol_theme_auto();
             return obj;
@@ -7522,9 +7516,35 @@ var $;
         result_list() {
             return [];
         }
+        result_list_empty() {
+            return this.$.$mol_locale.text('$hyoo_search_app_result_list_empty');
+        }
+        Result_list_empty() {
+            const obj = new this.$.$mol_view();
+            obj.sub = () => [
+                this.result_list_empty()
+            ];
+            return obj;
+        }
         Result_list() {
             const obj = new this.$.$mol_list();
             obj.rows = () => this.result_list();
+            obj.Empty = () => this.Result_list_empty();
+            return obj;
+        }
+        Attribution() {
+            const obj = new this.$.$mol_view();
+            obj.dom_name = () => "div";
+            obj.minimal_height = () => 40;
+            return obj;
+        }
+        Attribution_loader() {
+            const obj = new this.$.$mol_view();
+            obj.dom_name = () => "script";
+            obj.attr = () => ({
+                src: "https://www.gstatic.com/prose/brand.js",
+                targetId: "$hyoo_search_app.Root(0).Attribution()"
+            });
             return obj;
         }
         searcher_list() {
@@ -7538,7 +7558,9 @@ var $;
                 this.Settings_open()
             ];
             obj.body = () => [
-                this.Result_list()
+                this.Result_list(),
+                this.Attribution(),
+                this.Attribution_loader()
             ];
             obj.foot = () => this.searcher_list();
             return obj;
@@ -7689,9 +7711,6 @@ var $;
     ], $hyoo_search_app.prototype, "Searcher_link", null);
     __decorate([
         $.$mol_mem
-    ], $hyoo_search_app.prototype, "Powered", null);
-    __decorate([
-        $.$mol_mem
     ], $hyoo_search_app.prototype, "Theme", null);
     __decorate([
         $.$mol_mem
@@ -7707,7 +7726,16 @@ var $;
     ], $hyoo_search_app.prototype, "Settings_open", null);
     __decorate([
         $.$mol_mem
+    ], $hyoo_search_app.prototype, "Result_list_empty", null);
+    __decorate([
+        $.$mol_mem
     ], $hyoo_search_app.prototype, "Result_list", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search_app.prototype, "Attribution", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search_app.prototype, "Attribution_loader", null);
     __decorate([
         $.$mol_mem
     ], $hyoo_search_app.prototype, "Main", null);
@@ -8148,7 +8176,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\t\n[hyoo_search_app_main_body] {\n\tpadding: 0;\n}\n\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tpadding: .75rem;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tmargin: .75rem;\n\tflex: none;\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_app_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_app_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n}\n\n[hyoo_search_app_result_host] {\n\tpadding: .5rem .75rem;\n\talign-self: center;\n}\n\n[hyoo_search_app_result_descr] {\n\tcolor: var(--mol_theme_text);\n\tmargin: var(--mol_gap_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n");
+    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 3rem;\n\theight: 3rem;\n\tflex: none;\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_app_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_app_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n}\n\n[hyoo_search_app_result_host] {\n\talign-self: center;\n}\n\n[hyoo_search_app_result_descr] {\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n}\n");
 })($ || ($ = {}));
 //app.view.css.js.map
 ;
@@ -8242,13 +8270,7 @@ var $;
                 }
             }
             searcher_list() {
-                const query = this.query();
-                if (query) {
-                    return Object.keys(this.searcher_data()).map(id => this.Searcher_link(id));
-                }
-                else {
-                    return [this.Powered()];
-                }
+                return Object.keys(this.searcher_data()).map(id => this.Searcher_link(id));
             }
             searcher_link(id) {
                 return this.searcher_data()[id] + encodeURIComponent(this.query());
