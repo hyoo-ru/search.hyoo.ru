@@ -7469,11 +7469,11 @@ var $;
         }
         searcher_data() {
             return {
+                "Wolfram|Alpha": "https://www.wolframalpha.com/input/?i=",
                 DuckDuckGo: "https://duckduckgo.com/?q=",
                 Yahoo: "https://search.yahoo.com/search?p=",
-                Google: "https://www.google.com/search?q=",
-                "Wolfram|Alpha": "https://www.wolframalpha.com/input/?i=",
                 Bing: "https://www.bing.com/search?q=",
+                Google: "https://www.google.com/search?q=",
                 Yandex: "https://yandex.ru/search/?text="
             };
         }
