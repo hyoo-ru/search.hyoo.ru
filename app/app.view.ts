@@ -121,7 +121,7 @@ namespace $.$$ {
 		
 		@ $mol_mem_key
 		searcher_link( id: string ) {
-			return this.searcher_data()[ id ] + encodeURIComponent( this.query() )
+			return this.searcher_data()[ id ] + encodeURIComponent( this.query_backend() )
 		}
 		
 		@ $mol_mem_key
