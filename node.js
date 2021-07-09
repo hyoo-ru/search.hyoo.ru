@@ -8202,7 +8202,7 @@ var $;
                 const query = this.query().trim();
                 if (!query)
                     return '';
-                return `( "${query}" OR (${query}) ) ${this.query_forbidden()}`;
+                return `"${query}" ${this.query_forbidden()}`;
             }
             query_dump() {
                 return this.query_backend()
