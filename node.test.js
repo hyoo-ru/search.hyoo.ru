@@ -8265,7 +8265,7 @@ var $;
                 return Object.keys(this.searcher_data()).map(id => this.Searcher_link(id));
             }
             searcher_link(id) {
-                return this.searcher_data()[id] + encodeURIComponent(this.query());
+                return this.searcher_data()[id] + encodeURIComponent(this.query_backend());
             }
             searcher_hint(id) {
                 return id;
