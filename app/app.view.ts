@@ -24,7 +24,7 @@ namespace $.$$ {
 			const query = this.query().trim()
 			if( !query ) return ''
 			
-			return `( "${ query }" OR (${ query }) ) ${ this.query_forbidden() }`
+			return `"${ query }" ${ this.query_forbidden() }`
 		}
 		
 		@ $mol_mem
