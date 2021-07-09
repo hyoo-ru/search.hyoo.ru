@@ -116,12 +116,7 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		searcher_list() {
-			const query = this.query()
-			if( query ) {
-				return Object.keys( this.searcher_data() ).map( id => this.Searcher_link( id ) )
-			} else {
-				return [ this.Powered() ]
-			}
+			return Object.keys( this.searcher_data() ).map( id => this.Searcher_link( id ) )
 		}
 		
 		@ $mol_mem_key

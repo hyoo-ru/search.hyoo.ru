@@ -6,22 +6,17 @@
 	flex: 0 0 25rem;
 }
 	
-[hyoo_search_app_main_body] {
-	padding: 0;
-}
-
 [hyoo_search_app_settings_body] {
 	padding: 0;
 }
 	
 [hyoo_search_app_result_item] {
-	padding: .75rem;
+	padding: var(--mol_gap_block);
 }
 
 [hyoo_search_app_result_image] {
-	width: 2.5rem;
-	height: 2.5rem;
-	margin: .75rem;
+	width: 3rem;
+	height: 3rem;
 	flex: none;
 }
 
@@ -36,16 +31,16 @@
 [hyoo_search_app_result_title] {
 	padding: 0 .75rem;
 	align-self: center;
+	color: var(--mol_theme_text);
+	text-shadow: 0 0;
 }
 
 [hyoo_search_app_result_host] {
-	padding: .5rem .75rem;
 	align-self: center;
 }
 
 [hyoo_search_app_result_descr] {
 	color: var(--mol_theme_text);
-	margin: var(--mol_gap_text);
 }
 
 [hyoo_search_app_main_foot] {
@@ -62,4 +57,16 @@
 
 [hyoo_search_app_result_descr_low] {
 	opacity: 1;
+}
+
+[hyoo_search_app_result_host_low] {
+	opacity: 1;
+}
+
+[hyoo_search_app_result_list_empty] {
+	padding: var(--mol_gap_text);
+}
+
+[hyoo_search_app_attribution] {
+	padding: var(--mol_gap_text);
 }

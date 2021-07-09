@@ -16,9 +16,17 @@ $hyoo_search_app $mol_book2
 			body /
 				<= Result_list $mol_list
 					rows <= result_list /
-					- Empty <= Result_list_empty $mol_row
+					Empty <= Result_list_empty $mol_view
 						sub /
-							<= result_list_empty @ \No result.
+							<= result_list_empty @ \No results
+				<= Attribution $mol_view
+					dom_name \div
+					minimal_height 40
+				<= Attribution_loader $mol_view
+					dom_name \script
+					attr *
+						src \https://www.gstatic.com/prose/brand.js
+						targetId \$hyoo_search_app.Root(0).Attribution()
 			foot <= searcher_list /
 		<= Settings $mol_page
 			title @ \Settings
@@ -73,7 +81,4 @@ $hyoo_search_app $mol_book2
 		title \
 		hint <= searcher_hint!id \
 		uri <= searcher_link!id \
-	Powered $mol_link_iconed
-		title \Programmable Search Engine
-		uri \https://programmablesearchengine.google.com/
 	
