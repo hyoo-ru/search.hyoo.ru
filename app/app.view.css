@@ -5,6 +5,10 @@
 [hyoo_search_app_settings] {
 	flex: 0 0 25rem;
 }
+
+[hyoo_search_app_main_body] {
+	flex: 0 1 auto;
+}
 	
 [hyoo_search_app_settings_body] {
 	padding: 0;
