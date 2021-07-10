@@ -27,7 +27,7 @@ $hyoo_search_app $mol_book2
 					attr *
 						src \https://www.gstatic.com/prose/brand.js
 						targetId \$hyoo_search_app.Root(0).Attribution()
-			foot <= searcher_list /
+			foot <= searcher_links /
 		<= Settings $mol_page
 			title @ \Settings
 			tools /
@@ -41,6 +41,14 @@ $hyoo_search_app $mol_book2
 			body /
 				<= Settings_fields $mol_list
 					rows /
+						<= Searchers_field $mol_form_field
+							name @ \Alternative Searcher Engines
+							control <= Searchers $mol_textarea
+								hint @ \Every search query prefix on new line
+								value?next <=> searchers?next \
+									\https://duckduckgo.com/?q=
+									\https://www.google.com/search?q=
+									\https://yandex.ru/search/?text=
 						<= Blacklist_field $mol_form_field
 							name @ \Domain Black List
 							control <= Blacklist $mol_textarea
@@ -79,6 +87,5 @@ $hyoo_search_app $mol_book2
 		Yandex \https://yandex.ru/search/?text=
 	Searcher_link!id $mol_link_iconed
 		title \
-		hint <= searcher_hint!id \
 		uri <= searcher_link!id \
 	

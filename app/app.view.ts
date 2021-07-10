@@ -39,6 +39,10 @@ namespace $.$$ {
 			return this.$.$mol_state_local.value( 'blacklist', next ) ?? super.blacklist()
 		}
 		
+		searchers( next?: string ) {
+			return this.$.$mol_state_local.value( 'searchers', next ) ?? super.searchers()
+		}
+		
 		@ $mol_mem
 		settings( next?: boolean ) {
 			const str = next == undefined ? undefined : String( next )
@@ -116,17 +120,17 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		searcher_list() {
-			return Object.keys( this.searcher_data() ).map( id => this.Searcher_link( id ) )
+			return this.searchers().split( '\n' ).filter( Boolean ).map( uri => uri.trim() )
+		}
+		
+		@ $mol_mem
+		searcher_links() {
+			return this.searcher_list().map( (_,i) => this.Searcher_link( i ) )
 		}
 		
 		@ $mol_mem_key
-		searcher_link( id: string ) {
-			return this.searcher_data()[ id ] + encodeURIComponent( this.query_backend() )
-		}
-		
-		@ $mol_mem_key
-		searcher_hint( id: string ) {
-			return id
+		searcher_link( index: number ) {
+			return this.searcher_list()[ index ] + encodeURIComponent( this.query_backend() )
 		}
 		
 	}
