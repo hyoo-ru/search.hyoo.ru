@@ -3,6 +3,7 @@
 	"$hyoo_search_app_Blacklist_hint": "Каждый домен на новой строке",
 	"$hyoo_search_app_Query_dump_field_title": "Полный Запрос",
 	"$hyoo_search_app_Query_hint": "Поиск..",
+	"$hyoo_search_app_Searchers_field_name": "Альтернативные Поисковики",
 	"$hyoo_search_app_Settings_title": "Настройки",
 	"$hyoo_search_app_result_list_empty": "Нет результатов",
 	"$mol_lights_toggle_hint": "Переключатель света",

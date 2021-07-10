@@ -7480,7 +7480,6 @@ var $;
         Searcher_link(id) {
             const obj = new this.$.$mol_link_iconed();
             obj.title = () => "";
-            obj.hint = () => this.searcher_hint(id);
             obj.uri = () => this.searcher_link(id);
             return obj;
         }
@@ -7547,7 +7546,7 @@ var $;
             });
             return obj;
         }
-        searcher_list() {
+        searcher_links() {
             return [];
         }
         Main() {
@@ -7562,7 +7561,7 @@ var $;
                 this.Attribution(),
                 this.Attribution_loader()
             ];
-            obj.foot = () => this.searcher_list();
+            obj.foot = () => this.searcher_links();
             return obj;
         }
         Sources() {
@@ -7586,6 +7585,23 @@ var $;
             obj.sub = () => [
                 this.Settings_close_icon()
             ];
+            return obj;
+        }
+        searchers(next) {
+            if (next !== undefined)
+                return next;
+            return "https://duckduckgo.com/?q=\nhttps://www.google.com/search?q=\nhttps://yandex.ru/search/?text=";
+        }
+        Searchers() {
+            const obj = new this.$.$mol_textarea();
+            obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Searchers_hint');
+            obj.value = (next) => this.searchers(next);
+            return obj;
+        }
+        Searchers_field() {
+            const obj = new this.$.$mol_form_field();
+            obj.name = () => this.$.$mol_locale.text('$hyoo_search_app_Searchers_field_name');
+            obj.control = () => this.Searchers();
             return obj;
         }
         blacklist(next) {
@@ -7622,6 +7638,7 @@ var $;
         Settings_fields() {
             const obj = new this.$.$mol_list();
             obj.rows = () => [
+                this.Searchers_field(),
                 this.Blacklist_field(),
                 this.Query_dump_field()
             ];
@@ -7696,9 +7713,6 @@ var $;
             ];
             return obj;
         }
-        searcher_hint(id) {
-            return "";
-        }
         searcher_link(id) {
             return "";
         }
@@ -7751,6 +7765,15 @@ var $;
     __decorate([
         $.$mol_mem
     ], $hyoo_search_app.prototype, "Settings_close", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search_app.prototype, "searchers", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search_app.prototype, "Searchers", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search_app.prototype, "Searchers_field", null);
     __decorate([
         $.$mol_mem
     ], $hyoo_search_app.prototype, "blacklist", null);
@@ -8213,6 +8236,9 @@ var $;
             blacklist(next) {
                 return this.$.$mol_state_local.value('blacklist', next) ?? super.blacklist();
             }
+            searchers(next) {
+                return this.$.$mol_state_local.value('searchers', next) ?? super.searchers();
+            }
             settings(next) {
                 const str = next == undefined ? undefined : String(next);
                 return this.$.$mol_state_arg.value('settings', str) !== null;
@@ -8270,13 +8296,13 @@ var $;
                 }
             }
             searcher_list() {
-                return Object.keys(this.searcher_data()).map(id => this.Searcher_link(id));
+                return this.searchers().split('\n').filter(Boolean).map(uri => uri.trim());
             }
-            searcher_link(id) {
-                return this.searcher_data()[id] + encodeURIComponent(this.query_backend());
+            searcher_links() {
+                return this.searcher_list().map((_, i) => this.Searcher_link(i));
             }
-            searcher_hint(id) {
-                return id;
+            searcher_link(index) {
+                return this.searcher_list()[index] + encodeURIComponent(this.query_backend());
             }
         }
         __decorate([
@@ -8316,11 +8342,11 @@ var $;
             $.$mol_mem
         ], $hyoo_search_app.prototype, "searcher_list", null);
         __decorate([
-            $.$mol_mem_key
-        ], $hyoo_search_app.prototype, "searcher_link", null);
+            $.$mol_mem
+        ], $hyoo_search_app.prototype, "searcher_links", null);
         __decorate([
             $.$mol_mem_key
-        ], $hyoo_search_app.prototype, "searcher_hint", null);
+        ], $hyoo_search_app.prototype, "searcher_link", null);
         $$.$hyoo_search_app = $hyoo_search_app;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));

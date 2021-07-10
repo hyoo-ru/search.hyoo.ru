@@ -2310,12 +2310,15 @@ declare namespace $ {
         Result_list(): $$.$mol_list;
         Attribution(): $mol_view;
         Attribution_loader(): $mol_view;
-        searcher_list(): readonly any[];
+        searcher_links(): readonly any[];
         Main(): $$.$mol_page;
         Sources(): $mol_link_source;
         Lights(): $$.$mol_lights_toggle;
         Settings_close_icon(): $mol_icon_close;
         Settings_close(): $$.$mol_link;
+        searchers(next?: any): string;
+        Searchers(): $$.$mol_textarea;
+        Searchers_field(): $mol_form_field;
         blacklist(next?: any): string;
         Blacklist(): $$.$mol_textarea;
         Blacklist_field(): $mol_form_field;
@@ -2335,7 +2338,6 @@ declare namespace $ {
         result_descr(index: any): string;
         Result_descr(index: any): $$.$mol_dimmer;
         Result_info(index: any): $$.$mol_list;
-        searcher_hint(id: any): string;
         searcher_link(id: any): string;
     }
 }
@@ -2644,6 +2646,7 @@ declare namespace $.$$ {
         query_backend(): string;
         query_dump(): string;
         blacklist(next?: string): string;
+        searchers(next?: string): string;
         settings(next?: boolean): boolean;
         pages(): $mol_page[];
         title(): string;
@@ -2674,9 +2677,9 @@ declare namespace $.$$ {
         result_host(index: number): string;
         result_uri(index: number): string;
         result_uri_view(index: number): string;
-        searcher_list(): $mol_link_iconed[];
-        searcher_link(id: string): string;
-        searcher_hint(id: string): string;
+        searcher_list(): string[];
+        searcher_links(): $mol_link_iconed[];
+        searcher_link(index: number): string;
     }
 }
 
