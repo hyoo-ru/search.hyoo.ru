@@ -130,7 +130,7 @@ namespace $.$$ {
 		
 		@ $mol_mem_key
 		searcher_link( index: number ) {
-			return this.searcher_list()[ index ] + encodeURIComponent( this.query_backend() )
+			return this.searcher_list()[ index ] + encodeURIComponent( this.query() )
 		}
 		
 	}
