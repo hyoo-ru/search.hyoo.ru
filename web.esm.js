@@ -8126,7 +8126,7 @@ var $;
                 return this.searcher_list().map((_, i) => this.Searcher_link(i));
             }
             searcher_link(index) {
-                return this.searcher_list()[index] + encodeURIComponent(this.query_backend());
+                return this.searcher_list()[index] + encodeURIComponent(this.query());
             }
         }
         __decorate([
