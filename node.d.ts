@@ -2431,9 +2431,12 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_data_optional<Sub extends $mol_data_value>(sub: Sub): ((val: Parameters<Sub>[0] | undefined) => ReturnType<Sub> | undefined) & {
-        config: Sub;
-        Value: ReturnType<Sub> | undefined;
+    function $mol_data_optional<Sub extends $mol_data_value, Fallback extends undefined | (() => ReturnType<Sub>)>(sub: Sub, fallback?: Fallback): ((val: Parameters<Sub>[0] | undefined) => ReturnType<Sub> | (Fallback extends undefined ? undefined : ReturnType<Extract<Fallback, () => any>>)) & {
+        config: {
+            sub: Sub;
+            fallback: Fallback | undefined;
+        };
+        Value: ReturnType<Sub> | (Fallback extends undefined ? undefined : ReturnType<Extract<Fallback, () => any>>);
     };
 }
 
@@ -2498,11 +2501,17 @@ declare namespace $ {
         }>) & {
             config: {
                 content: ((val: string | undefined) => string | undefined) & {
-                    config: (val: string) => string;
+                    config: {
+                        sub: (val: string) => string;
+                        fallback: (() => string) | undefined;
+                    };
                     Value: string | undefined;
                 };
                 contentNoFormatting: ((val: string | undefined) => string | undefined) & {
-                    config: (val: string) => string;
+                    config: {
+                        sub: (val: string) => string;
+                        fallback: (() => string) | undefined;
+                    };
                     Value: string | undefined;
                 };
                 richSnippet: ((val: unknown) => Readonly<{
@@ -2510,25 +2519,35 @@ declare namespace $ {
                         [x: string]: string;
                     } | undefined;
                 }> | undefined) & {
-                    config: ((val: unknown) => Readonly<{
-                        metatags?: {
-                            [x: string]: string;
-                        } | undefined;
-                    }>) & {
-                        config: {
-                            metatags: ((val: unknown) => Readonly<Record<string, string>> | undefined) & {
-                                config: ((val: unknown) => Readonly<Record<string, string>>) & {
-                                    config: (val: string) => string;
-                                    Value: Readonly<Record<string, string>>;
-                                };
-                                Value: Readonly<Record<string, string>> | undefined;
-                            };
-                        };
-                        Value: Readonly<{
+                    config: {
+                        sub: ((val: unknown) => Readonly<{
                             metatags?: {
                                 [x: string]: string;
                             } | undefined;
-                        }>;
+                        }>) & {
+                            config: {
+                                metatags: ((val: unknown) => Readonly<Record<string, string>> | undefined) & {
+                                    config: {
+                                        sub: ((val: unknown) => Readonly<Record<string, string>>) & {
+                                            config: (val: string) => string;
+                                            Value: Readonly<Record<string, string>>;
+                                        };
+                                        fallback: (() => Readonly<Record<string, string>>) | undefined;
+                                    };
+                                    Value: Readonly<Record<string, string>> | undefined;
+                                };
+                            };
+                            Value: Readonly<{
+                                metatags?: {
+                                    [x: string]: string;
+                                } | undefined;
+                            }>;
+                        };
+                        fallback: (() => Readonly<{
+                            metatags?: {
+                                [x: string]: string;
+                            } | undefined;
+                        }>) | undefined;
                     };
                     Value: Readonly<{
                         metatags?: {
@@ -2541,21 +2560,28 @@ declare namespace $ {
                     height: string;
                     width: string;
                 }> | undefined) & {
-                    config: ((val: unknown) => Readonly<{
-                        url: string;
-                        height: string;
-                        width: string;
-                    }>) & {
-                        config: {
-                            url: (val: string) => string;
-                            height: (val: string) => string;
-                            width: (val: string) => string;
-                        };
-                        Value: Readonly<{
+                    config: {
+                        sub: ((val: unknown) => Readonly<{
                             url: string;
                             height: string;
                             width: string;
-                        }>;
+                        }>) & {
+                            config: {
+                                url: (val: string) => string;
+                                height: (val: string) => string;
+                                width: (val: string) => string;
+                            };
+                            Value: Readonly<{
+                                url: string;
+                                height: string;
+                                width: string;
+                            }>;
+                        };
+                        fallback: (() => Readonly<{
+                            url: string;
+                            height: string;
+                            width: string;
+                        }>) | undefined;
                     };
                     Value: Readonly<{
                         url: string;

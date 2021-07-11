@@ -8012,12 +8012,13 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_data_optional(sub) {
+    function $mol_data_optional(sub, fallback) {
         return $.$mol_data_setup((val) => {
-            if (val === undefined)
-                return undefined;
+            if (val === undefined) {
+                return fallback?.();
+            }
             return sub(val);
-        }, sub);
+        }, { sub, fallback });
     }
     $.$mol_data_optional = $mol_data_optional;
 })($ || ($ = {}));
@@ -8191,7 +8192,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tpadding: .75rem .75rem 0;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 3rem;\n\theight: 3rem;\n\tflex: none;\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_app_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_app_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n}\n\n[hyoo_search_app_result_host] {\n\tpadding: .5rem 0;\n\talign-self: center;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: .5rem 0;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n}\n");
+    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tpadding: .75rem .75rem 0;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 3rem;\n\theight: 3rem;\n\tflex: none;\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_app_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_app_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n}\n\n[hyoo_search_app_result_host] {\n\tpadding: .5rem 0;\n\talign-self: center;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: .5rem 0;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n}\n");
 })($ || ($ = {}));
 //app.view.css.js.map
 ;
@@ -8217,7 +8218,7 @@ var $;
                 const query = this.query().trim();
                 if (!query)
                     return '';
-                return `"${query}" ${this.query_forbidden()}`;
+                return `${query} ${this.query_forbidden()}`;
             }
             query_dump() {
                 return this.query_backend()
@@ -11157,18 +11158,20 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    const Age = $.$mol_data_optional($.$mol_data_number);
+    const Age_or_zero = $.$mol_data_optional($.$mol_data_number, () => 0);
     $.$mol_test({
         'Is not present'() {
-            $.$mol_data_optional($.$mol_data_number)(undefined);
+            $.$mol_assert_equal(Age(undefined), undefined);
         },
         'Is present'() {
-            $.$mol_data_optional($.$mol_data_number)(0);
+            $.$mol_assert_equal(Age(0), 0);
+        },
+        'Fallbacked'() {
+            $.$mol_assert_equal(Age_or_zero(undefined), 0);
         },
         'Is null'() {
-            $.$mol_assert_fail(() => {
-                const Type = $.$mol_data_optional($.$mol_data_number);
-                Type(null);
-            }, 'null is not a number');
+            $.$mol_assert_fail(() => Age(null), 'null is not a number');
         },
     });
 })($ || ($ = {}));

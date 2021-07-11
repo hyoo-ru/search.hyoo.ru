@@ -2659,18 +2659,20 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    const Age = $.$mol_data_optional($.$mol_data_number);
+    const Age_or_zero = $.$mol_data_optional($.$mol_data_number, () => 0);
     $.$mol_test({
         'Is not present'() {
-            $.$mol_data_optional($.$mol_data_number)(undefined);
+            $.$mol_assert_equal(Age(undefined), undefined);
         },
         'Is present'() {
-            $.$mol_data_optional($.$mol_data_number)(0);
+            $.$mol_assert_equal(Age(0), 0);
+        },
+        'Fallbacked'() {
+            $.$mol_assert_equal(Age_or_zero(undefined), 0);
         },
         'Is null'() {
-            $.$mol_assert_fail(() => {
-                const Type = $.$mol_data_optional($.$mol_data_number);
-                Type(null);
-            }, 'null is not a number');
+            $.$mol_assert_fail(() => Age(null), 'null is not a number');
         },
     });
 })($ || ($ = {}));
