@@ -7,5 +7,5 @@
 	"$hyoo_search_app_Searchers_hint": "Каждый префикс на отдельной строке",
 	"$hyoo_search_app_Searchers_field_name": "Альтернативные Поисковики",
 	"$hyoo_search_app_Query_dump_field_title": "Полный Запрос",
-	"$hyoo_search_app_Result_ban_hint": "Ban site.."
+	"$hyoo_search_app_Result_ban_hint": "Забанить сайт.."
 }
