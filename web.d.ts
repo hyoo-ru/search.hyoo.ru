@@ -2325,6 +2325,7 @@ declare namespace $ {
         Result_list(): $$.$mol_list;
         Attribution(): $mol_view;
         Attribution_loader(): $mol_view;
+        main_content(): readonly any[];
         searcher_links(): readonly any[];
         Main(): $$.$mol_page;
         Sources(): $mol_link_source;
@@ -2691,6 +2692,7 @@ declare namespace $.$$ {
         settings(next?: boolean): boolean;
         pages(): $mol_page[];
         title(): string;
+        main_content(): readonly any[];
         results_raw(): readonly Readonly<{
             content?: string | undefined;
             contentNoFormatting?: string | undefined;

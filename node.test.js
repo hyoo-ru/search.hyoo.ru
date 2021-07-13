@@ -7552,6 +7552,13 @@ var $;
             });
             return obj;
         }
+        main_content() {
+            return [
+                this.Result_list(),
+                this.Attribution(),
+                this.Attribution_loader()
+            ];
+        }
         searcher_links() {
             return [];
         }
@@ -7562,11 +7569,7 @@ var $;
             obj.tools = () => [
                 this.Settings_open()
             ];
-            obj.body = () => [
-                this.Result_list(),
-                this.Attribution(),
-                this.Attribution_loader()
-            ];
+            obj.body = () => this.main_content();
             obj.foot = () => this.searcher_links();
             return obj;
         }
@@ -8259,6 +8262,11 @@ var $;
             title() {
                 return `${super.title()} | Search.HyOO.ru`;
             }
+            main_content() {
+                if (!this.query())
+                    return [];
+                return super.main_content();
+            }
             results_raw() {
                 return this.$.$hyoo_search_api.execute(this.query_backend());
             }
@@ -8330,6 +8338,9 @@ var $;
         __decorate([
             $.$mol_mem
         ], $hyoo_search_app.prototype, "pages", null);
+        __decorate([
+            $.$mol_mem
+        ], $hyoo_search_app.prototype, "main_content", null);
         __decorate([
             $.$mol_mem
         ], $hyoo_search_app.prototype, "results_raw", null);
