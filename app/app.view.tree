@@ -65,17 +65,26 @@ $hyoo_search_app $mol_book2
 		sub /
 			<= Result_info!index $mol_list
 				rows /
-					<= Result_main!index $mol_view
+					<= Result_head!index $mol_view
 						sub /
 							<= Result_image!index $mol_image
 								uri <= result_image!index \
 								title \
-							<= Result_title!index $mol_dimmer
-								haystack <= result_title!index \
-								needle <= query
-					<= Result_host!index $mol_dimmer
-						haystack <= result_uri_view!index \
-						needle <= query
+							<= Result_main!index $mol_list
+								rows /
+									<= Result_title!index $mol_dimmer
+										haystack <= result_title!index \
+										needle <= query
+									<= Result_host!index $mol_dimmer
+										haystack <= result_host!index \
+										needle <= query
+							<= Result_ban!index $mol_select
+								Trigger_icon <= Result_ban_icon!index $mol_icon_cross
+								hint @ \Ban site..
+								Filter null
+								align_hor \left
+								options <= result_ban_options!index /string
+								value?val <=> result_ban!index?val \
 					<= Result_descr!index $mol_dimmer
 						haystack <= result_descr!index \
 						needle <= query

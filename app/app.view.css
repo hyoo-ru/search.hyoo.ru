@@ -1,5 +1,5 @@
 [hyoo_search_app_main] {
-	flex: 1 0 40rem;
+	flex: 0 0 80rem;
 }
 	
 [hyoo_search_app_settings] {
@@ -16,38 +16,35 @@
 }
 	
 [hyoo_search_app_result_item] {
-	padding: .75rem .75rem 0;
-	margin: .75rem;
+	margin: var(--mol_gap_block);
+	padding: 0;
 }
 
 [hyoo_search_app_result_image] {
-	width: 3rem;
-	height: 3rem;
+	width: 2.5rem;
+	height: 2.5rem;
 	flex: none;
+	margin: var(--mol_gap_block);
 }
 
 [hyoo_search_app_result_info] {
 	flex: 1 1 auto;
+	padding-bottom: .5rem;
 }
 
 [hyoo_search_app_result_main] {
-	flex-wrap: nowrap;
+	flex: 1 1 auto;
+	padding: .5rem 0;
 }
 
 [hyoo_search_app_result_title] {
-	padding: 0 .75rem;
-	align-self: center;
 	color: var(--mol_theme_text);
 	text-shadow: 0 0;
-}
-
-[hyoo_search_app_result_host] {
-	padding: .5rem 0;
-	align-self: center;
+	flex: 1 1 20rem;
 }
 
 [hyoo_search_app_result_descr] {
-	padding: .5rem 0;
+	padding: 0 .75rem;
 	color: var(--mol_theme_text);
 }
 
@@ -79,4 +76,8 @@
 [hyoo_search_app_attribution] {
 	padding: var(--mol_gap_text);
 	margin: var(--mol_gap_block);
+}
+
+[hyoo_search_app_result_ban_option_label] {
+	text-align: right;
 }

@@ -109,6 +109,17 @@ namespace $.$$ {
 			return this.results_raw()[ index ].visibleUrl ?? ''
 		}
 		
+		@ $mol_mem
+		result_ban_options( index: number ) {
+			const names = this.result_host( index ).split('.')
+			return names.slice( 0, -1 ).map( ( _, i )=> names.slice(i).join('.') )
+		}
+		
+		result_ban( index: number, host?: string ) {
+			if( host ) this.blacklist( this.blacklist() + '\n' + host )
+			return ''
+		}
+		
 		@ $mol_mem_key
 		result_uri( index: number ) {
 			return new URL( this.results_raw()[ index ].url ).searchParams.get( 'q' )!
