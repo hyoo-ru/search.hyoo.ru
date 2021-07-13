@@ -7596,7 +7596,7 @@ var $;
         searchers(next) {
             if (next !== undefined)
                 return next;
-            return "https://duckduckgo.com/?q=\nhttps://www.google.com/search?q=\nhttps://yandex.ru/search/?text=\nhttps://searx.tuxcloud.net/search?q=";
+            return "https://www.google.com/search?q=\nhttps://yandex.ru/search/?text=\nhttps://duckduckgo.com/?q=\nhttps://searx.tuxcloud.net/search?q=";
         }
         Searchers() {
             const obj = new this.$.$mol_textarea();
@@ -8206,7 +8206,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tpadding: .75rem .75rem 0;\n\tmargin: .75rem;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 3rem;\n\theight: 3rem;\n\tflex: none;\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_app_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_app_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n}\n\n[hyoo_search_app_result_host] {\n\tpadding: .5rem 0;\n\talign-self: center;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: .5rem 0;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n");
+    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tpadding: .75rem .75rem 0;\n\tmargin: .75rem;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 3rem;\n\theight: 3rem;\n\tflex: none;\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n}\n\n[hyoo_search_app_result_main] {\n\tflex-wrap: nowrap;\n}\n\n[hyoo_search_app_result_title] {\n\tpadding: 0 .75rem;\n\talign-self: center;\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n}\n\n[hyoo_search_app_result_host] {\n\tpadding: .5rem 0;\n\talign-self: center;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: .5rem 0;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n");
 })($ || ($ = {}));
 //app.view.css.js.map
 ;
