@@ -13,7 +13,7 @@ $hyoo_search_app $mol_book2
 					arg * settings \
 					sub /
 						<= Settings_open_icon $mol_icon_settings
-			body /
+			body <= main_content /
 				<= Result_list $mol_list
 					rows <= result_list /
 					Empty <= Result_list_empty $mol_view

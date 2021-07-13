@@ -62,6 +62,12 @@ namespace $.$$ {
 		}
 		
 		@ $mol_mem
+		main_content() {
+			if( !this.query() ) return []
+			return super.main_content()
+		}
+		
+		@ $mol_mem
 		results_raw() {
 			return this.$.$hyoo_search_api.execute( this.query_backend() )
 		}
