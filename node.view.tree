@@ -440,6 +440,91 @@ $mol_form_field $mol_labeler
 			sub / <= bid \
 	Content <= control null
 
+$mol_icon_cross $mol_icon path \M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z
+
+$mol_pop $mol_view
+	event * keydown?event <=> keydown?event null
+	showed?val false
+	align_vert \
+	align_hor \
+	sub /
+		<= Anchor null
+		<= Bubble $mol_pop_bubble
+			align <= align \bottom_center
+			content <= bubble_content /$mol_view_content
+			height_max <= height_max 9999
+
+$mol_pop_bubble $mol_scroll
+	sub <= content /$mol_view_content
+	style *
+		^
+		maxHeight <= height_max 9999
+	attr *
+		^
+		mol_pop_align <= align \
+		tabindex 0
+
+$mol_pick $mol_pop
+	Anchor <= Trigger $mol_check
+		enabled <= trigger_enabled true
+		checked?event <=> showed?event
+		sub <= trigger_content /$mol_view_content
+		hint <= hint \
+
+$mol_icon_dots_vertical $mol_icon path \M12,16C13.1,16 14,16.9 14,18C14,19.1 13.1,20 12,20C10.9,20 10,19.1 10,18C10,16.9 10.9,16 12,16M12,10C13.1,10 14,10.9 14,12C14,13.1 13.1,14 12,14C10.9,14 10,13.1 10,12C10,10.9 10.9,10 12,10M12,4C13.1,4 14,4.9 14,6C14,7.1 13.1,8 12,8C10.9,8 10,7.1 10,6C10,4.9 10.9,4 12,4Z
+
+$mol_nav $mol_plugin
+	cycle?val false
+	-
+	mod_ctrl false
+	mod_shift false
+	mod_alt false
+	-
+	keys_x?val /
+	keys_y?val /
+	-
+	current_x?val null
+	current_y?val null
+	-
+	event_up?event null
+	event_down?event null
+	event_left?event null
+	event_right?event null
+	event *
+		^
+		keydown?event <=> event_key?event null
+
+$mol_select $mol_pick
+	dictionary?val *
+	options /string
+	value?val \
+	Option_row!id $mol_button_minor
+		event_click?event <=> event_select!id?event null
+		sub <= option_content!id /
+			<= Option_label!id $mol_dimmer
+				haystack <= option_label!id \
+				needle <= filter_pattern?val \
+	No_options $mol_view
+		sub /
+			<= no_options_message @ \No options
+	plugins /
+		^
+		<= Nav $mol_nav
+			keys_y <= nav_components /$mol_view
+			current_y?component <=> option_focused?component null
+			cycle?val <=> nav_cycle?val true
+	hint @ \Pick..
+	bubble_content /
+		<= Filter
+		<= Menu $mol_list
+			rows <= menu_content /$mol_view
+	Filter $mol_string
+		value?val <=> filter_pattern?val \
+		hint @ \Filter..
+		submit?event <=> submit?event null
+		enabled <= enabled true
+	Trigger_icon $mol_icon_dots_vertical
+
 $hyoo_search_app $mol_book2
 	plugins /
 		<= Theme $mol_theme_auto
@@ -507,17 +592,26 @@ $hyoo_search_app $mol_book2
 		sub /
 			<= Result_info!index $mol_list
 				rows /
-					<= Result_main!index $mol_view
+					<= Result_head!index $mol_view
 						sub /
 							<= Result_image!index $mol_image
 								uri <= result_image!index \
 								title \
-							<= Result_title!index $mol_dimmer
-								haystack <= result_title!index \
-								needle <= query
-					<= Result_host!index $mol_dimmer
-						haystack <= result_uri_view!index \
-						needle <= query
+							<= Result_main!index $mol_list
+								rows /
+									<= Result_title!index $mol_dimmer
+										haystack <= result_title!index \
+										needle <= query
+									<= Result_host!index $mol_dimmer
+										haystack <= result_host!index \
+										needle <= query
+							<= Result_ban!index $mol_select
+								Trigger_icon <= Result_ban_icon!index $mol_icon_cross
+								hint @ \Ban site..
+								Filter null
+								align_hor \left
+								options <= result_ban_options!index /string
+								value?val <=> result_ban!index?val \
 					<= Result_descr!index $mol_dimmer
 						haystack <= result_descr!index \
 						needle <= query
