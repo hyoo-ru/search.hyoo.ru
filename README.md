@@ -16,3 +16,22 @@ Best frontend for global web search
 - Results preview images
 - Direct links
 - Large result set (20 items)
+
+# How to set as default in the browser
+
+## Chrome
+
+- Right click on url-bar.
+- Click to "Manage Search Engines".
+- Click to "Add new one".
+- Fill URL field with `https://search.hyoo.ru/?#!query=%s` and other as you wish.
+- Submit form.
+- Find added engine in list and open menu at right side.
+- Click to "Set as default".
+
+## Firefox
+
+- Click to url-bar.
+- Click to "Add $hyoo_search".
+- Click to "Change search settings at right side".
+- Find default search select and change it.
