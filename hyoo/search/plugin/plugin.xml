@@ -10,7 +10,6 @@
 	<Url type="text/html" template="https://search.hyoo.ru/#!query={searchTerms}" />
 	<Url type="application/x-suggestions+json" template="https://suggest.yandex.ru/suggest-ff.cgi?part={searchTerms}"/>
 	<Query role="example" searchTerms="$mol" />
-	<Tags>example web</Tags>
 	<Contact>search@hyoo.ru</Contact>
 	<Developer>$hyoo_team</Developer>
 </OpenSearchDescription>
