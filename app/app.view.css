@@ -21,8 +21,8 @@
 }
 
 [hyoo_search_app_result_image] {
-	width: 2.5rem;
-	height: 2.5rem;
+	width: 2.75rem;
+	height: 2.75rem;
 	flex: none;
 	margin: var(--mol_gap_block);
 }
