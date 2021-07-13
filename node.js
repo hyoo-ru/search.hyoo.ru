@@ -7491,16 +7491,6 @@ var $;
             ];
             return obj;
         }
-        searcher_data() {
-            return {
-                "Wolfram|Alpha": "https://www.wolframalpha.com/input/?i=",
-                DuckDuckGo: "https://duckduckgo.com/?q=",
-                Yahoo: "https://search.yahoo.com/search?p=",
-                Bing: "https://www.bing.com/search?q=",
-                Google: "https://www.google.com/search?q=",
-                Yandex: "https://yandex.ru/search/?text="
-            };
-        }
         Searcher_link(id) {
             const obj = new this.$.$mol_link_iconed();
             obj.title = () => "";
@@ -7614,7 +7604,7 @@ var $;
         searchers(next) {
             if (next !== undefined)
                 return next;
-            return "https://duckduckgo.com/?q=\nhttps://www.google.com/search?q=\nhttps://yandex.ru/search/?text=";
+            return "https://duckduckgo.com/?q=\nhttps://www.google.com/search?q=\nhttps://yandex.ru/search/?text=\nhttps://searx.tuxcloud.net/search?q=";
         }
         Searchers() {
             const obj = new this.$.$mol_textarea();

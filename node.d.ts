@@ -2296,14 +2296,6 @@ declare namespace $ {
         Placeholder(): any;
         pages(): readonly any[];
         Result_item(index: any): $$.$mol_link;
-        searcher_data(): {
-            "Wolfram|Alpha": string;
-            DuckDuckGo: string;
-            Yahoo: string;
-            Bing: string;
-            Google: string;
-            Yandex: string;
-        };
         Searcher_link(id: any): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
         query(val?: any): string;
