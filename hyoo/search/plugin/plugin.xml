@@ -7,7 +7,7 @@
 	<Description>User-friendly web Search from $hyoo_team</Description>
 	<InputEncoding>UTF-8</InputEncoding>
 	<Image width="16" height="16" type="image/svg+xml">../../../hyoo/search/logo/logo.svg</Image>
-	<Url type="text/html" template="https://search.hyoo.ru/#!query={searchTerms}" />
+	<Url type="text/html" template="https://search.hyoo.ru/?#!query={searchTerms}" />
 	<Url type="application/x-suggestions+json" template="https://suggest.yandex.ru/suggest-ff.cgi?part={searchTerms}"/>
 	<Query role="example" searchTerms="$mol" />
 	<Contact>search@hyoo.ru</Contact>
