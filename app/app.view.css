@@ -73,6 +73,7 @@
 
 [hyoo_search_app_result_list_empty] {
 	padding: var(--mol_gap_text);
+	margin: var(--mol_gap_block);
 }
 
 [hyoo_search_app_attribution] {
