@@ -10,6 +10,8 @@
 	"$hyoo_search_app_result_list_empty": "No results",
 	"$mol_lights_toggle_hint": "Toggle lights",
 	"$mol_link_source_hint": "Source code",
+	"$mol_search_Clear_hint": "Clear",
+	"$mol_search_hint": "Search...",
 	"$mol_select_Filter_hint": "Filter..",
 	"$mol_select_hint": "Pick..",
 	"$mol_select_no_options_message": "No options"
