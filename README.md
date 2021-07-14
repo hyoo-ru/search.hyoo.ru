@@ -24,7 +24,7 @@ Best frontend for global web search
 - Right click on url-bar.
 - Click to "Manage Search Engines".
 - Click to "Add new one".
-- Fill URL field with `https://search.hyoo.ru/?#!query=%s` and other as you wish.
+- Fill URL field with `https://search.hyoo.ru/#!query=%s` and other as you wish.
 - Submit form.
 - Find added engine in list and open menu at right side.
 - Click to "Set as default".
