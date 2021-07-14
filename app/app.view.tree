@@ -5,7 +5,7 @@ $hyoo_search_app $mol_book2
 	pages /
 		<= Main $mol_page
 			title <= query
-			Title <= Query $mol_string_button
+			Title <= Query $mol_string
 				hint @ \Search..
 				value?val <=> query?val \
 			tools /
