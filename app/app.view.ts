@@ -2,6 +2,17 @@ namespace $.$$ {
 	
 	export class $hyoo_search_app extends $.$hyoo_search_app {
 		
+		@ $mol_memo.field
+		get $() {
+			const Base = super.$.$mol_state_arg
+			return super.$.$mol_ambient({
+				$mol_state_arg: class extends Base {
+					static separator = ';'
+					static href = Base.href.bind( Base )
+				}
+			})
+		}
+		
 		@ $mol_mem
 		autofocus() {
 			if( this.query() ) return null
