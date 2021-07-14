@@ -1289,15 +1289,6 @@ declare namespace $.$$ {
     }
 }
 
-declare namespace $ {
-    class $mol_string_button extends $mol_string {
-        hint(): string;
-    }
-}
-
-declare namespace $ {
-}
-
 declare var $node: any;
 
 declare namespace $ {
@@ -2472,7 +2463,7 @@ declare namespace $ {
         Searcher_link(id: any): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
         query(val?: any): string;
-        Query(): $mol_string_button;
+        Query(): $$.$mol_string;
         Settings_open_icon(): $mol_icon_settings;
         Settings_open(): $$.$mol_link;
         result_list(): readonly any[];

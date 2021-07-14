@@ -1305,15 +1305,6 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    class $mol_string_button extends $mol_string {
-        hint(): string;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
     type $mol_charset_encoding = 'utf8' | 'ibm866' | 'iso-8859-2' | 'iso-8859-3' | 'iso-8859-4' | 'iso-8859-5' | 'iso-8859-6' | 'iso-8859-7' | 'iso-8859-8' | 'iso-8859-8i' | 'iso-8859-10' | 'iso-8859-13' | 'iso-8859-14' | 'iso-8859-15' | 'iso-8859-16' | 'koi8-r' | 'koi8-u' | 'koi8-r' | 'macintosh' | 'windows-874' | 'windows-1250' | 'windows-1251' | 'windows-1252' | 'windows-1253' | 'windows-1254' | 'windows-1255' | 'windows-1256' | 'windows-1257' | 'windows-1258' | 'x-mac-cyrillic' | 'gbk' | 'gb18030' | 'hz-gb-2312' | 'big5' | 'euc-jp' | 'iso-2022-jp' | 'shift-jis' | 'euc-kr' | 'iso-2022-kr';
     function $mol_charset_decode(value: Uint8Array, code?: $mol_charset_encoding): string;
 }
@@ -2455,7 +2446,7 @@ declare namespace $ {
         Searcher_link(id: any): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
         query(val?: any): string;
-        Query(): $mol_string_button;
+        Query(): $$.$mol_string;
         Settings_open_icon(): $mol_icon_settings;
         Settings_open(): $$.$mol_link;
         result_list(): readonly any[];

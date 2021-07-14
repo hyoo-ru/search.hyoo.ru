@@ -71,7 +71,7 @@ $mol_string $mol_view
 		^
 		disabled <= disabled false
 		value <= value_changed?val <=> value?val \
-		placeholder <= hint \
+		placeholder <= hint \ 
 		spellcheck <= spellcheck false
 		autocomplete <= autocomplete_native \
 		selectionEnd <= selection_end 0
@@ -87,9 +87,6 @@ $mol_string $mol_view
 	plugins /
 		<= Submit $mol_hotkey
 			key * enter?event <=> submit?event null
-
-$mol_string_button $mol_string
-	hint \ 
 
 $mol_svg $mol_view
 	dom_name \svg
@@ -532,7 +529,7 @@ $hyoo_search_app $mol_book2
 	pages /
 		<= Main $mol_page
 			title <= query
-			Title <= Query $mol_string_button
+			Title <= Query $mol_string
 				hint @ \Search..
 				value?val <=> query?val \
 			tools /
