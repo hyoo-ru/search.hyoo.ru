@@ -39,7 +39,41 @@ namespace $.$$ {
 			const query = this.query().trim()
 			if( !query ) return ''
 			
-			return `${ query } ${ this.query_forbidden() }`
+			return [
+				this.query_where(),
+				this.exact() ? `"${query}"` : query,
+				this.query_type(),
+				this.query_forbidden(),
+			].join(' ')
+			
+		}
+		
+		@ $mol_mem
+		query_forbidden() {
+			return this.blacklist()
+				.split( $mol_regexp.line_end )
+				.map( domain => domain.trim() )
+				.filter( Boolean )
+				.map( domain => '-site:' + domain )
+				.join( ' ' )
+		}
+		
+		@ $mol_mem
+		query_type() {
+			
+			const type = this.type()
+			if( type === 'WWW' ) return ''
+			
+			return `filetype:${type}`
+		}
+		
+		@ $mol_mem
+		query_where() {
+			
+			const where = this.where()
+			if( where === 'anywhere' ) return ''
+			
+			return `${where}:`
 		}
 		
 		@ $mol_mem
@@ -88,16 +122,6 @@ namespace $.$$ {
 		}
 		
 		@ $mol_mem
-		query_forbidden() {
-			return this.blacklist()
-				.split( $mol_regexp.line_end )
-				.map( domain => domain.trim() )
-				.filter( Boolean )
-				.map( domain => '-site:' + domain )
-				.join( ' ' )
-		}
-		
-		@ $mol_mem
 		result_list() {
 			return this.results_raw().map( (_,i)=> this.Result_item(i) )
 		}
@@ -122,6 +146,12 @@ namespace $.$$ {
 		
 		result_host( index: number ) {
 			return this.results_raw()[ index ].visibleUrl ?? ''
+		}
+
+		@ $mol_mem_key
+		result_cache( index: number ) {
+			return 'https://www.google.com/search?q='
+				+ encodeURIComponent( 'cache:' + this.result_uri( index ) )
 		}
 		
 		@ $mol_mem

@@ -9,6 +9,30 @@ $hyoo_search_app $mol_book2
 				hint @ \Search..
 				query?val <=> query?val \
 			tools /
+				<= Exact $mol_check_icon
+					checked?val <=> exact?val false
+					Icon <= Exact_icon $mol_icon_bullseye_arrow
+					hint @ \Exact Match
+				<= Where $mol_select
+					value?next <=> where?next \anywhere
+					Filter null
+					dictionary *
+						anywhere @ \Anywhere
+						allintitle @ \In Title
+						allintext @ \In Text
+						allinurl @ \In Url
+						allinanchor @ \In Anchor
+				<= Type $mol_select
+					value?next <=> type?next \WWW
+					Filter null
+					options /
+						\WWW
+						\PDF
+						\RTF
+						\TXT
+						\XLS
+						\PPT
+						\DOC
 				<= Settings_open $mol_link
 					arg * settings \
 					sub /
@@ -78,16 +102,23 @@ $hyoo_search_app $mol_book2
 									<= Result_host!index $mol_dimmer
 										haystack <= result_host!index \
 										needle <= query
-							<= Result_ban!index $mol_select
-								Trigger_icon <= Result_ban_icon!index $mol_icon_cross
-								hint @ \Ban site..
-								Filter null
-								align_hor \left
-								options <= result_ban_options!index /string
-								value?val <=> result_ban!index?val \
 					<= Result_descr!index $mol_dimmer
 						haystack <= result_descr!index \
 						needle <= query
+			<= Result_tools!index $mol_list
+				rows /
+					<= Result_ban!index $mol_select
+						Trigger_icon <= Result_ban_icon!index $mol_icon_cross
+						hint @ \Ban site..
+						Filter null
+						align_hor \left
+						options <= result_ban_options!index /string
+						value?val <=> result_ban!index?val \
+					<= Result_cache!index $mol_link
+						uri <= result_cache!index \
+						hint @ \Open cached
+						sub /
+							<= Result_cache_icon!index $mol_icon_backup_restore
 	Searcher_link!id $mol_link_iconed
 		title \
 		uri <= searcher_link!id \
