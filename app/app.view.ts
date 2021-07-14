@@ -28,9 +28,22 @@ namespace $.$$ {
 			this.autofocus()
 		}
 		
-		@ $mol_mem
 		query( next?: string ) {
 			return this.$.$mol_state_arg.value( 'query', next ) ?? ''
+		}
+		
+		type( next?: string ) {
+			return this.$.$mol_state_arg.value( 'type', next ) ?? 'WWW'
+		}
+		
+		where( next?: string ) {
+			return this.$.$mol_state_arg.value( 'where', next ) ?? 'anywhere'
+		}
+		
+		@ $mol_mem
+		exact( next?: boolean ) {
+			const arg = next === undefined ? undefined : next ? '' : null
+			return this.$.$mol_state_arg.value( 'exact', arg ) !== null
 		}
 		
 		@ $mol_mem
