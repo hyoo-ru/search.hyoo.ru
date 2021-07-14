@@ -2915,6 +2915,9 @@ declare namespace $.$$ {
         autofocus(): null;
         auto(): void;
         query(next?: string): string;
+        type(next?: string): string;
+        where(next?: string): string;
+        exact(next?: boolean): boolean;
         query_backend(): string;
         query_forbidden(): string;
         query_type(): string;

@@ -9229,6 +9229,16 @@ var $;
             query(next) {
                 return this.$.$mol_state_arg.value('query', next) ?? '';
             }
+            type(next) {
+                return this.$.$mol_state_arg.value('type', next) ?? 'WWW';
+            }
+            where(next) {
+                return this.$.$mol_state_arg.value('where', next) ?? 'anywhere';
+            }
+            exact(next) {
+                const arg = next === undefined ? undefined : next ? '' : null;
+                return this.$.$mol_state_arg.value('exact', arg) !== null;
+            }
             query_backend() {
                 const query = this.query().trim();
                 if (!query)
@@ -9356,7 +9366,7 @@ var $;
         ], $hyoo_search_app.prototype, "autofocus", null);
         __decorate([
             $.$mol_mem
-        ], $hyoo_search_app.prototype, "query", null);
+        ], $hyoo_search_app.prototype, "exact", null);
         __decorate([
             $.$mol_mem
         ], $hyoo_search_app.prototype, "query_backend", null);
