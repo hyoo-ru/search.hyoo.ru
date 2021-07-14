@@ -2843,6 +2843,7 @@ declare namespace $ {
 
 declare namespace $.$$ {
     class $hyoo_search_app extends $.$hyoo_search_app {
+        get $(): typeof $$;
         autofocus(): null;
         auto(): void;
         query(next?: string): string;

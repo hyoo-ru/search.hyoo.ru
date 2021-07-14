@@ -8986,6 +8986,17 @@ var $;
     var $$;
     (function ($$) {
         class $hyoo_search_app extends $.$hyoo_search_app {
+            get $() {
+                var _a;
+                const Base = super.$.$mol_state_arg;
+                return super.$.$mol_ambient({
+                    $mol_state_arg: (_a = class extends Base {
+                        },
+                        _a.separator = ';',
+                        _a.href = Base.href.bind(Base),
+                        _a)
+                });
+            }
             autofocus() {
                 if (this.query())
                     return null;
@@ -9096,6 +9107,9 @@ var $;
                 return this.searcher_list()[index] + encodeURIComponent(this.query());
             }
         }
+        __decorate([
+            $.$mol_memo.field
+        ], $hyoo_search_app.prototype, "$", null);
         __decorate([
             $.$mol_mem
         ], $hyoo_search_app.prototype, "autofocus", null);
