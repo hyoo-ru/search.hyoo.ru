@@ -16,7 +16,11 @@ namespace $.$$ {
 		@ $mol_mem
 		autofocus() {
 			if( this.query() ) return null
-			this.Query().focused( true )
+			
+			$mol_fiber_defer( ()=> {
+				this.Query().Query().focused( true )
+			} )
+			
 			return null
 		}
 		

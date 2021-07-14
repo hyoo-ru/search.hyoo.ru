@@ -5,9 +5,9 @@ $hyoo_search_app $mol_book2
 	pages /
 		<= Main $mol_page
 			title <= query
-			Title <= Query $mol_string
+			Title <= Query $mol_search
 				hint @ \Search..
-				value?val <=> query?val \
+				query?val <=> query?val \
 			tools /
 				<= Settings_open $mol_link
 					arg * settings \
