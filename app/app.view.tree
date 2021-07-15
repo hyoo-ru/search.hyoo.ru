@@ -13,6 +13,12 @@ $hyoo_search_app $mol_book2
 					checked?val <=> exact?val false
 					Icon <= Exact_icon $mol_icon_bullseye_arrow
 					hint @ \Exact Match
+				<= Exclude $mol_select_list
+					value?val <=> exclude?val /string
+					options <= exclude_options /string
+					badge_title!index <= exclude_badge_title!index \
+					pick_hint @ \Exclude words..
+					Pick_icon <= Exclude_icon $mol_icon_playlist_remove
 				<= Where $mol_select
 					value?next <=> where?next \anywhere
 					Filter null
