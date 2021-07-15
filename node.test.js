@@ -6202,6 +6202,18 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_icon_playlist_remove extends $.$mol_icon {
+        path() {
+            return "M2,6V8H14V6H2M2,10V12H11V10H2M14.17,10.76L12.76,12.17L15.59,15L12.76,17.83L14.17,19.24L17,16.41L19.83,19.24L21.24,17.83L18.41,15L21.24,12.17L19.83,10.76L17,13.59L14.17,10.76M2,14V16H11V14H2Z";
+        }
+    }
+    $.$mol_icon_playlist_remove = $mol_icon_playlist_remove;
+})($ || ($ = {}));
+//remove.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_pick extends $.$mol_pop {
         Anchor() {
             return this.Trigger();
@@ -6526,6 +6538,191 @@ var $;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 //select.view.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon_plus extends $.$mol_icon {
+        path() {
+            return "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z";
+        }
+    }
+    $.$mol_icon_plus = $mol_icon_plus;
+})($ || ($ = {}));
+//plus.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_select_list extends $.$mol_view {
+        value(val) {
+            if (val !== undefined)
+                return val;
+            return [];
+        }
+        dictionary() {
+            return {};
+        }
+        Badge(index) {
+            const obj = new this.$.$mol_button_minor();
+            obj.title = () => this.badge_title(index);
+            obj.click = (event) => this.remove(index, event);
+            obj.hint = () => this.badge_hint();
+            obj.enabled = () => this.enabled();
+            return obj;
+        }
+        Pick() {
+            const obj = new this.$.$mol_select();
+            obj.options = () => this.options_pickable();
+            obj.value = (val) => this.pick(val);
+            obj.option_label = (key) => this.option_title(key);
+            obj.hint = () => this.pick_hint();
+            obj.Trigger_icon = () => this.Pick_icon();
+            return obj;
+        }
+        badge_title(index) {
+            return "badge";
+        }
+        remove(index, event) {
+            if (event !== undefined)
+                return event;
+            return null;
+        }
+        badge_hint() {
+            return this.$.$mol_locale.text('$mol_select_list_badge_hint');
+        }
+        enabled() {
+            return true;
+        }
+        options() {
+            return [];
+        }
+        options_pickable() {
+            return this.options();
+        }
+        pick(val) {
+            if (val !== undefined)
+                return val;
+            return "";
+        }
+        option_title(key) {
+            return "";
+        }
+        pick_hint() {
+            return this.$.$mol_locale.text('$mol_select_list_pick_hint');
+        }
+        Pick_icon() {
+            const obj = new this.$.$mol_icon_plus();
+            return obj;
+        }
+    }
+    __decorate([
+        $.$mol_mem
+    ], $mol_select_list.prototype, "value", null);
+    __decorate([
+        $.$mol_mem_key
+    ], $mol_select_list.prototype, "Badge", null);
+    __decorate([
+        $.$mol_mem
+    ], $mol_select_list.prototype, "Pick", null);
+    __decorate([
+        $.$mol_mem_key
+    ], $mol_select_list.prototype, "remove", null);
+    __decorate([
+        $.$mol_mem
+    ], $mol_select_list.prototype, "pick", null);
+    __decorate([
+        $.$mol_mem
+    ], $mol_select_list.prototype, "Pick_icon", null);
+    $.$mol_select_list = $mol_select_list;
+})($ || ($ = {}));
+//list.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        const { rem } = $.$mol_style_unit;
+        $.$mol_style_define($$.$mol_select_list, {
+            flex: {
+                wrap: 'wrap',
+                shrink: 1,
+                grow: 1,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//list.view.css.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_select_list extends $.$mol_select_list {
+            value(val) {
+                return super.value(val);
+            }
+            pick(key) {
+                if (!key)
+                    return '';
+                this.value([...this.value(), key]);
+                $.$mol_fiber_defer(() => {
+                    this.Pick().Trigger().focused(true);
+                    this.Pick().open();
+                });
+                return '';
+            }
+            options() {
+                return Object.keys(this.dictionary());
+            }
+            options_pickable() {
+                if (!this.enabled())
+                    return [];
+                const exists = new Set(this.value());
+                return this.options().filter(key => !exists.has(key));
+            }
+            option_title(key) {
+                const value = this.dictionary()[key];
+                return value == null ? key : value;
+            }
+            badge_title(index) {
+                return this.option_title(this.value()[index]);
+            }
+            sub() {
+                return [
+                    ...this.value().map((_, index) => this.Badge(index)),
+                    ...this.options_pickable().length ? [this.Pick()] : [],
+                ];
+            }
+            title() {
+                return this.value().map(key => this.option_title(key)).join(' + ');
+            }
+            remove(index) {
+                const value = this.value();
+                this.value([
+                    ...value.slice(0, index),
+                    ...value.slice(index + 1),
+                ]);
+            }
+        }
+        __decorate([
+            $.$mol_mem
+        ], $mol_select_list.prototype, "options", null);
+        __decorate([
+            $.$mol_mem
+        ], $mol_select_list.prototype, "options_pickable", null);
+        __decorate([
+            $.$mol_mem
+        ], $mol_select_list.prototype, "sub", null);
+        __decorate([
+            $.$mol_mem
+        ], $mol_select_list.prototype, "title", null);
+        $$.$mol_select_list = $mol_select_list;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//list.view.js.map
 ;
 "use strict";
 var $;
@@ -8522,6 +8719,30 @@ var $;
             obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Exact_hint');
             return obj;
         }
+        exclude(val) {
+            if (val !== undefined)
+                return val;
+            return [];
+        }
+        exclude_options() {
+            return [];
+        }
+        exclude_badge_title(index) {
+            return "";
+        }
+        Exclude_icon() {
+            const obj = new this.$.$mol_icon_playlist_remove();
+            return obj;
+        }
+        Exclude() {
+            const obj = new this.$.$mol_select_list();
+            obj.value = (val) => this.exclude(val);
+            obj.options = () => this.exclude_options();
+            obj.badge_title = (index) => this.exclude_badge_title(index);
+            obj.pick_hint = () => this.$.$mol_locale.text('$hyoo_search_app_Exclude_pick_hint');
+            obj.Pick_icon = () => this.Exclude_icon();
+            return obj;
+        }
         where(next) {
             if (next !== undefined)
                 return next;
@@ -8624,6 +8845,7 @@ var $;
             obj.Title = () => this.Query();
             obj.tools = () => [
                 this.Exact(),
+                this.Exclude(),
                 this.Where(),
                 this.Type(),
                 this.Settings_open()
@@ -8862,6 +9084,15 @@ var $;
     __decorate([
         $.$mol_mem
     ], $hyoo_search_app.prototype, "Exact", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search_app.prototype, "exclude", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search_app.prototype, "Exclude_icon", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search_app.prototype, "Exclude", null);
     __decorate([
         $.$mol_mem
     ], $hyoo_search_app.prototype, "where", null);
@@ -9363,7 +9594,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 0 0 80rem;\n}\n\t\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tmargin: var(--mol_gap_block);\n\tpadding: 0;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 2.75rem;\n\theight: 2.75rem;\n\tflex: none;\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n\tpadding-bottom: .5rem;\n}\n\n[hyoo_search_app_result_main] {\n\tflex: 1 1 auto;\n\tpadding: .5rem 0;\n}\n\n[hyoo_search_app_result_title] {\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n\tflex: 1 1 20rem;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: 0 .75rem;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_ban_option_label] {\n\ttext-align: right;\n}\n");
+    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\t\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tmargin: var(--mol_gap_block);\n\tpadding: 0;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 2.75rem;\n\theight: 2.75rem;\n\tflex: none;\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n\tpadding-bottom: .5rem;\n}\n\n[hyoo_search_app_result_main] {\n\tflex: 1 1 auto;\n\tpadding: .5rem 0;\n}\n\n[hyoo_search_app_result_title] {\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n\tflex: 1 1 20rem;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: 0 .75rem;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_ban_option_label] {\n\ttext-align: right;\n}\n");
 })($ || ($ = {}));
 //app.view.css.js.map
 ;
@@ -9372,6 +9603,7 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
+        const Words = $.$mol_regexp.repeat_greedy($.$mol_regexp.unicode_only('Alphabetic'), 1);
         class $hyoo_search_app extends $.$hyoo_search_app {
             get $() {
                 var _a;
@@ -9408,6 +9640,10 @@ var $;
                 const arg = next === undefined ? undefined : next ? '' : null;
                 return this.$.$mol_state_arg.value('exact', arg) !== null;
             }
+            exclude(next) {
+                const str = this.$.$mol_state_arg.value('exclude', next && next.join(' ')) ?? '';
+                return str.split(' ').filter(Boolean);
+            }
             query_backend() {
                 const query = this.query().trim();
                 if (!query)
@@ -9415,6 +9651,7 @@ var $;
                 return [
                     this.query_where(),
                     this.exact() ? `"${query}"` : query,
+                    this.query_exclude(),
                     this.query_type(),
                     this.query_forbidden(),
                 ].join(' ');
@@ -9438,6 +9675,9 @@ var $;
                 if (where === 'anywhere')
                     return '';
                 return `${where}:`;
+            }
+            query_exclude() {
+                return this.exclude().map(word => '-' + word).join(' ');
             }
             query_dump() {
                 return this.query_backend()
@@ -9496,6 +9736,37 @@ var $;
                 return 'https://www.google.com/search?q='
                     + encodeURIComponent('cache:' + this.result_uri(index));
             }
+            result_words(index) {
+                const stats = new Map();
+                const text = this.result_title(index) + ' ' + this.result_descr(index);
+                for (let word of text.match(Words) ?? []) {
+                    if (word.length < 3)
+                        continue;
+                    word = word.toLowerCase();
+                    stats.set(word, (stats.get(word) ?? 0) + 1);
+                }
+                return stats;
+            }
+            words() {
+                const total = new Map();
+                const results = this.results_raw();
+                for (let i = 0; i < results.length; ++i) {
+                    const stat = this.result_words(i);
+                    for (const [word, count] of stat) {
+                        total.set(word, (total.get(word) ?? 0) + count);
+                    }
+                }
+                return total;
+            }
+            exclude_options() {
+                const words = this.words();
+                const all = [...words.keys()];
+                all.sort((a, b) => words.get(b) - words.get(a));
+                return all;
+            }
+            exclude_badge_title(index) {
+                return '-' + this.exclude()[index];
+            }
             result_ban_options(index) {
                 const names = this.result_host(index).split('.');
                 return names.slice(0, -1).map((_, i) => names.slice(i).join('.'));
@@ -9538,6 +9809,9 @@ var $;
         ], $hyoo_search_app.prototype, "exact", null);
         __decorate([
             $.$mol_mem
+        ], $hyoo_search_app.prototype, "exclude", null);
+        __decorate([
+            $.$mol_mem
         ], $hyoo_search_app.prototype, "query_backend", null);
         __decorate([
             $.$mol_mem
@@ -9548,6 +9822,9 @@ var $;
         __decorate([
             $.$mol_mem
         ], $hyoo_search_app.prototype, "query_where", null);
+        __decorate([
+            $.$mol_mem
+        ], $hyoo_search_app.prototype, "query_exclude", null);
         __decorate([
             $.$mol_mem
         ], $hyoo_search_app.prototype, "query_dump", null);
@@ -9570,7 +9847,16 @@ var $;
             $.$mol_mem_key
         ], $hyoo_search_app.prototype, "result_cache", null);
         __decorate([
+            $.$mol_mem_key
+        ], $hyoo_search_app.prototype, "result_words", null);
+        __decorate([
             $.$mol_mem
+        ], $hyoo_search_app.prototype, "words", null);
+        __decorate([
+            $.$mol_mem
+        ], $hyoo_search_app.prototype, "exclude_options", null);
+        __decorate([
+            $.$mol_mem_key
         ], $hyoo_search_app.prototype, "result_ban_options", null);
         __decorate([
             $.$mol_mem_key

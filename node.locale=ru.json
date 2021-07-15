@@ -2,6 +2,7 @@
 	"$hyoo_search_app_Blacklist_field_name": "Чёрный Список Доменов",
 	"$hyoo_search_app_Blacklist_hint": "Каждый домен на новой строке",
 	"$hyoo_search_app_Exact_hint": "Точное Совпадение",
+	"$hyoo_search_app_Exclude_pick_hint": "Исключить слова..",
 	"$hyoo_search_app_Query_dump_field_title": "Полный Запрос",
 	"$hyoo_search_app_Query_hint": "Поиск..",
 	"$hyoo_search_app_Result_ban_hint": "Забанить сайт..",
@@ -21,5 +22,7 @@
 	"$mol_search_hint": "Поиск..",
 	"$mol_select_Filter_hint": "Фильтр..",
 	"$mol_select_hint": "Выбрать..",
+	"$mol_select_list_badge_hint": "Убрать",
+	"$mol_select_list_pick_hint": "Добавить..",
 	"$mol_select_no_options_message": "Нет вариантов"
 }

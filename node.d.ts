@@ -1893,6 +1893,12 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $mol_icon_playlist_remove extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
     class $mol_pick extends $mol_pop {
         Anchor(): $$.$mol_check;
         trigger_enabled(): boolean;
@@ -1960,6 +1966,48 @@ declare namespace $.$$ {
         nav_components(): ($mol_string | $mol_button_minor)[];
         trigger_content(): readonly $mol_view_content[];
         menu_content(): $mol_view[];
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_plus extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_select_list extends $mol_view {
+        value(val?: any): readonly string[];
+        dictionary(): {};
+        Badge(index: any): $mol_button_minor;
+        Pick(): $$.$mol_select;
+        badge_title(index: any): string;
+        remove(index: any, event?: any): any;
+        badge_hint(): string;
+        enabled(): boolean;
+        options(): readonly string[];
+        options_pickable(): readonly string[];
+        pick(val?: any): string;
+        option_title(key: any): string;
+        pick_hint(): string;
+        Pick_icon(): $mol_icon_plus;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $.$$ {
+    class $mol_select_list extends $.$mol_select_list {
+        value(val?: string[]): readonly string[];
+        pick(key: string): string;
+        options(): readonly string[];
+        options_pickable(): readonly string[];
+        option_title(key: string): string;
+        badge_title(index: number): string;
+        sub(): ($mol_button_minor | $mol_select)[];
+        title(): string;
+        remove(index: number): void;
     }
 }
 
@@ -2516,6 +2564,11 @@ declare namespace $ {
         exact(val?: any): boolean;
         Exact_icon(): $mol_icon_bullseye_arrow;
         Exact(): $mol_check_icon;
+        exclude(val?: any): readonly string[];
+        exclude_options(): readonly string[];
+        exclude_badge_title(index: any): string;
+        Exclude_icon(): $mol_icon_playlist_remove;
+        Exclude(): $$.$mol_select_list;
         where(next?: any): string;
         Where(): $$.$mol_select;
         type(next?: any): string;
@@ -2901,10 +2954,12 @@ declare namespace $.$$ {
         type(next?: string): string;
         where(next?: string): string;
         exact(next?: boolean): boolean;
+        exclude(next?: readonly string[]): readonly string[];
         query_backend(): string;
         query_forbidden(): string;
         query_type(): string;
         query_where(): string;
+        query_exclude(): string;
         query_dump(): string;
         blacklist(next?: string): string;
         searchers(next?: string): string;
@@ -2937,6 +2992,10 @@ declare namespace $.$$ {
         result_descr(index: number): string;
         result_host(index: number): string;
         result_cache(index: number): string;
+        result_words(index: number): Map<string, number>;
+        words(): Map<string, number>;
+        exclude_options(): readonly string[];
+        exclude_badge_title(index: number): string;
         result_ban_options(index: number): string[];
         result_ban(index: number, host?: string): string;
         result_uri(index: number): string;
