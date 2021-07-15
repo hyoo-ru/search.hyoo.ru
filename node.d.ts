@@ -1893,7 +1893,19 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $mol_icon_playlist_remove extends $mol_icon {
+    class $mol_icon_minus extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_minus_circle extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_minus_circle_outline extends $mol_icon {
         path(): string;
     }
 }
@@ -2567,7 +2579,7 @@ declare namespace $ {
         exclude(val?: any): readonly string[];
         exclude_options(): readonly string[];
         exclude_badge_title(index: any): string;
-        Exclude_icon(): $mol_icon_playlist_remove;
+        Exclude_icon(): $mol_icon_minus_circle_outline;
         Exclude(): $$.$mol_select_list;
         where(next?: any): string;
         Where(): $$.$mol_select;

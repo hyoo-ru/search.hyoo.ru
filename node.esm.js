@@ -6210,14 +6210,38 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_icon_playlist_remove extends $.$mol_icon {
+    class $mol_icon_minus extends $.$mol_icon {
         path() {
-            return "M2,6V8H14V6H2M2,10V12H11V10H2M14.17,10.76L12.76,12.17L15.59,15L12.76,17.83L14.17,19.24L17,16.41L19.83,19.24L21.24,17.83L18.41,15L21.24,12.17L19.83,10.76L17,13.59L14.17,10.76M2,14V16H11V14H2Z";
+            return "M19,13H5V11H19V13Z";
         }
     }
-    $.$mol_icon_playlist_remove = $mol_icon_playlist_remove;
+    $.$mol_icon_minus = $mol_icon_minus;
 })($ || ($ = {}));
-//remove.view.tree.js.map
+//minus.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon_minus_circle extends $.$mol_icon {
+        path() {
+            return "M17,13H7V11H17M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2Z";
+        }
+    }
+    $.$mol_icon_minus_circle = $mol_icon_minus_circle;
+})($ || ($ = {}));
+//circle.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon_minus_circle_outline extends $.$mol_icon {
+        path() {
+            return "M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M7,13H17V11H7";
+        }
+    }
+    $.$mol_icon_minus_circle_outline = $mol_icon_minus_circle_outline;
+})($ || ($ = {}));
+//outline.view.tree.js.map
 ;
 "use strict";
 var $;
@@ -8739,7 +8763,7 @@ var $;
             return "";
         }
         Exclude_icon() {
-            const obj = new this.$.$mol_icon_playlist_remove();
+            const obj = new this.$.$mol_icon_minus_circle_outline();
             return obj;
         }
         Exclude() {
