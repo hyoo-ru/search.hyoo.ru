@@ -87,6 +87,7 @@ $hyoo_search_app $mol_book2
 								hint @ \Every domain on new line
 								value?next <=> blacklist?next \
 									\pinterest.com
+									\itnan.ru
 						<= Query_dump_field $mol_labeler
 							title @ \Query Dump
 							Content <= Query_dump $mol_text_code
