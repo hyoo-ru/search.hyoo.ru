@@ -325,6 +325,7 @@ $mol_icon_plus $mol_icon path \M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z
 $mol_select_list $mol_view
 	value?val /string
 	dictionary *
+	minimal_height 40
 	Badge!index $mol_button_minor
 		title <= badge_title!index \badge
 		click?event <=> remove!index?event null
