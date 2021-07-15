@@ -8787,6 +8787,7 @@ var $;
             obj.options = () => this.exclude_options();
             obj.badge_title = (index) => this.exclude_badge_title(index);
             obj.pick_hint = () => this.$.$mol_locale.text('$hyoo_search_app_Exclude_pick_hint');
+            obj.pick_enabled = () => true;
             obj.Pick_icon = () => this.Exclude_icon();
             return obj;
         }
