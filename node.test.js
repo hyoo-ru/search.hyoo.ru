@@ -8937,7 +8937,7 @@ var $;
         blacklist(next) {
             if (next !== undefined)
                 return next;
-            return "pinterest.com";
+            return "pinterest.com\nitnan.ru";
         }
         Blacklist() {
             const obj = new this.$.$mol_textarea();
