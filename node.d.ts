@@ -867,6 +867,45 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $mol_frame extends $mol_view {
+        dom_name(): string;
+        attr(): {
+            src: string;
+            srcdoc: any;
+            allow: string;
+        };
+        fullscreen(): boolean;
+        accelerometer(): boolean;
+        autoplay(): boolean;
+        encription(): boolean;
+        gyroscope(): boolean;
+        pip(): boolean;
+        uri(val?: any): string;
+        html(): any;
+        allow(): string;
+    }
+}
+
+declare namespace $ {
+    const $mol_wait_timeout: (timeout: number) => unknown;
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_frame extends $.$mol_frame {
+        dom_node: (next?: HTMLIFrameElement) => HTMLIFrameElement;
+        window(): Window;
+        uri_resource(): string;
+        _uri_sync: $mol_fiber | undefined;
+        uri_listener(): $mol_dom_listener;
+        render(): void;
+        allow(): string;
+    }
+}
+
+declare namespace $ {
     class $mol_link extends $mol_view {
         dom_name(): string;
         attr(): {
@@ -2027,6 +2066,31 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $mol_icon_brightness_6 extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_lights_toggle extends $mol_check_icon {
+        Icon(): $mol_icon_brightness_6;
+        hint(): string;
+        checked(val?: any): boolean;
+        Lights_icon(): $mol_icon_brightness_6;
+        lights(val?: any): boolean;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_lights_toggle extends $.$mol_lights_toggle {
+        lights(next?: boolean): boolean;
+    }
+}
+
+declare namespace $ {
     class $mol_icon_settings extends $mol_icon {
         path(): string;
     }
@@ -2068,31 +2132,6 @@ declare namespace $ {
         hint(): string;
         sub(): readonly any[];
         Icon(): $mol_icon_github_circle;
-    }
-}
-
-declare namespace $ {
-    class $mol_icon_brightness_6 extends $mol_icon {
-        path(): string;
-    }
-}
-
-declare namespace $ {
-    class $mol_lights_toggle extends $mol_check_icon {
-        Icon(): $mol_icon_brightness_6;
-        hint(): string;
-        checked(val?: any): boolean;
-        Lights_icon(): $mol_icon_brightness_6;
-        lights(val?: any): boolean;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $.$$ {
-    class $mol_lights_toggle extends $.$mol_lights_toggle {
-        lights(next?: boolean): boolean;
     }
 }
 
@@ -2567,10 +2606,17 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $mol_icon_open_in_new extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
     class $hyoo_search_app extends $mol_book2 {
         plugins(): readonly any[];
         Placeholder(): any;
         pages(): readonly any[];
+        Sideview(id: any): $$.$mol_frame;
         Result_item(index: any): $$.$mol_link;
         Searcher_link(id: any): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
@@ -2588,6 +2634,7 @@ declare namespace $ {
         Where(): $$.$mol_select;
         type(next?: any): string;
         Type(): $$.$mol_select;
+        Lights(): $$.$mol_lights_toggle;
         Settings_open_icon(): $mol_icon_settings;
         Settings_open(): $$.$mol_link;
         result_list(): readonly any[];
@@ -2600,7 +2647,6 @@ declare namespace $ {
         searcher_links(): readonly any[];
         Main(): $$.$mol_page;
         Sources(): $mol_link_source;
-        Lights(): $$.$mol_lights_toggle;
         Settings_close_icon(): $mol_icon_close;
         Settings_close(): $$.$mol_link;
         searchers(next?: any): string;
@@ -2614,6 +2660,7 @@ declare namespace $ {
         Query_dump_field(): $mol_labeler;
         Settings_fields(): $$.$mol_list;
         Settings(): $$.$mol_page;
+        sideview(val?: any): string;
         result_uri(index: any): string;
         result_image(index: any): string;
         Result_image(index: any): $mol_image;
@@ -2633,6 +2680,8 @@ declare namespace $ {
         result_cache(index: any): string;
         Result_cache_icon(index: any): $mol_icon_backup_restore;
         Result_cache(index: any): $$.$mol_link;
+        Result_open_icon(index: any): $mol_icon_open_in_new;
+        Result_open(index: any): $$.$mol_link;
         Result_tools(index: any): $$.$mol_list;
         searcher_link(id: any): string;
     }
@@ -2968,6 +3017,7 @@ declare namespace $.$$ {
         query(next?: string): string;
         type(next?: string): string;
         where(next?: string): string;
+        sideview(next?: string): string;
         exact(next?: boolean): boolean;
         exclude(next?: readonly string[]): readonly string[];
         query_backend(): string;
@@ -2979,7 +3029,7 @@ declare namespace $.$$ {
         blacklist(next?: string): string;
         searchers(next?: string): string;
         settings(next?: boolean): boolean;
-        pages(): $mol_page[];
+        pages(): ($mol_frame | $mol_page)[];
         title(): string;
         main_content(): readonly any[];
         results_raw(): readonly Readonly<{

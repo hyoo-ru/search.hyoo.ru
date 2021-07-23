@@ -7,6 +7,7 @@
 	"$hyoo_search_app_Query_hint": "Search..",
 	"$hyoo_search_app_Result_ban_hint": "Ban site..",
 	"$hyoo_search_app_Result_cache_hint": "Open cached",
+	"$hyoo_search_app_Result_open_hint": "Open in new tab",
 	"$hyoo_search_app_Searchers_field_name": "Alternative Searcher Engines",
 	"$hyoo_search_app_Searchers_hint": "Every search query prefix on new line",
 	"$hyoo_search_app_Settings_title": "Settings",
