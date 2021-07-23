@@ -16,6 +16,7 @@ Best frontend for global web search
 - Results preview images
 - Direct links
 - Large result set (20 items)
+- Fast filters of results
 
 # How to set as default in the browser
 
@@ -35,3 +36,7 @@ Best frontend for global web search
 - Click to "Add $hyoo_search".
 - Click to "Change search settings at right side".
 - Find default search select and change it.
+
+# Articles
+
+- [Бывший сотрудник Яндекса выпустил бесплатный поисковик с блек… листами, но без рекламы](https://habhub.hyoo.ru/#!author=nin-jin/repo=HabHub/article=46)
