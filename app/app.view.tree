@@ -94,8 +94,13 @@ $hyoo_search_app $mol_book2
 							title @ \Query Dump
 							Content <= Query_dump $mol_text_code
 								text <= query_dump \
-	Sideview!id $mol_frame
-		uri <= sideview?val \about:blank
+	Sideview!uri $mol_view
+		sub /
+			<= Sideview_hint $mol_paragraph
+				title @ \Open in new tab if not loaded
+			<= Sideview_embed $mol_embed_native
+				uri <= sideview?val \about:blank
+				sub /
 	Result_item!index $mol_link
 		arg *
 			settings null
