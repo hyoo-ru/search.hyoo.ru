@@ -867,45 +867,6 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    class $mol_frame extends $mol_view {
-        dom_name(): string;
-        attr(): {
-            src: string;
-            srcdoc: any;
-            allow: string;
-        };
-        fullscreen(): boolean;
-        accelerometer(): boolean;
-        autoplay(): boolean;
-        encription(): boolean;
-        gyroscope(): boolean;
-        pip(): boolean;
-        uri(val?: any): string;
-        html(): any;
-        allow(): string;
-    }
-}
-
-declare namespace $ {
-    const $mol_wait_timeout: (timeout: number) => unknown;
-}
-
-declare namespace $ {
-}
-
-declare namespace $.$$ {
-    class $mol_frame extends $.$mol_frame {
-        dom_node: (next?: HTMLIFrameElement) => HTMLIFrameElement;
-        window(): Window;
-        uri_resource(): string;
-        _uri_sync: $mol_fiber | undefined;
-        uri_listener(): $mol_dom_listener;
-        render(): void;
-        allow(): string;
-    }
-}
-
-declare namespace $ {
     class $mol_link extends $mol_view {
         dom_name(): string;
         attr(): {
@@ -2600,6 +2561,37 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $mol_embed_native extends $mol_view {
+        dom_name(): string;
+        attr(): {
+            data: string;
+            type: string;
+        };
+        sub(): readonly any[];
+        uri(val?: any): string;
+        mime(): string;
+    }
+}
+
+declare namespace $ {
+    const $mol_wait_timeout: (timeout: number) => unknown;
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_embed_native extends $.$mol_embed_native {
+        dom_node: (next?: HTMLIFrameElement) => HTMLObjectElement;
+        loaded(): boolean;
+        uri_resource(): string;
+        _uri_sync: $mol_fiber | undefined;
+        uri_listener(): $mol_dom_listener;
+        render(): void;
+    }
+}
+
+declare namespace $ {
     class $mol_icon_backup_restore extends $mol_icon {
         path(): string;
     }
@@ -2616,7 +2608,7 @@ declare namespace $ {
         plugins(): readonly any[];
         Placeholder(): any;
         pages(): readonly any[];
-        Sideview(id: any): $$.$mol_frame;
+        Sideview(uri: any): $mol_view;
         Result_item(index: any): $$.$mol_link;
         Searcher_link(id: any): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
@@ -2660,7 +2652,9 @@ declare namespace $ {
         Query_dump_field(): $mol_labeler;
         Settings_fields(): $$.$mol_list;
         Settings(): $$.$mol_page;
+        Sideview_hint(): $$.$mol_paragraph;
         sideview(val?: any): string;
+        Sideview_embed(): $$.$mol_embed_native;
         result_uri(index: any): string;
         result_image(index: any): string;
         Result_image(index: any): $mol_image;
@@ -3029,7 +3023,7 @@ declare namespace $.$$ {
         blacklist(next?: string): string;
         searchers(next?: string): string;
         settings(next?: boolean): boolean;
-        pages(): ($mol_frame | $mol_page)[];
+        pages(): ($mol_view | $mol_page)[];
         title(): string;
         main_content(): readonly any[];
         results_raw(): readonly Readonly<{

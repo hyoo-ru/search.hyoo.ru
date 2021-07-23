@@ -11,6 +11,7 @@
 	"$hyoo_search_app_Searchers_field_name": "Alternative Searcher Engines",
 	"$hyoo_search_app_Searchers_hint": "Every search query prefix on new line",
 	"$hyoo_search_app_Settings_title": "Settings",
+	"$hyoo_search_app_Sideview_hint_title": "Open in new tab if not loaded",
 	"$hyoo_search_app_Where_dictionary_allinanchor": "In Anchor",
 	"$hyoo_search_app_Where_dictionary_allintext": "In Text",
 	"$hyoo_search_app_Where_dictionary_allintitle": "In Title",

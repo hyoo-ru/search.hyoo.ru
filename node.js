@@ -3070,151 +3070,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_frame extends $.$mol_view {
-        dom_name() {
-            return "iframe";
-        }
-        attr() {
-            return {
-                src: this.uri(),
-                srcdoc: this.html(),
-                allow: this.allow()
-            };
-        }
-        fullscreen() {
-            return true;
-        }
-        accelerometer() {
-            return true;
-        }
-        autoplay() {
-            return true;
-        }
-        encription() {
-            return true;
-        }
-        gyroscope() {
-            return true;
-        }
-        pip() {
-            return true;
-        }
-        uri(val) {
-            if (val !== undefined)
-                return val;
-            return "";
-        }
-        html() {
-            return null;
-        }
-        allow() {
-            return "";
-        }
-    }
-    __decorate([
-        $.$mol_mem
-    ], $mol_frame.prototype, "uri", null);
-    $.$mol_frame = $mol_frame;
-})($ || ($ = {}));
-//frame.view.tree.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_wait_timeout = $.$mol_fiber_sync((timeout) => new Promise(done => new $.$mol_after_timeout(timeout, () => done(null))));
-})($ || ($ = {}));
-//timeout.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_style_define($.$mol_frame, {
-        border: {
-            style: 'none',
-        },
-        flex: 'auto',
-    });
-})($ || ($ = {}));
-//frame.view.css.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_frame extends $.$mol_frame {
-            window() {
-                const node = this.dom_node();
-                this.uri_resource();
-                return $.$mol_fiber_sync(() => new Promise((done, fail) => {
-                    new $.$mol_after_timeout(3000, () => {
-                        try {
-                            if (node.contentWindow.location.href === 'about:blank') {
-                                done(node.contentWindow);
-                            }
-                        }
-                        catch { }
-                    });
-                    node.onload = () => {
-                        done(node.contentWindow);
-                    };
-                    node.onerror = (event) => {
-                        fail(typeof event === 'string' ? new Error(event) : event.error || event);
-                    };
-                }))();
-            }
-            uri_resource() {
-                return this.uri().replace(/#.*/, '');
-            }
-            uri_listener() {
-                const node = this.dom_node();
-                return new $.$mol_dom_listener($.$mol_dom_context, 'message', $.$mol_fiber_root((event) => {
-                    if (event.source !== node.contentWindow)
-                        return;
-                    if (!Array.isArray(event.data))
-                        return;
-                    if (event.data[0] !== 'hashchange')
-                        return;
-                    this._uri_sync?.destructor();
-                    this._uri_sync = $.$mol_fiber.current;
-                    $.$mol_wait_timeout(1000);
-                    this.uri(event.data[1]);
-                }));
-            }
-            render() {
-                const node = super.render();
-                this.uri_listener();
-                this.window();
-                return node;
-            }
-            allow() {
-                return [
-                    ...this.fullscreen() ? ['fullscreen'] : [],
-                    ...this.accelerometer() ? ['accelerometer'] : [],
-                    ...this.autoplay() ? ['autoplay'] : [],
-                    ...this.encription() ? ['encrypted-media'] : [],
-                    ...this.gyroscope() ? ['gyroscope'] : [],
-                    ...this.pip() ? ['picture-in-picture'] : [],
-                ].join(';');
-            }
-        }
-        __decorate([
-            $.$mol_mem
-        ], $mol_frame.prototype, "window", null);
-        __decorate([
-            $.$mol_mem
-        ], $mol_frame.prototype, "uri_resource", null);
-        __decorate([
-            $.$mol_mem
-        ], $mol_frame.prototype, "uri_listener", null);
-        $$.$mol_frame = $mol_frame;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-//frame.view.js.map
-;
-"use strict";
-var $;
-(function ($) {
     class $mol_link extends $.$mol_view {
         dom_name() {
             return "a";
@@ -8838,6 +8693,120 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_embed_native extends $.$mol_view {
+        dom_name() {
+            return "object";
+        }
+        attr() {
+            return {
+                ...super.attr(),
+                data: this.uri(),
+                type: this.mime()
+            };
+        }
+        sub() {
+            return [
+                ""
+            ];
+        }
+        uri(val) {
+            if (val !== undefined)
+                return val;
+            return "";
+        }
+        mime() {
+            return "";
+        }
+    }
+    __decorate([
+        $.$mol_mem
+    ], $mol_embed_native.prototype, "uri", null);
+    $.$mol_embed_native = $mol_embed_native;
+})($ || ($ = {}));
+//native.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_wait_timeout = $.$mol_fiber_sync((timeout) => new Promise(done => new $.$mol_after_timeout(timeout, () => done(null))));
+})($ || ($ = {}));
+//timeout.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_style_attach("mol/embed/native/native.view.css", "[mol_embed_native] {\n\tmax-width: 100%;\n\tmax-height: 50vh;\n\tobject-fit: cover;\n\tdisplay: flex;\n\tflex: 1 1 auto;\n\tbackground: var(--mol_theme_shade);\n\tobject-position: top left;\n\tborder-radius: var(--mol_gap_round);\n\taspect-ratio: 4/3;\n}\n");
+})($ || ($ = {}));
+//native.view.css.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_embed_native extends $.$mol_embed_native {
+            loaded() {
+                const node = this.dom_node();
+                this.uri_resource();
+                return $.$mol_fiber_sync(() => new Promise((done, fail) => {
+                    new $.$mol_after_timeout(3000, () => {
+                        try {
+                            if (node.contentWindow.location.href === 'about:blank') {
+                                done(true);
+                            }
+                        }
+                        catch { }
+                    });
+                    node.onload = () => {
+                        done(true);
+                    };
+                    node.onerror = (event) => {
+                        fail(typeof event === 'string' ? new Error(event) : event.error || event);
+                    };
+                }))();
+            }
+            uri_resource() {
+                return this.uri().replace(/#.*/, '');
+            }
+            uri_listener() {
+                const node = this.dom_node();
+                return new $.$mol_dom_listener($.$mol_dom_context, 'message', $.$mol_fiber_root((event) => {
+                    if (event.source !== node.contentWindow)
+                        return;
+                    if (!Array.isArray(event.data))
+                        return;
+                    if (event.data[0] !== 'hashchange')
+                        return;
+                    this._uri_sync?.destructor();
+                    this._uri_sync = $.$mol_fiber.current;
+                    $.$mol_wait_timeout(1000);
+                    this.uri(event.data[1]);
+                }));
+            }
+            render() {
+                const node = super.render();
+                this.uri_listener();
+                this.loaded();
+                return node;
+            }
+        }
+        __decorate([
+            $.$mol_mem
+        ], $mol_embed_native.prototype, "loaded", null);
+        __decorate([
+            $.$mol_mem
+        ], $mol_embed_native.prototype, "uri_resource", null);
+        __decorate([
+            $.$mol_mem
+        ], $mol_embed_native.prototype, "uri_listener", null);
+        $$.$mol_embed_native = $mol_embed_native;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//native.view.js.map
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_icon_backup_restore extends $.$mol_icon {
         path() {
             return "M12,3C7.03,3 3,7.03 3,12H0L4,16L8,12H5C5,8.13 8.13,5 12,5C15.87,5 19,8.13 19,12C19,15.87 15.87,19 12,19C10.5,19 9.09,18.5 7.94,17.7L6.5,19.14C8.04,20.3 9.94,21 12,21C16.97,21 21,16.97 21,12C21,7.03 16.97,3 12,3M14,12C14,10.9 13.1,10 12,10C10.9,10 10,10.9 10,12C10,13.1 10.9,14 12,14C13.1,14 14,13.1 14,12Z";
@@ -8877,9 +8846,12 @@ var $;
                 this.Settings()
             ];
         }
-        Sideview(id) {
-            const obj = new this.$.$mol_frame();
-            obj.uri = () => this.sideview();
+        Sideview(uri) {
+            const obj = new this.$.$mol_view();
+            obj.sub = () => [
+                this.Sideview_hint(),
+                this.Sideview_embed()
+            ];
             return obj;
         }
         Result_item(index) {
@@ -9161,10 +9133,21 @@ var $;
             ];
             return obj;
         }
+        Sideview_hint() {
+            const obj = new this.$.$mol_paragraph();
+            obj.title = () => this.$.$mol_locale.text('$hyoo_search_app_Sideview_hint_title');
+            return obj;
+        }
         sideview(val) {
             if (val !== undefined)
                 return val;
             return "about:blank";
+        }
+        Sideview_embed() {
+            const obj = new this.$.$mol_embed_native();
+            obj.uri = () => this.sideview();
+            obj.sub = () => [];
+            return obj;
         }
         result_uri(index) {
             return "";
@@ -9406,7 +9389,13 @@ var $;
     ], $hyoo_search_app.prototype, "Settings", null);
     __decorate([
         $.$mol_mem
+    ], $hyoo_search_app.prototype, "Sideview_hint", null);
+    __decorate([
+        $.$mol_mem
     ], $hyoo_search_app.prototype, "sideview", null);
+    __decorate([
+        $.$mol_mem
+    ], $hyoo_search_app.prototype, "Sideview_embed", null);
     __decorate([
         $.$mol_mem_key
     ], $hyoo_search_app.prototype, "Result_image", null);
@@ -9839,7 +9828,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 0 0 40rem;\n}\n\n[hyoo_search_app_sideview] {\n\tflex: 1 0 40rem;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n\tz-index: 2;\n}\n\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tmargin: var(--mol_gap_block);\n\tpadding: 0;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tflex: none;\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n\tpadding-bottom: .5rem;\n}\n\n[hyoo_search_app_result_main] {\n\tflex: 1 1 auto;\n\tpadding: .5rem 0;\n}\n\n[hyoo_search_app_result_title] {\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n\tflex: 1 1 20rem;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: 0 .75rem;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_ban_option_label] {\n\ttext-align: right;\n}\n");
+    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 0 0 40rem;\n}\n\n[hyoo_search_app_sideview] {\n\tflex: 1 0 40rem;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n\tz-index: 2;\n\tbackground: white;\n}\n\n[hyoo_search_app_sideview_hint] {\n\tflex: 1 1 auto;\n\tpadding: 0 .25rem;\n\tfont-size: .75rem;\n\tjustify-content: center;\n}\n\n[hyoo_search_app_sideview_embed] {\n\tposition: absolute;\n\twidth: 100%;\n\theight: 100%;\n\tmax-height: 100%;\n\taspect-ratio: auto;\n\tbackground: transparent;\n}\n\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tmargin: var(--mol_gap_block);\n\tpadding: 0;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tflex: none;\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n\tpadding-bottom: .5rem;\n}\n\n[hyoo_search_app_result_main] {\n\tflex: 1 1 auto;\n\tpadding: .5rem 0;\n}\n\n[hyoo_search_app_result_title] {\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n\tflex: 1 1 20rem;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: 0 .75rem;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_ban_option_label] {\n\ttext-align: right;\n}\n");
 })($ || ($ = {}));
 //app.view.css.js.map
 ;
