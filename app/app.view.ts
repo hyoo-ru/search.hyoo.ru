@@ -42,6 +42,10 @@ namespace $.$$ {
 			return this.$.$mol_state_arg.value( 'where', next ) ?? 'anywhere'
 		}
 		
+		sideview( next?: string ) {
+			return this.$.$mol_state_arg.value( 'sideview', next ) ?? ''
+		}
+		
 		@ $mol_mem
 		exact( next?: boolean ) {
 			const arg = next === undefined ? undefined : next ? '' : null
@@ -129,6 +133,7 @@ namespace $.$$ {
 		pages() {
 			return [
 				this.Main(),
+				... this.sideview() ? [ this.Sideview( this.sideview() ) ] : [],
 				... this.settings() ? [ this.Settings() ] : [],
 			]
 		}

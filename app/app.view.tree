@@ -40,8 +40,11 @@ $hyoo_search_app $mol_book2
 						\XLS
 						\PPT
 						\DOC
+				<= Lights $mol_lights_toggle
 				<= Settings_open $mol_link
-					arg * settings \
+					arg *
+						settings \
+						sideview null
 					sub /
 						<= Settings_open_icon $mol_icon_settings
 			body <= main_content /
@@ -64,7 +67,6 @@ $hyoo_search_app $mol_book2
 			tools /
 				<= Sources $mol_link_source
 					uri \https://github.com/hyoo-ru/search.hyoo.ru
-				<= Lights $mol_lights_toggle
 				<= Settings_close $mol_link
 					arg * settings null
 					sub /
@@ -92,8 +94,12 @@ $hyoo_search_app $mol_book2
 							title @ \Query Dump
 							Content <= Query_dump $mol_text_code
 								text <= query_dump \
+	Sideview!id $mol_frame
+		uri <= sideview?val \about:blank
 	Result_item!index $mol_link
-		uri <= result_uri!index \
+		arg *
+			settings null
+			sideview <= result_uri!index \
 		sub /
 			<= Result_info!index $mol_list
 				rows /
@@ -127,6 +133,11 @@ $hyoo_search_app $mol_book2
 						hint @ \Open cached
 						sub /
 							<= Result_cache_icon!index $mol_icon_backup_restore
+					<= Result_open!index $mol_link
+						uri <= result_uri!index \
+						hint @ \Open in new tab
+						sub /
+							<= Result_open_icon!index $mol_icon_open_in_new
 	Searcher_link!id $mol_link_iconed
 		title \
 		uri <= searcher_link!id \
