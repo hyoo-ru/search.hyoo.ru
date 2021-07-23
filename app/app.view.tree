@@ -97,7 +97,7 @@ $hyoo_search_app $mol_book2
 	Sideview!uri $mol_view
 		sub /
 			<= Sideview_hint $mol_paragraph
-				title @ \Open in new tab if not loaded
+				title @ \Open in new tab if didn't load
 			<= Sideview_embed $mol_embed_native
 				uri <= sideview?val \about:blank
 				sub /
