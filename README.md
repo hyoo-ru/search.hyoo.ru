@@ -15,6 +15,7 @@ Best frontend for global web search
 - Persistent domains blacklist
 - Results preview images
 - Direct links
+- Sideview for selected page
 - Large result set (20 items)
 - Fast filters of results
 
