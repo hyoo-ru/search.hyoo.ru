@@ -695,6 +695,7 @@ $hyoo_search_app $mol_book2
 							Content <= Query_dump $mol_text_code
 								text <= query_dump \
 	Sideview!uri $mol_view
+		title @ \Found
 		sub /
 			<= Sideview_hint $mol_paragraph
 				title @ \Open in new tab if didn't load
