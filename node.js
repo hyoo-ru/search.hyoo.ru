@@ -8819,14 +8819,38 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_icon_open_in_new extends $.$mol_icon {
+    class $mol_icon_book extends $.$mol_icon {
         path() {
-            return "M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V12H19V19Z";
+            return "M18,22C19.1,22 20,21.1 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6C4.9,2 4,2.9 4,4V20C4,21.1 4.9,22 6,22H18Z";
         }
     }
-    $.$mol_icon_open_in_new = $mol_icon_open_in_new;
+    $.$mol_icon_book = $mol_icon_book;
 })($ || ($ = {}));
-//new.view.tree.js.map
+//book.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon_book_open extends $.$mol_icon {
+        path() {
+            return "M13,12H20V13.5H13M13,9.5H20V11H13M13,14.5H20V16H13M21,4H3C1.9,4 1,4.9 1,6V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V6C23,4.9 22.1,4 21,4M21,19H12V6H21";
+        }
+    }
+    $.$mol_icon_book_open = $mol_icon_book_open;
+})($ || ($ = {}));
+//open.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon_book_open_outline extends $.$mol_icon {
+        path() {
+            return "M21,4H3C1.9,4 1,4.9 1,6V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V6C23,4.9 22.1,4 21,4M3,19V6H11V19H3M21,19H13V6H21V19M14,9.5H20V11H14V9.5M14,12H20V13.5H14V12M14,14.5H20V16H14V14.5Z";
+        }
+    }
+    $.$mol_icon_book_open_outline = $mol_icon_book_open_outline;
+})($ || ($ = {}));
+//outline.view.tree.js.map
 ;
 "use strict";
 var $;
@@ -8850,16 +8874,14 @@ var $;
             const obj = new this.$.$mol_view();
             obj.sub = () => [
                 this.Sideview_hint(),
-                this.Sideview_embed()
+                this.Sideview_embed(uri)
             ];
             return obj;
         }
         Result_item(index) {
             const obj = new this.$.$mol_link();
-            obj.arg = () => ({
-                settings: null,
-                sideview: this.result_uri(index)
-            });
+            obj.uri = () => this.result_uri(index);
+            obj.target = () => "search_result";
             obj.sub = () => [
                 this.Result_info(index),
                 this.Result_tools(index)
@@ -9143,7 +9165,7 @@ var $;
                 return val;
             return "about:blank";
         }
-        Sideview_embed() {
+        Sideview_embed(uri) {
             const obj = new this.$.$mol_embed_native();
             obj.uri = () => this.sideview();
             obj.sub = () => [];
@@ -9251,12 +9273,15 @@ var $;
             return obj;
         }
         Result_open_icon(index) {
-            const obj = new this.$.$mol_icon_open_in_new();
+            const obj = new this.$.$mol_icon_book_open_outline();
             return obj;
         }
         Result_open(index) {
             const obj = new this.$.$mol_link();
-            obj.uri = () => this.result_uri(index);
+            obj.arg = () => ({
+                settings: null,
+                sideview: this.result_uri(index)
+            });
             obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Result_open_hint');
             obj.sub = () => [
                 this.Result_open_icon(index)
@@ -9394,7 +9419,7 @@ var $;
         $.$mol_mem
     ], $hyoo_search_app.prototype, "sideview", null);
     __decorate([
-        $.$mol_mem
+        $.$mol_mem_key
     ], $hyoo_search_app.prototype, "Sideview_embed", null);
     __decorate([
         $.$mol_mem_key
@@ -9828,7 +9853,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 0 0 40rem;\n}\n\n[hyoo_search_app_sideview] {\n\tflex: 1 0 40rem;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n\tz-index: 2;\n\tbackground: white;\n}\n\n[hyoo_search_app_sideview_hint] {\n\tflex: 1 1 auto;\n\tpadding: 0 .25rem;\n\tfont-size: .75rem;\n\tjustify-content: center;\n}\n\n[hyoo_search_app_sideview_embed] {\n\tposition: absolute;\n\twidth: 100%;\n\theight: 100%;\n\tmax-height: 100%;\n\taspect-ratio: auto;\n\tbackground: transparent;\n}\n\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tmargin: var(--mol_gap_block);\n\tpadding: 0;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tflex: none;\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n\tpadding-bottom: .5rem;\n}\n\n[hyoo_search_app_result_main] {\n\tflex: 1 1 auto;\n\tpadding: .5rem 0;\n}\n\n[hyoo_search_app_result_title] {\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n\tflex: 1 1 20rem;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: 0 .75rem;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_ban_option_label] {\n\ttext-align: right;\n}\n");
+    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\n[hyoo_search_app_sideview] {\n\tflex: 10000 0 40rem;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n\tz-index: 2;\n\tbackground: white;\n}\n\n[hyoo_search_app_sideview_hint] {\n\tflex: 1 1 auto;\n\tpadding: 0 .25rem;\n\tfont-size: .75rem;\n\tjustify-content: center;\n}\n\n[hyoo_search_app_sideview_embed] {\n\tposition: absolute;\n\twidth: 100%;\n\theight: 100%;\n\tmax-height: 100%;\n\taspect-ratio: auto;\n\tbackground: transparent;\n}\n\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tmargin: var(--mol_gap_block);\n\tpadding: 0;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tflex: none;\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n\tpadding-bottom: .5rem;\n}\n\n[hyoo_search_app_result_main] {\n\tflex: 1 1 auto;\n\tpadding: .5rem 0;\n}\n\n[hyoo_search_app_result_title] {\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n\tflex: 1 1 20rem;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: 0 .75rem;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_ban_option_label] {\n\ttext-align: right;\n}\n");
 })($ || ($ = {}));
 //app.view.css.js.map
 ;

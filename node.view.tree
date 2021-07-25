@@ -594,7 +594,11 @@ $mol_embed_native $mol_view
 
 $mol_icon_backup_restore $mol_icon path \M12,3C7.03,3 3,7.03 3,12H0L4,16L8,12H5C5,8.13 8.13,5 12,5C15.87,5 19,8.13 19,12C19,15.87 15.87,19 12,19C10.5,19 9.09,18.5 7.94,17.7L6.5,19.14C8.04,20.3 9.94,21 12,21C16.97,21 21,16.97 21,12C21,7.03 16.97,3 12,3M14,12C14,10.9 13.1,10 12,10C10.9,10 10,10.9 10,12C10,13.1 10.9,14 12,14C13.1,14 14,13.1 14,12Z
 
-$mol_icon_open_in_new $mol_icon path \M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V12H19V19Z
+$mol_icon_book $mol_icon path \M18,22C19.1,22 20,21.1 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6C4.9,2 4,2.9 4,4V20C4,21.1 4.9,22 6,22H18Z
+
+$mol_icon_book_open $mol_icon path \M13,12H20V13.5H13M13,9.5H20V11H13M13,14.5H20V16H13M21,4H3C1.9,4 1,4.9 1,6V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V6C23,4.9 22.1,4 21,4M21,19H12V6H21
+
+$mol_icon_book_open_outline $mol_icon path \M21,4H3C1.9,4 1,4.9 1,6V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V6C23,4.9 22.1,4 21,4M3,19V6H11V19H3M21,19H13V6H21V19M14,9.5H20V11H14V9.5M14,12H20V13.5H14V12M14,14.5H20V16H14V14.5Z
 
 $hyoo_search_app $mol_book2
 	plugins /
@@ -696,13 +700,12 @@ $hyoo_search_app $mol_book2
 		sub /
 			<= Sideview_hint $mol_paragraph
 				title @ \Open in new tab if didn't load
-			<= Sideview_embed $mol_embed_native
+			<= Sideview_embed!uri $mol_embed_native
 				uri <= sideview?val \about:blank
 				sub /
 	Result_item!index $mol_link
-		arg *
-			settings null
-			sideview <= result_uri!index \
+		uri <= result_uri!index \
+		target \search_result
 		sub /
 			<= Result_info!index $mol_list
 				rows /
@@ -737,10 +740,12 @@ $hyoo_search_app $mol_book2
 						sub /
 							<= Result_cache_icon!index $mol_icon_backup_restore
 					<= Result_open!index $mol_link
-						uri <= result_uri!index \
-						hint @ \Open in new tab
+						arg *
+							settings null
+							sideview <= result_uri!index \
+						hint @ \Open in side bar
 						sub /
-							<= Result_open_icon!index $mol_icon_open_in_new
+							<= Result_open_icon!index $mol_icon_book_open_outline
 	Searcher_link!id $mol_link_iconed
 		title \
 		uri <= searcher_link!id \

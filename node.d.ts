@@ -925,7 +925,7 @@ declare namespace $.$$ {
         event_click(event?: Event): void;
         file_name(): string;
         minimal_height(): number;
-        target(): '_self' | '_blank' | '_top' | '_parent';
+        target(): '_self' | '_blank' | '_top' | '_parent' | string;
     }
 }
 
@@ -2598,7 +2598,19 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $mol_icon_open_in_new extends $mol_icon {
+    class $mol_icon_book extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_book_open extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_book_open_outline extends $mol_icon {
         path(): string;
     }
 }
@@ -2654,7 +2666,7 @@ declare namespace $ {
         Settings(): $$.$mol_page;
         Sideview_hint(): $$.$mol_paragraph;
         sideview(val?: any): string;
-        Sideview_embed(): $$.$mol_embed_native;
+        Sideview_embed(uri: any): $$.$mol_embed_native;
         result_uri(index: any): string;
         result_image(index: any): string;
         Result_image(index: any): $mol_image;
@@ -2674,7 +2686,7 @@ declare namespace $ {
         result_cache(index: any): string;
         Result_cache_icon(index: any): $mol_icon_backup_restore;
         Result_cache(index: any): $$.$mol_link;
-        Result_open_icon(index: any): $mol_icon_open_in_new;
+        Result_open_icon(index: any): $mol_icon_book_open_outline;
         Result_open(index: any): $$.$mol_link;
         Result_tools(index: any): $$.$mol_list;
         searcher_link(id: any): string;
