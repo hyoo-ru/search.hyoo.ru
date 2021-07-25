@@ -139,7 +139,7 @@ namespace $.$$ {
 		}
 		
 		title() {
-			return `${ super.title() } | Search.HyOO.ru`
+			return `${ super.title() } | $hyoo_search`
 		}
 		
 		@ $mol_mem
