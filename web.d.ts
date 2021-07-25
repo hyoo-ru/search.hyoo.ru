@@ -2044,31 +2044,6 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
-    class $mol_icon_brightness_6 extends $mol_icon {
-        path(): string;
-    }
-}
-
-declare namespace $ {
-    class $mol_lights_toggle extends $mol_check_icon {
-        Icon(): $mol_icon_brightness_6;
-        hint(): string;
-        checked(val?: any): boolean;
-        Lights_icon(): $mol_icon_brightness_6;
-        lights(val?: any): boolean;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $.$$ {
-    class $mol_lights_toggle extends $.$mol_lights_toggle {
-        lights(next?: boolean): boolean;
-    }
-}
-
-declare namespace $ {
     class $mol_icon_settings extends $mol_icon {
         path(): string;
     }
@@ -2096,6 +2071,31 @@ declare namespace $.$$ {
 declare namespace $.$$ {
     class $mol_page extends $.$mol_page {
         body_scroll_top(next?: number): number;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_brightness_6 extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_lights_toggle extends $mol_check_icon {
+        Icon(): $mol_icon_brightness_6;
+        hint(): string;
+        checked(val?: any): boolean;
+        Lights_icon(): $mol_icon_brightness_6;
+        lights(val?: any): boolean;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_lights_toggle extends $.$mol_lights_toggle {
+        lights(next?: boolean): boolean;
     }
 }
 
@@ -2655,7 +2655,6 @@ declare namespace $ {
         Where(): $$.$mol_select;
         type(next?: any): string;
         Type(): $$.$mol_select;
-        Lights(): $$.$mol_lights_toggle;
         Settings_open_icon(): $mol_icon_settings;
         Settings_open(): $$.$mol_link;
         result_list(): readonly any[];
@@ -2667,6 +2666,7 @@ declare namespace $ {
         main_content(): readonly any[];
         searcher_links(): readonly any[];
         Main(): $$.$mol_page;
+        Lights(): $$.$mol_lights_toggle;
         Sources(): $mol_link_source;
         Settings_close_icon(): $mol_icon_close;
         Settings_close(): $$.$mol_link;
