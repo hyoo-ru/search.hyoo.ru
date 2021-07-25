@@ -1,9 +1,9 @@
 [hyoo_search_app_main] {
-	flex: 0 0 40rem;
+	flex: 1 0 40rem;
 }
 
 [hyoo_search_app_sideview] {
-	flex: 1 0 40rem;
+	flex: 10000 0 40rem;
 	box-shadow: 0 0 0 1px var(--mol_theme_line);
 	z-index: 2;
 	background: white;
