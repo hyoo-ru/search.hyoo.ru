@@ -8630,6 +8630,22 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_row extends $.$mol_view {
+    }
+    $.$mol_row = $mol_row;
+})($ || ($ = {}));
+//row.view.tree.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_style_attach("mol/row/row.view.css", "[mol_row] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\talign-items: flex-start;\n\talign-content: flex-start;\n\tjustify-content: flex-start;\n\tpadding: .375rem;\n\tflex: 0 0 auto;\n\tbox-sizing: border-box;\n\tmax-width: 100%;\n}\n\n[mol_row] > * {\n\tmargin: .375rem;\n\tmax-width: 100%;\n}\n");
+})($ || ($ = {}));
+//row.view.css.js.map
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_icon_backup_restore extends $.$mol_icon {
         path() {
             return "M12,3C7.03,3 3,7.03 3,12H0L4,16L8,12H5C5,8.13 8.13,5 12,5C15.87,5 19,8.13 19,12C19,15.87 15.87,19 12,19C10.5,19 9.09,18.5 7.94,17.7L6.5,19.14C8.04,20.3 9.94,21 12,21C16.97,21 21,16.97 21,12C21,7.03 16.97,3 12,3M14,12C14,10.9 13.1,10 12,10C10.9,10 10,10.9 10,12C10,13.1 10.9,14 12,14C13.1,14 14,13.1 14,12Z";
@@ -9024,22 +9040,6 @@ var $;
             obj.needle = () => this.query();
             return obj;
         }
-        Result_main(index) {
-            const obj = new this.$.$mol_list();
-            obj.rows = () => [
-                this.Result_title(index),
-                this.Result_host(index)
-            ];
-            return obj;
-        }
-        Result_head(index) {
-            const obj = new this.$.$mol_view();
-            obj.sub = () => [
-                this.Result_image(index),
-                this.Result_main(index)
-            ];
-            return obj;
-        }
         result_descr(index) {
             return "";
         }
@@ -9049,11 +9049,20 @@ var $;
             obj.needle = () => this.query();
             return obj;
         }
-        Result_info(index) {
+        Result_main(index) {
             const obj = new this.$.$mol_list();
             obj.rows = () => [
-                this.Result_head(index),
+                this.Result_title(index),
+                this.Result_host(index),
                 this.Result_descr(index)
+            ];
+            return obj;
+        }
+        Result_info(index) {
+            const obj = new this.$.$mol_row();
+            obj.sub = () => [
+                this.Result_image(index),
+                this.Result_main(index)
             ];
             return obj;
         }
@@ -9254,13 +9263,10 @@ var $;
     ], $hyoo_search_app.prototype, "Result_host", null);
     __decorate([
         $.$mol_mem_key
-    ], $hyoo_search_app.prototype, "Result_main", null);
-    __decorate([
-        $.$mol_mem_key
-    ], $hyoo_search_app.prototype, "Result_head", null);
-    __decorate([
-        $.$mol_mem_key
     ], $hyoo_search_app.prototype, "Result_descr", null);
+    __decorate([
+        $.$mol_mem_key
+    ], $hyoo_search_app.prototype, "Result_main", null);
     __decorate([
         $.$mol_mem_key
     ], $hyoo_search_app.prototype, "Result_info", null);
@@ -9675,7 +9681,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\n[hyoo_search_app_sideview] {\n\tflex: 10000 0 40rem;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n\tz-index: 2;\n\tbackground: white;\n}\n\n[hyoo_search_app_sideview_hint] {\n\tflex: 1 1 auto;\n\tpadding: 0 .25rem;\n\tfont-size: .75rem;\n\tjustify-content: center;\n}\n\n[hyoo_search_app_sideview_embed] {\n\tposition: absolute;\n\twidth: 100%;\n\theight: 100%;\n\tmax-height: 100%;\n\taspect-ratio: auto;\n\tborder-radius: 0;\n\tbackground: transparent;\n}\n\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tmargin: var(--mol_gap_block);\n\tpadding: 0;\n}\n\n[hyoo_search_app_result_image] {\n\twidth: 2.5rem;\n\theight: 2.5rem;\n\tflex: none;\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n\tpadding-bottom: .5rem;\n}\n\n[hyoo_search_app_result_main] {\n\tflex: 1 1 auto;\n\tpadding: .5rem 0;\n}\n\n[hyoo_search_app_result_title] {\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n\tflex: 1 1 20rem;\n}\n\n[hyoo_search_app_result_descr] {\n\tpadding: 0 .75rem;\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_ban_option_label] {\n\ttext-align: right;\n}\n");
+    $.$mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\n[hyoo_search_app_sideview] {\n\tflex: 10000 0 40rem;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n\tz-index: 2;\n\tbackground: white;\n}\n\n[hyoo_search_app_sideview_hint] {\n\tflex: 1 1 auto;\n\tpadding: 0 .25rem;\n\tfont-size: .75rem;\n\tjustify-content: center;\n}\n\n[hyoo_search_app_sideview_embed] {\n\tposition: absolute;\n\twidth: 100%;\n\theight: 100%;\n\tmax-height: 100%;\n\taspect-ratio: auto;\n\tborder-radius: 0;\n\tbackground: transparent;\n}\n\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tflex: 0 1 auto;\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tpadding: 0;\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_image] {\n\tflex: 1 0 6rem;\n\tmax-height: 6rem;\n\tobject-fit: scale-down;\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n\tflex-wrap: wrap;\n\talign-items: center;\n\talign-content: center;\n}\n\n[hyoo_search_app_result_main] {\n\tflex: 10000 1 14rem;\n}\n\n[hyoo_search_app_result_title] {\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n\tflex: 1 1 20rem;\n}\n\n[hyoo_search_app_result_descr] {\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_settings_fields] > * {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_ban_option_label] {\n\ttext-align: right;\n}\n");
 })($ || ($ = {}));
 //app.view.css.js.map
 ;
@@ -9962,22 +9968,6 @@ var $;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 //app.view.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_row extends $.$mol_view {
-    }
-    $.$mol_row = $mol_row;
-})($ || ($ = {}));
-//row.view.tree.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_style_attach("mol/row/row.view.css", "[mol_row] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\talign-items: flex-start;\n\talign-content: flex-start;\n\tjustify-content: flex-start;\n\tpadding: .5rem;\n\tflex: 0 0 auto;\n\tbox-sizing: border-box;\n\tmax-width: 100%;\n}\n\n[mol_row] > * {\n\tmargin: .25rem;\n\tmax-width: 100%;\n}\n");
-})($ || ($ = {}));
-//row.view.css.js.map
 ;
 "use strict";
 var $;

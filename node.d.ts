@@ -2592,6 +2592,14 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $mol_row extends $mol_view {
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
     class $mol_icon_backup_restore extends $mol_icon {
         path(): string;
     }
@@ -2674,11 +2682,10 @@ declare namespace $ {
         Result_title(index: any): $$.$mol_dimmer;
         result_host(index: any): string;
         Result_host(index: any): $$.$mol_dimmer;
-        Result_main(index: any): $$.$mol_list;
-        Result_head(index: any): $mol_view;
         result_descr(index: any): string;
         Result_descr(index: any): $$.$mol_dimmer;
-        Result_info(index: any): $$.$mol_list;
+        Result_main(index: any): $$.$mol_list;
+        Result_info(index: any): $mol_row;
         Result_ban_icon(index: any): $mol_icon_cross;
         result_ban_options(index: any): readonly string[];
         result_ban(index: any, val?: any): string;
@@ -3086,14 +3093,6 @@ declare namespace $ {
 
 declare namespace $ {
     function $mol_exec(this: $, dir: string, command: string, ...args: string[]): any;
-}
-
-declare namespace $ {
-    class $mol_row extends $mol_view {
-    }
-}
-
-declare namespace $ {
 }
 
 declare namespace $ {
