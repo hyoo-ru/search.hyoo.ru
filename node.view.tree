@@ -638,6 +638,15 @@ $hyoo_search_app $mol_book2
 					Filter null
 					options /
 						\WWW
+						\Image
+						\PNG
+						\SVG
+						\JPG
+						\WEBP
+						\GIF
+						\BMP
+						\ICO
+						\RAW
 						\PDF
 						\RTF
 						\TXT
@@ -714,7 +723,7 @@ $hyoo_search_app $mol_book2
 						uri <= result_image!index \
 						title \
 					<= Result_main!index $mol_list
-						rows /
+						rows <= result_main!index /
 							<= Result_title!index $mol_dimmer
 								haystack <= result_title!index \
 								needle <= query
@@ -739,7 +748,7 @@ $hyoo_search_app $mol_book2
 						sub /
 							<= Result_cache_icon!index $mol_icon_backup_restore
 					<= Result_open!index $mol_link
-						arg * sideview <= result_uri!index \
+						arg * sideview <= result_embed!index \
 						hint @ \Open in side bar
 						sub /
 							<= Result_open_icon!index $mol_icon_book_open_outline

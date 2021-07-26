@@ -2701,6 +2701,7 @@ declare namespace $ {
         Result_host(index: any): $$.$mol_dimmer;
         result_descr(index: any): string;
         Result_descr(index: any): $$.$mol_dimmer;
+        result_main(index: any): readonly any[];
         Result_main(index: any): $$.$mol_list;
         Result_info(index: any): $mol_row;
         Result_ban_icon(index: any): $mol_icon_cross;
@@ -2710,6 +2711,7 @@ declare namespace $ {
         result_cache(index: any): string;
         Result_cache_icon(index: any): $mol_icon_backup_restore;
         Result_cache(index: any): $$.$mol_link;
+        result_embed(index: any): string;
         Result_open_icon(index: any): $mol_icon_book_open_outline;
         Result_open(index: any): $$.$mol_link;
         Result_tools(index: any): $$.$mol_list;
@@ -2759,9 +2761,22 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    type $mol_type_partial_undefined<Val> = $mol_type_merge<Partial<Val> & Pick<Val, {
+        [Field in keyof Val]: undefined extends Val[Field] ? never : Field;
+    }[keyof Val]>>;
+}
+
+declare namespace $ {
     function $mol_data_setup<Value extends $mol_data_value, Config = never>(value: Value, config: Config): Value & {
         config: Config;
         Value: ReturnType<Value>;
+    };
+}
+
+declare namespace $ {
+    function $mol_data_record<Sub extends Record<string, $mol_data_value<any>>>(sub: Sub): ((val: unknown) => Readonly<$mol_type_merge<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>>) & {
+        config: Sub;
+        Value: Readonly<$mol_type_merge<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>>;
     };
 }
 
@@ -2786,22 +2801,13 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    let $mol_data_string: (val: string) => string;
+}
+
+declare namespace $ {
     function $mol_data_array<Sub extends $mol_data_value>(sub: Sub): ((val: readonly Parameters<Sub>[0][] | unknown) => readonly ReturnType<Sub>[]) & {
         config: Sub;
         Value: readonly ReturnType<Sub>[];
-    };
-}
-
-declare namespace $ {
-    type $mol_type_partial_undefined<Val> = $mol_type_merge<Partial<Val> & Pick<Val, {
-        [Field in keyof Val]: undefined extends Val[Field] ? never : Field;
-    }[keyof Val]>>;
-}
-
-declare namespace $ {
-    function $mol_data_record<Sub extends Record<string, $mol_data_value<any>>>(sub: Sub): ((val: unknown) => Readonly<$mol_type_merge<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>>) & {
-        config: Sub;
-        Value: Readonly<$mol_type_merge<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>>;
     };
 }
 
@@ -2813,10 +2819,6 @@ declare namespace $ {
         };
         Value: ReturnType<Sub> | (Fallback extends undefined ? undefined : ReturnType<Extract<Fallback, () => any>>);
     };
-}
-
-declare namespace $ {
-    let $mol_data_string: (val: string) => string;
 }
 
 declare namespace $ {
@@ -2838,6 +2840,15 @@ declare namespace $ {
     interface GCS {
         execute: (query: string) => void;
     }
+    namespace google.search.cse.element {
+        function getElement(gname: string): GCS;
+        function render(options: {
+            div: Element;
+            tag: 'search';
+            gname: string;
+            attributes?: object;
+        }): void;
+    }
     const Results: ((val: unknown) => readonly Readonly<{
         content?: string | undefined;
         contentNoFormatting?: string | undefined;
@@ -2851,9 +2862,15 @@ declare namespace $ {
             height: string;
             width: string;
         }> | undefined;
+        image?: Readonly<{
+            url: string;
+            height: string;
+            width: string;
+        }> | undefined;
         title: string;
         titleNoFormatting: string;
-        url: string;
+        url?: string | undefined;
+        contextUrl?: string | undefined;
         visibleUrl: string;
     }>[]) & {
         config: ((val: unknown) => Readonly<{
@@ -2869,9 +2886,15 @@ declare namespace $ {
                 height: string;
                 width: string;
             }> | undefined;
+            image?: Readonly<{
+                url: string;
+                height: string;
+                width: string;
+            }> | undefined;
             title: string;
             titleNoFormatting: string;
-            url: string;
+            url?: string | undefined;
+            contextUrl?: string | undefined;
             visibleUrl: string;
         }>) & {
             config: {
@@ -2964,9 +2987,56 @@ declare namespace $ {
                         width: string;
                     }> | undefined;
                 };
+                image: ((val: unknown) => Readonly<{
+                    url: string;
+                    height: string;
+                    width: string;
+                }> | undefined) & {
+                    config: {
+                        sub: ((val: unknown) => Readonly<{
+                            url: string;
+                            height: string;
+                            width: string;
+                        }>) & {
+                            config: {
+                                url: (val: string) => string;
+                                height: (val: string) => string;
+                                width: (val: string) => string;
+                            };
+                            Value: Readonly<{
+                                url: string;
+                                height: string;
+                                width: string;
+                            }>;
+                        };
+                        fallback: (() => Readonly<{
+                            url: string;
+                            height: string;
+                            width: string;
+                        }>) | undefined;
+                    };
+                    Value: Readonly<{
+                        url: string;
+                        height: string;
+                        width: string;
+                    }> | undefined;
+                };
                 title: (val: string) => string;
                 titleNoFormatting: (val: string) => string;
-                url: (val: string) => string;
+                url: ((val: string | undefined) => string | undefined) & {
+                    config: {
+                        sub: (val: string) => string;
+                        fallback: (() => string) | undefined;
+                    };
+                    Value: string | undefined;
+                };
+                contextUrl: ((val: string | undefined) => string | undefined) & {
+                    config: {
+                        sub: (val: string) => string;
+                        fallback: (() => string) | undefined;
+                    };
+                    Value: string | undefined;
+                };
                 visibleUrl: (val: string) => string;
             };
             Value: Readonly<{
@@ -2982,9 +3052,15 @@ declare namespace $ {
                     height: string;
                     width: string;
                 }> | undefined;
+                image?: Readonly<{
+                    url: string;
+                    height: string;
+                    width: string;
+                }> | undefined;
                 title: string;
                 titleNoFormatting: string;
-                url: string;
+                url?: string | undefined;
+                contextUrl?: string | undefined;
                 visibleUrl: string;
             }>;
         };
@@ -3001,15 +3077,24 @@ declare namespace $ {
                 height: string;
                 width: string;
             }> | undefined;
+            image?: Readonly<{
+                url: string;
+                height: string;
+                width: string;
+            }> | undefined;
             title: string;
             titleNoFormatting: string;
-            url: string;
+            url?: string | undefined;
+            contextUrl?: string | undefined;
             visibleUrl: string;
         }>[];
     };
-    export class $hyoo_search_api extends $mol_object {
-        static backend(): GCS;
-        static future(query: string): {
+    export class $hyoo_search_api extends $mol_object2 {
+        static type(type: 'web' | 'image'): $hyoo_search_api;
+        type(): "image" | "web";
+        static backend(): typeof google.search.cse.element;
+        backend(): GCS;
+        future(query: string): {
             done: (res: typeof Results.Value) => void;
             fail: (err: Error) => void;
             promise: Promise<readonly Readonly<{
@@ -3025,13 +3110,19 @@ declare namespace $ {
                     height: string;
                     width: string;
                 }> | undefined;
+                image?: Readonly<{
+                    url: string;
+                    height: string;
+                    width: string;
+                }> | undefined;
                 title: string;
                 titleNoFormatting: string;
-                url: string;
+                url?: string | undefined;
+                contextUrl?: string | undefined;
                 visibleUrl: string;
             }>[]>;
         };
-        static execute(query: string): typeof Results.Value;
+        execute(query: string): typeof Results.Value;
     }
     export {};
 }
@@ -3075,14 +3166,21 @@ declare namespace $.$$ {
                 height: string;
                 width: string;
             }> | undefined;
+            image?: Readonly<{
+                url: string;
+                height: string;
+                width: string;
+            }> | undefined;
             title: string;
             titleNoFormatting: string;
-            url: string;
+            url?: string | undefined;
+            contextUrl?: string | undefined;
             visibleUrl: string;
         }>[];
         result_list(): $mol_link[];
         result_image(index: number): string;
         result_icon(index: number): string;
+        result_main(index: number): $mol_dimmer[];
         result_title(index: number): string;
         result_descr(index: number): string;
         result_host(index: number): string;
@@ -3094,6 +3192,7 @@ declare namespace $.$$ {
         result_ban_options(index: number): string[];
         result_ban(index: number, host?: string): string;
         result_uri(index: number): string;
+        result_embed(index: number): string;
         result_uri_view(index: number): string;
         searcher_list(): string[];
         searcher_links(): $mol_link_iconed[];

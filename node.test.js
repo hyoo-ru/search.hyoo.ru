@@ -8988,6 +8988,15 @@ var $;
             obj.Filter = () => null;
             obj.options = () => [
                 "WWW",
+                "Image",
+                "PNG",
+                "SVG",
+                "JPG",
+                "WEBP",
+                "GIF",
+                "BMP",
+                "ICO",
+                "RAW",
                 "PDF",
                 "RTF",
                 "TXT",
@@ -9218,13 +9227,16 @@ var $;
             obj.needle = () => this.query();
             return obj;
         }
-        Result_main(index) {
-            const obj = new this.$.$mol_list();
-            obj.rows = () => [
+        result_main(index) {
+            return [
                 this.Result_title(index),
                 this.Result_host(index),
                 this.Result_descr(index)
             ];
+        }
+        Result_main(index) {
+            const obj = new this.$.$mol_list();
+            obj.rows = () => this.result_main(index);
             return obj;
         }
         Result_info(index) {
@@ -9273,6 +9285,9 @@ var $;
             ];
             return obj;
         }
+        result_embed(index) {
+            return "";
+        }
         Result_open_icon(index) {
             const obj = new this.$.$mol_icon_book_open_outline();
             return obj;
@@ -9280,7 +9295,7 @@ var $;
         Result_open(index) {
             const obj = new this.$.$mol_link();
             obj.arg = () => ({
-                sideview: this.result_uri(index)
+                sideview: this.result_embed(index)
             });
             obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Result_open_hint');
             obj.sub = () => [
@@ -9546,6 +9561,9 @@ var $;
 //value.js.map
 ;
 "use strict";
+//undefined.js.map
+;
+"use strict";
 var $;
 (function ($) {
     function $mol_data_setup(value, config) {
@@ -9557,6 +9575,30 @@ var $;
     $.$mol_data_setup = $mol_data_setup;
 })($ || ($ = {}));
 //setup.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_data_record(sub) {
+        return $.$mol_data_setup((val) => {
+            let res = {};
+            for (const field in sub) {
+                try {
+                    res[field] = sub[field](val[field]);
+                }
+                catch (error) {
+                    if ('then' in error)
+                        return $.$mol_fail_hidden(error);
+                    error.message = `[${JSON.stringify(field)}] ${error.message}`;
+                    return $.$mol_fail(error);
+                }
+            }
+            return res;
+        }, sub);
+    }
+    $.$mol_data_record = $mol_data_record;
+})($ || ($ = {}));
+//record.js.map
 ;
 "use strict";
 var $;
@@ -9619,6 +9661,17 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    $.$mol_data_string = (val) => {
+        if (typeof val === 'string')
+            return val;
+        return $.$mol_fail(new $.$mol_data_error(`${val} is not a string`));
+    };
+})($ || ($ = {}));
+//string.js.map
+;
+"use strict";
+var $;
+(function ($) {
     function $mol_data_array(sub) {
         return $.$mol_data_setup((val) => {
             if (!Array.isArray(val))
@@ -9641,33 +9694,6 @@ var $;
 //array.js.map
 ;
 "use strict";
-//undefined.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_data_record(sub) {
-        return $.$mol_data_setup((val) => {
-            let res = {};
-            for (const field in sub) {
-                try {
-                    res[field] = sub[field](val[field]);
-                }
-                catch (error) {
-                    if ('then' in error)
-                        return $.$mol_fail_hidden(error);
-                    error.message = `[${JSON.stringify(field)}] ${error.message}`;
-                    return $.$mol_fail(error);
-                }
-            }
-            return res;
-        }, sub);
-    }
-    $.$mol_data_record = $mol_data_record;
-})($ || ($ = {}));
-//record.js.map
-;
-"use strict";
 var $;
 (function ($) {
     function $mol_data_optional(sub, fallback) {
@@ -9681,17 +9707,6 @@ var $;
     $.$mol_data_optional = $mol_data_optional;
 })($ || ($ = {}));
 //optional.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_data_string = (val) => {
-        if (typeof val === 'string')
-            return val;
-        return $.$mol_fail(new $.$mol_data_error(`${val} is not a string`));
-    };
-})($ || ($ = {}));
-//string.js.map
 ;
 "use strict";
 var $;
@@ -9769,55 +9784,79 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    const Image = $.$mol_data_record({
+        url: $.$mol_data_string,
+        height: $.$mol_data_string,
+        width: $.$mol_data_string,
+    });
     const Results = $.$mol_data_array($.$mol_data_record({
         content: $.$mol_data_optional($.$mol_data_string),
         contentNoFormatting: $.$mol_data_optional($.$mol_data_string),
         richSnippet: $.$mol_data_optional($.$mol_data_record({
             metatags: $.$mol_data_optional($.$mol_data_dict($.$mol_data_string)),
         })),
-        thumbnailImage: $.$mol_data_optional($.$mol_data_record({
-            url: $.$mol_data_string,
-            height: $.$mol_data_string,
-            width: $.$mol_data_string,
-        })),
+        thumbnailImage: $.$mol_data_optional(Image),
+        image: $.$mol_data_optional(Image),
         title: $.$mol_data_string,
         titleNoFormatting: $.$mol_data_string,
-        url: $.$mol_data_string,
+        url: $.$mol_data_optional($.$mol_data_string),
+        contextUrl: $.$mol_data_optional($.$mol_data_string),
         visibleUrl: $.$mol_data_string,
     }));
-    class $hyoo_search_api extends $.$mol_object {
+    class $hyoo_search_api extends $.$mol_object2 {
+        static type(type) {
+            const api = new this;
+            api.type = $.$mol_const(type);
+            return api;
+        }
+        type() {
+            return 'web';
+        }
         static backend() {
             $.$mol_mem_persist();
             let done;
             const promise = $.$mol_fiber.run(() => new Promise(d => done = d));
+            const ready = (type) => (gname, query, promos, results, div) => {
+                if (results.length && !Object.keys(results[0]).length)
+                    results = [];
+                const future = $hyoo_search_api.type(type).future(query);
+                try {
+                    future.done(Results(results));
+                }
+                catch (error) {
+                    future.fail(error);
+                }
+                return true;
+            };
             window['__gcse'] = $.$mol_fiber.run(() => ({
                 parsetags: 'explicit',
                 initializationCallback: () => {
                     const api = google.search.cse.element;
-                    const gname = this.toString();
-                    api.render({
-                        div: $.$mol_jsx("div", null),
-                        tag: 'search',
-                        gname,
-                    });
-                    done(api.getElement(gname));
+                    done(api);
                 },
                 searchCallbacks: {
-                    web: {
-                        starting: () => {
-                        },
-                        ready: (gname, query, promos, results, div) => {
-                            this.future(query).done(results[0].url ? Results(results) : []);
-                            return true;
-                        },
-                    },
+                    web: { ready: ready('web') },
+                    image: { ready: ready('image') },
                 },
             }));
             const uri = 'https://cse.google.com/cse.js?cx=002821183079327163555:WMX276788641&';
             this.$.$mol_import.script(uri);
             return $.$mol_fiber_sync(() => promise)();
         }
-        static future(query) {
+        backend() {
+            const backend = $hyoo_search_api.backend();
+            const gname = this.toString();
+            backend.render({
+                div: $.$mol_jsx("div", null),
+                tag: 'search',
+                gname,
+                attributes: {
+                    defaultToImageSearch: this.type() === 'image',
+                },
+            });
+            return backend.getElement(gname);
+        }
+        future(query) {
             let done;
             let fail;
             const promise = new Promise((d, f) => {
@@ -9826,23 +9865,30 @@ var $;
             });
             return { done, fail, promise };
         }
-        static execute(query) {
+        execute(query) {
             const backend = this.backend();
             if (!query)
                 return [];
             backend.execute(query);
-            return $.$mol_fiber_sync(() => this.future(query).promise)();
+            const future = this.future(query);
+            return $.$mol_fiber_sync(() => future.promise)();
         }
     }
     __decorate([
         $.$mol_mem
+    ], $hyoo_search_api.prototype, "backend", null);
+    __decorate([
+        $.$mol_mem_key
+    ], $hyoo_search_api.prototype, "future", null);
+    __decorate([
+        $.$mol_mem_key
+    ], $hyoo_search_api.prototype, "execute", null);
+    __decorate([
+        $.$mol_mem_key
+    ], $hyoo_search_api, "type", null);
+    __decorate([
+        $.$mol_mem
     ], $hyoo_search_api, "backend", null);
-    __decorate([
-        $.$mol_mem_key
-    ], $hyoo_search_api, "future", null);
-    __decorate([
-        $.$mol_mem_key
-    ], $hyoo_search_api, "execute", null);
     $.$hyoo_search_api = $hyoo_search_api;
 })($ || ($ = {}));
 //api.js.map
@@ -9927,6 +9973,8 @@ var $;
                 const type = this.type();
                 if (type === 'WWW')
                     return '';
+                if (type === 'Image')
+                    return '';
                 return `filetype:${type}`;
             }
             query_where() {
@@ -9970,7 +10018,18 @@ var $;
                 return super.main_content();
             }
             results_raw() {
-                return this.$.$hyoo_search_api.execute(this.query_backend());
+                const type = [
+                    'PNG',
+                    'SVG',
+                    'JPG',
+                    'WEBP',
+                    'GIF',
+                    'BMP',
+                    'ICO',
+                    'RAW',
+                    'Image'
+                ].includes(this.type()) ? 'image' : 'web';
+                return this.$.$hyoo_search_api.type(type).execute(this.query_backend());
             }
             result_list() {
                 return this.results_raw().map((_, i) => this.Result_item(i));
@@ -9983,11 +10042,19 @@ var $;
                 const res = this.results_raw()[index];
                 return `https://favicon.yandex.net/favicon/${res.visibleUrl}?color=0,0,0,0&size=32&stub=1`;
             }
+            result_main(index) {
+                return [
+                    this.Result_title(index),
+                    this.Result_host(index),
+                    ...this.result_descr(index) ? [this.Result_descr(index)] : [],
+                ];
+            }
             result_title(index) {
                 return this.results_raw()[index].titleNoFormatting;
             }
             result_descr(index) {
-                return this.results_raw()[index].contentNoFormatting ?? '';
+                const descr = this.results_raw()[index].contentNoFormatting ?? '';
+                return this.result_title(index) === descr ? '' : descr;
             }
             result_host(index) {
                 return this.results_raw()[index].visibleUrl ?? '';
@@ -10037,7 +10104,16 @@ var $;
                 return '';
             }
             result_uri(index) {
-                return new URL(this.results_raw()[index].url).searchParams.get('q');
+                const res = this.results_raw()[index];
+                if (res.url)
+                    return new URL(res.url).searchParams.get('q');
+                return res.contextUrl;
+            }
+            result_embed(index) {
+                const res = this.results_raw()[index];
+                if (res.url)
+                    return new URL(res.url).searchParams.get('q');
+                return res.image.url;
             }
             result_uri_view(index) {
                 const uri = this.result_uri(index);
@@ -10105,6 +10181,21 @@ var $;
         ], $hyoo_search_app.prototype, "result_list", null);
         __decorate([
             $.$mol_mem_key
+        ], $hyoo_search_app.prototype, "result_image", null);
+        __decorate([
+            $.$mol_mem_key
+        ], $hyoo_search_app.prototype, "result_icon", null);
+        __decorate([
+            $.$mol_mem_key
+        ], $hyoo_search_app.prototype, "result_main", null);
+        __decorate([
+            $.$mol_mem_key
+        ], $hyoo_search_app.prototype, "result_title", null);
+        __decorate([
+            $.$mol_mem_key
+        ], $hyoo_search_app.prototype, "result_descr", null);
+        __decorate([
+            $.$mol_mem_key
         ], $hyoo_search_app.prototype, "result_cache", null);
         __decorate([
             $.$mol_mem_key
@@ -10121,6 +10212,9 @@ var $;
         __decorate([
             $.$mol_mem_key
         ], $hyoo_search_app.prototype, "result_uri", null);
+        __decorate([
+            $.$mol_mem_key
+        ], $hyoo_search_app.prototype, "result_embed", null);
         __decorate([
             $.$mol_mem_key
         ], $hyoo_search_app.prototype, "result_uri_view", null);
@@ -12858,6 +12952,30 @@ var $;
 var $;
 (function ($) {
     $.$mol_test({
+        'Is string'() {
+            $.$mol_data_string('');
+        },
+        'Is not string'() {
+            $.$mol_assert_fail(() => {
+                $.$mol_data_string(0);
+            }, '0 is not a string');
+        },
+        'Is object string'() {
+            $.$mol_assert_fail(() => {
+                $.$mol_data_string(new String('x'));
+            }, 'x is not a string');
+        },
+    });
+})($ || ($ = {}));
+//string.test.js.map
+;
+"use strict";
+//undefined.test.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_test({
         'config by value'() {
             const N = $.$mol_data_setup((a) => a, 5);
             $.$mol_assert_equal(N.config, 5);
@@ -12865,6 +12983,34 @@ var $;
     });
 })($ || ($ = {}));
 //setup.test.js.map
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_test({
+        'Fit to record'() {
+            const User = $.$mol_data_record({ age: $.$mol_data_number });
+            User({ age: 0 });
+        },
+        'Extends record'() {
+            const User = $.$mol_data_record({ age: $.$mol_data_number });
+            User({ age: 0, name: 'Jin' });
+        },
+        'Shrinks record'() {
+            $.$mol_assert_fail(() => {
+                const User = $.$mol_data_record({ age: $.$mol_data_number, name: $.$mol_data_string });
+                User({ age: 0 });
+            }, '["name"] undefined is not a string');
+        },
+        'Shrinks deep record'() {
+            $.$mol_assert_fail(() => {
+                const User = $.$mol_data_record({ wife: $.$mol_data_record({ age: $.$mol_data_number }) });
+                User({ wife: {} });
+            }, '["wife"] ["age"] undefined is not a number');
+        },
+    });
+})($ || ($ = {}));
+//record.test.js.map
 ;
 "use strict";
 var $;
@@ -12894,58 +13040,6 @@ var $;
     });
 })($ || ($ = {}));
 //array.test.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_test({
-        'Is string'() {
-            $.$mol_data_string('');
-        },
-        'Is not string'() {
-            $.$mol_assert_fail(() => {
-                $.$mol_data_string(0);
-            }, '0 is not a string');
-        },
-        'Is object string'() {
-            $.$mol_assert_fail(() => {
-                $.$mol_data_string(new String('x'));
-            }, 'x is not a string');
-        },
-    });
-})($ || ($ = {}));
-//string.test.js.map
-;
-"use strict";
-//undefined.test.js.map
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_test({
-        'Fit to record'() {
-            const User = $.$mol_data_record({ age: $.$mol_data_number });
-            User({ age: 0 });
-        },
-        'Extends record'() {
-            const User = $.$mol_data_record({ age: $.$mol_data_number });
-            User({ age: 0, name: 'Jin' });
-        },
-        'Shrinks record'() {
-            $.$mol_assert_fail(() => {
-                const User = $.$mol_data_record({ age: $.$mol_data_number, name: $.$mol_data_string });
-                User({ age: 0 });
-            }, '["name"] undefined is not a string');
-        },
-        'Shrinks deep record'() {
-            $.$mol_assert_fail(() => {
-                const User = $.$mol_data_record({ wife: $.$mol_data_record({ age: $.$mol_data_number }) });
-                User({ wife: {} });
-            }, '["wife"] ["age"] undefined is not a number');
-        },
-    });
-})($ || ($ = {}));
-//record.test.js.map
 ;
 "use strict";
 var $;
