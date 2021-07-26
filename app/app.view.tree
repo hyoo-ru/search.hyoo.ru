@@ -104,24 +104,22 @@ $hyoo_search_app $mol_book2
 		uri <= result_uri!index \
 		target \search_result
 		sub /
-			<= Result_info!index $mol_list
-				rows /
-					<= Result_head!index $mol_view
-						sub /
-							<= Result_image!index $mol_image
-								uri <= result_image!index \
-								title \
-							<= Result_main!index $mol_list
-								rows /
-									<= Result_title!index $mol_dimmer
-										haystack <= result_title!index \
-										needle <= query
-									<= Result_host!index $mol_dimmer
-										haystack <= result_host!index \
-										needle <= query
-					<= Result_descr!index $mol_dimmer
-						haystack <= result_descr!index \
-						needle <= query
+			<= Result_info!index $mol_row
+				sub /
+					<= Result_image!index $mol_image
+						uri <= result_image!index \
+						title \
+					<= Result_main!index $mol_list
+						rows /
+							<= Result_title!index $mol_dimmer
+								haystack <= result_title!index \
+								needle <= query
+							<= Result_host!index $mol_dimmer
+								haystack <= result_host!index \
+								needle <= query
+							<= Result_descr!index $mol_dimmer
+								haystack <= result_descr!index \
+								needle <= query
 			<= Result_tools!index $mol_list
 				rows /
 					<= Result_ban!index $mol_select

@@ -40,25 +40,25 @@
 }
 	
 [hyoo_search_app_result_item] {
-	margin: var(--mol_gap_block);
 	padding: 0;
+	margin: var(--mol_gap_block);
 }
 
 [hyoo_search_app_result_image] {
-	width: 2.5rem;
-	height: 2.5rem;
-	flex: none;
-	margin: var(--mol_gap_block);
+	flex: 1 0 6rem;
+	max-height: 6rem;
+	object-fit: scale-down;
 }
 
 [hyoo_search_app_result_info] {
 	flex: 1 1 auto;
-	padding-bottom: .5rem;
+	flex-wrap: wrap;
+	align-items: center;
+	align-content: center;
 }
 
 [hyoo_search_app_result_main] {
-	flex: 1 1 auto;
-	padding: .5rem 0;
+	flex: 10000 1 14rem;
 }
 
 [hyoo_search_app_result_title] {
@@ -68,7 +68,6 @@
 }
 
 [hyoo_search_app_result_descr] {
-	padding: 0 .75rem;
 	color: var(--mol_theme_text);
 }
 
