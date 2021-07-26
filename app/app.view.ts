@@ -88,7 +88,9 @@ namespace $.$$ {
 		query_type() {
 			
 			const type = this.type()
+			
 			if( type === 'WWW' ) return ''
+			if( type === 'Image' ) return ''
 			
 			return `filetype:${type}`
 		}
@@ -150,7 +152,20 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		results_raw() {
-			return this.$.$hyoo_search_api.execute( this.query_backend() )
+			
+			const type = [
+				'PNG',
+				'SVG',
+				'JPG',
+				'WEBP',
+				'GIF',
+				'BMP',
+				'ICO',
+				'RAW',
+				'Image'
+			].includes( this.type() ) ? 'image' : 'web'
+			
+			return this.$.$hyoo_search_api.type( type ).execute( this.query_backend() )
 		}
 		
 		@ $mol_mem
@@ -158,22 +173,36 @@ namespace $.$$ {
 			return this.results_raw().map( (_,i)=> this.Result_item(i) )
 		}
 		
+		@ $mol_mem_key
 		result_image( index: number ) {
 			const res = this.results_raw()[ index ]
 			return res.thumbnailImage?.url ?? this.result_icon( index )
 		}
 		
+		@ $mol_mem_key
 		result_icon( index: number ) {
 			const res = this.results_raw()[ index ]
 			return `https://favicon.yandex.net/favicon/${ res.visibleUrl }?color=0,0,0,0&size=32&stub=1`
 		}
 		
+		@ $mol_mem_key
+		result_main( index: number ) {
+			return [
+				this.Result_title( index ),
+				this.Result_host( index ),
+				... this.result_descr( index ) ? [ this.Result_descr( index ) ] : [],
+			]
+		}
+		
+		@ $mol_mem_key
 		result_title( index: number ) {
 			return this.results_raw()[ index ].titleNoFormatting
 		}
 		
+		@ $mol_mem_key
 		result_descr( index: number ) {
-			return this.results_raw()[ index ].contentNoFormatting ?? ''
+			const descr = this.results_raw()[ index ].contentNoFormatting ?? ''
+			return this.result_title( index ) === descr ? '' : descr
 		}
 		
 		result_host( index: number ) {
@@ -248,7 +277,16 @@ namespace $.$$ {
 		
 		@ $mol_mem_key
 		result_uri( index: number ) {
-			return new URL( this.results_raw()[ index ].url ).searchParams.get( 'q' )!
+			const res = this.results_raw()[ index ]
+			if( res.url ) return new URL( res.url ).searchParams.get( 'q' )!
+			return res.contextUrl!
+		}
+		
+		@ $mol_mem_key
+		result_embed( index: number ) {
+			const res = this.results_raw()[ index ]
+			if( res.url ) return new URL( res.url ).searchParams.get( 'q' )!
+			return res.image!.url
 		}
 		
 		@ $mol_mem_key
