@@ -9836,8 +9836,8 @@ var $;
             pages() {
                 return [
                     this.Main(),
-                    ...this.sideview() ? [this.Sideview(this.sideview())] : [],
                     ...this.settings() ? [this.Settings()] : [],
+                    ...this.sideview() ? [this.Sideview(this.sideview())] : [],
                 ];
             }
             title() {
