@@ -748,7 +748,9 @@ $hyoo_search_app $mol_book2
 						sub /
 							<= Result_cache_icon!index $mol_icon_backup_restore
 					<= Result_open!index $mol_link
-						arg * sideview <= result_embed!index \
+						arg *
+							settings null
+							sideview <= result_embed!index \
 						hint @ \Open in side bar
 						sub /
 							<= Result_open_icon!index $mol_icon_book_open_outline

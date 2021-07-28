@@ -9303,6 +9303,7 @@ var $;
         Result_open(index) {
             const obj = new this.$.$mol_link();
             obj.arg = () => ({
+                settings: null,
                 sideview: this.result_embed(index)
             });
             obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Result_open_hint');
