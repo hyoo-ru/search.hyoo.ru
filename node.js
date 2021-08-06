@@ -177,13 +177,9 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    var _a;
     class $mol_object2 {
-        constructor(init) {
-            this[_a] = null;
-            if (init)
-                init(this);
-        }
+        static $ = $;
+        [$.$mol_ambient_ref] = null;
         get $() {
             if (this[$.$mol_ambient_ref])
                 return this[$.$mol_ambient_ref];
@@ -196,9 +192,12 @@ var $;
             this[$.$mol_ambient_ref] = next;
         }
         static create(init) {
-            return new this(init);
+            const obj = new this;
+            if (init)
+                init(obj);
+            return obj;
         }
-        static [(_a = $.$mol_ambient_ref, Symbol.toPrimitive)]() {
+        static [Symbol.toPrimitive]() {
             return this.toString();
         }
         static toString() {
@@ -217,7 +216,6 @@ var $;
             return this.toString();
         }
     }
-    $mol_object2.$ = $;
     $.$mol_object2 = $mol_object2;
 })($ || ($ = {}));
 //object2.js.map
@@ -226,10 +224,12 @@ var $;
 var $;
 (function ($) {
     class $mol_after_tick extends $.$mol_object2 {
+        task;
+        promise;
+        cancelled = false;
         constructor(task) {
             super();
             this.task = task;
-            this.cancelled = false;
             this.promise = Promise.resolve().then(() => {
                 if (this.cancelled)
                     return;
@@ -331,6 +331,7 @@ var $;
 var $;
 (function ($) {
     class $mol_decor {
+        value;
         constructor(value) {
             this.value = value;
         }
@@ -349,6 +350,7 @@ var $;
 var $;
 (function ($) {
     class $mol_style_unit extends $.$mol_decor {
+        literal;
         constructor(value, literal) {
             super(value);
             this.literal = literal;
@@ -394,6 +396,7 @@ var $;
 (function ($) {
     const { per } = $.$mol_style_unit;
     class $mol_style_func extends $.$mol_decor {
+        name;
         constructor(name, value) {
             super(value);
             this.name = name;
@@ -541,6 +544,13 @@ var $;
 (function ($) {
     $.$mol_tree_convert = Symbol('$mol_tree_convert');
     class $mol_tree extends $.$mol_object2 {
+        type;
+        data;
+        sub;
+        baseUri;
+        row;
+        col;
+        length;
         constructor(config = {}) {
             super();
             this.type = config.type || '';
@@ -893,6 +903,7 @@ var $;
 var $;
 (function ($) {
     class $mol_wrapper extends $.$mol_object2 {
+        static wrap;
         static run(task) {
             return this.func(task)();
         }
@@ -930,6 +941,9 @@ var $;
 var $;
 (function ($) {
     class $mol_after_timeout extends $.$mol_object2 {
+        delay;
+        task;
+        id;
         constructor(delay, task) {
             super();
             this.delay = delay;
@@ -948,6 +962,7 @@ var $;
 var $;
 (function ($) {
     class $mol_after_frame extends $.$mol_after_timeout {
+        task;
         constructor(task) {
             super(16, task);
             this.task = task;
@@ -1287,13 +1302,7 @@ var $;
     }
     $.$mol_fiber_solid = $mol_fiber_solid;
     class $mol_fiber extends $.$mol_wrapper {
-        constructor() {
-            super(...arguments);
-            this.cursor = 0;
-            this.masters = [];
-            this._value = undefined;
-            this._error = null;
-        }
+        static logs = false;
         static wrap(task) {
             return function $mol_fiber_wrapper(...args) {
                 const slave = $mol_fiber.current;
@@ -1307,6 +1316,12 @@ var $;
                 return master.get();
             };
         }
+        static quant = 16;
+        static deadline = 0;
+        static liveline = 0;
+        static current = null;
+        static scheduled = null;
+        static queue = [];
         static async tick() {
             while ($mol_fiber.queue.length > 0) {
                 const now = Date.now();
@@ -1336,10 +1351,15 @@ var $;
             const promise = new this.$.Promise(done => this.queue.push(() => (done(null), promise)));
             return promise;
         }
+        cursor = 0;
+        masters = [];
+        calculate;
+        _value = undefined;
         get value() { return this._value; }
         set value(next) {
             this._value = next;
         }
+        _error = null;
         get error() { return this._error; }
         set error(next) {
             this._error = next;
@@ -1534,13 +1554,6 @@ var $;
             return $.$mol_dev_format_native(this);
         }
     }
-    $mol_fiber.logs = false;
-    $mol_fiber.quant = 16;
-    $mol_fiber.deadline = 0;
-    $mol_fiber.liveline = 0;
-    $mol_fiber.current = null;
-    $mol_fiber.scheduled = null;
-    $mol_fiber.queue = [];
     $.$mol_fiber = $mol_fiber;
 })($ || ($ = {}));
 //fiber.js.map
@@ -1561,16 +1574,17 @@ var $;
     }
     $.$mol_atom2_value = $mol_atom2_value;
     class $mol_atom2 extends $.$mol_fiber {
-        constructor() {
-            super(...arguments);
-            this.slaves = [];
-        }
+        static logs = false;
         static get current() {
             const atom = $.$mol_fiber.current;
             if (atom instanceof $mol_atom2)
                 return atom;
             return null;
         }
+        static cached = false;
+        static cached_next = undefined;
+        static reap_task = null;
+        static reap_queue = [];
         static reap(atom) {
             this.reap_queue.push(atom);
             if (this.reap_task)
@@ -1587,6 +1601,7 @@ var $;
                 }
             });
         }
+        slaves = [];
         rescue(master, cursor) {
             if (!(master instanceof $mol_atom2))
                 return;
@@ -1810,11 +1825,6 @@ var $;
             }
         }
     }
-    $mol_atom2.logs = false;
-    $mol_atom2.cached = false;
-    $mol_atom2.cached_next = undefined;
-    $mol_atom2.reap_task = null;
-    $mol_atom2.reap_queue = [];
     $.$mol_atom2 = $mol_atom2;
 })($ || ($ = {}));
 //atom2.js.map
@@ -1829,13 +1839,11 @@ var $;
 var $;
 (function ($) {
     class $mol_mem_force extends Object {
-        constructor() {
-            super();
-            this.$mol_mem_force = true;
-        }
+        constructor() { super(); }
+        $mol_mem_force = true;
+        static $mol_mem_force = true;
         static toString() { return this.name; }
     }
-    $mol_mem_force.$mol_mem_force = true;
     $.$mol_mem_force = $mol_mem_force;
     class $mol_mem_force_cache extends $mol_mem_force {
     }
@@ -2359,6 +2367,7 @@ var $;
             }
             return min;
         }
+        static watchers = new Set();
         view_rect() {
             if ($.$mol_atom2.current)
                 this.view_rect_watcher();
@@ -2551,7 +2560,6 @@ var $;
             view.dom_node().scrollIntoView({ block: align });
         }
     }
-    $mol_view.watchers = new Set();
     __decorate([
         $.$mol_mem
     ], $mol_view.prototype, "autorun", null);
@@ -2798,6 +2806,7 @@ var $;
 var $;
 (function ($) {
     class $mol_state_session extends $.$mol_object {
+        static 'native()';
         static native() {
             if (this['native()'])
                 return this['native()'];
@@ -2849,6 +2858,10 @@ var $;
 var $;
 (function ($) {
     class $mol_dom_listener extends $.$mol_object {
+        _node;
+        _event;
+        _handler;
+        _config;
         constructor(_node, _event, _handler, _config = { passive: true }) {
             super();
             this._node = _node;
@@ -3077,6 +3090,7 @@ var $;
 var $;
 (function ($) {
     class $mol_state_local extends $.$mol_object {
+        static 'native()';
         static native() {
             if (this['native()'])
                 return this['native()'];
@@ -3606,10 +3620,7 @@ var $;
 var $;
 (function ($) {
     class $mol_state_arg extends $.$mol_object {
-        constructor(prefix = '') {
-            super();
-            this.prefix = prefix;
-        }
+        prefix;
         static href(next) {
             return next || process.argv.slice(2).join(' ');
         }
@@ -3652,6 +3663,10 @@ var $;
                 chunks.push([key].concat(next[key]).map(encodeURIComponent).join('='));
             }
             return chunks.join(' ');
+        }
+        constructor(prefix = '') {
+            super();
+            this.prefix = prefix;
         }
         value(key, next) {
             return this.constructor.value(this.prefix + key, next);
@@ -5503,6 +5518,7 @@ var $;
 var $;
 (function ($) {
     class $mol_regexp extends RegExp {
+        groups;
         constructor(source, flags = 'gsu', groups = []) {
             super(source, flags);
             this.groups = groups;
@@ -5737,26 +5753,26 @@ var $;
             const regexp = forbidden.map(f => $mol_regexp.from(f).source).join('');
             return new $mol_regexp(`[^${regexp}]`);
         }
+        static decimal_only = $mol_regexp.from(/\d/gsu);
+        static decimal_except = $mol_regexp.from(/\D/gsu);
+        static latin_only = $mol_regexp.from(/\w/gsu);
+        static latin_except = $mol_regexp.from(/\W/gsu);
+        static space_only = $mol_regexp.from(/\s/gsu);
+        static space_except = $mol_regexp.from(/\S/gsu);
+        static word_break_only = $mol_regexp.from(/\b/gsu);
+        static word_break_except = $mol_regexp.from(/\B/gsu);
+        static tab = $mol_regexp.from(/\t/gsu);
+        static slash_back = $mol_regexp.from(/\\/gsu);
+        static nul = $mol_regexp.from(/\0/gsu);
+        static char_any = $mol_regexp.from(/./gsu);
+        static begin = $mol_regexp.from(/^/gsu);
+        static end = $mol_regexp.from(/$/gsu);
+        static or = $mol_regexp.from(/|/gsu);
+        static line_end = $mol_regexp.from({
+            win_end: [['\r'], '\n'],
+            mac_end: '\r',
+        });
     }
-    $mol_regexp.decimal_only = $mol_regexp.from(/\d/gsu);
-    $mol_regexp.decimal_except = $mol_regexp.from(/\D/gsu);
-    $mol_regexp.latin_only = $mol_regexp.from(/\w/gsu);
-    $mol_regexp.latin_except = $mol_regexp.from(/\W/gsu);
-    $mol_regexp.space_only = $mol_regexp.from(/\s/gsu);
-    $mol_regexp.space_except = $mol_regexp.from(/\S/gsu);
-    $mol_regexp.word_break_only = $mol_regexp.from(/\b/gsu);
-    $mol_regexp.word_break_except = $mol_regexp.from(/\B/gsu);
-    $mol_regexp.tab = $mol_regexp.from(/\t/gsu);
-    $mol_regexp.slash_back = $mol_regexp.from(/\\/gsu);
-    $mol_regexp.nul = $mol_regexp.from(/\0/gsu);
-    $mol_regexp.char_any = $mol_regexp.from(/./gsu);
-    $mol_regexp.begin = $mol_regexp.from(/^/gsu);
-    $mol_regexp.end = $mol_regexp.from(/$/gsu);
-    $mol_regexp.or = $mol_regexp.from(/|/gsu);
-    $mol_regexp.line_end = $mol_regexp.from({
-        win_end: [['\r'], '\n'],
-        mac_end: '\r',
-    });
     $.$mol_regexp = $mol_regexp;
 })($ || ($ = {}));
 //regexp.js.map
@@ -7819,9 +7835,9 @@ var $;
 var $;
 (function ($) {
     class $mol_syntax2 {
+        lexems;
         constructor(lexems) {
             this.lexems = lexems;
-            this.rules = [];
             for (let name in lexems) {
                 this.rules.push({
                     name: name,
@@ -7832,6 +7848,8 @@ var $;
             const parts = '(' + this.rules.map(rule => rule.regExp.source).join(')|(') + ')';
             this.regexp = RegExp(`([\\s\\S]*?)(?:(${parts})|$(?![^]))`, 'gm');
         }
+        rules = [];
+        regexp;
         tokenize(text, handle) {
             let end = 0;
             lexing: while (end < text.length) {
@@ -8751,11 +8769,12 @@ var $;
     var $$;
     (function ($$) {
         class $mol_embed_native extends $.$mol_embed_native {
+            dom_node;
             loaded() {
                 const node = this.dom_node();
                 this.uri_resource();
                 return $.$mol_fiber_sync(() => new Promise((done, fail) => {
-                    new $.$mol_after_timeout(3000, () => {
+                    new $.$mol_after_timeout(3_000, () => {
                         try {
                             if (node.contentWindow.location.href === 'about:blank') {
                                 done(true);
@@ -8774,6 +8793,7 @@ var $;
             uri_resource() {
                 return this.uri().replace(/#.*/, '');
             }
+            _uri_sync;
             uri_listener() {
                 const node = this.dom_node();
                 return new $.$mol_dom_listener($.$mol_dom_context, 'message', $.$mol_fiber_root((event) => {
@@ -9640,6 +9660,7 @@ var $;
 var $;
 (function ($) {
     class $mol_error_mix extends Error {
+        errors;
         constructor(message, ...errors) {
             super(message);
             this.errors = errors;
@@ -9923,14 +9944,12 @@ var $;
         const Words = $.$mol_regexp.repeat_greedy($.$mol_regexp.unicode_only('Alphabetic'), 1);
         class $hyoo_search_app extends $.$hyoo_search_app {
             get $() {
-                var _a;
                 const Base = super.$.$mol_state_arg;
                 return super.$.$mol_ambient({
-                    $mol_state_arg: (_a = class extends Base {
-                        },
-                        _a.separator = ';',
-                        _a.href = Base.href.bind(Base),
-                        _a)
+                    $mol_state_arg: class extends Base {
+                        static separator = ';';
+                        static href = Base.href.bind(Base);
+                    }
                 });
             }
             autofocus() {
@@ -10391,6 +10410,10 @@ var $;
         static of(node) {
             return node[this];
         }
+        [Symbol.toStringTag];
+        attributes;
+        ownerDocument;
+        childNodes;
         valueOf() {
             const prefix = $.$mol_jsx_prefix;
             const booked = $.$mol_jsx_booked;
@@ -10411,7 +10434,6 @@ var $;
             return $.$mol_fail(new Error('dom_tree() not implemented'));
         }
     }
-    Symbol.toStringTag;
     $.$mol_jsx_view = $mol_jsx_view;
 })($ || ($ = {}));
 //view.js.map
