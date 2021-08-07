@@ -2581,7 +2581,6 @@ declare namespace $ {
 
 declare namespace $.$$ {
     class $mol_embed_native extends $.$mol_embed_native {
-        dom_node: (next?: HTMLIFrameElement) => HTMLObjectElement;
         loaded(): boolean;
         uri_resource(): string;
         _uri_sync: $mol_fiber | undefined;
