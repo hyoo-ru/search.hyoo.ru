@@ -496,7 +496,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_dom_render_children(el: Element, childNodes: NodeList | Array<Node | string | null>): void;
+    function $mol_dom_render_children(el: Element | DocumentFragment, childNodes: NodeList | Array<Node | string | null>): void;
 }
 
 declare namespace $ {
@@ -2473,16 +2473,17 @@ declare namespace $ {
     let $mol_jsx_prefix: string;
     let $mol_jsx_booked: Set<string> | null;
     let $mol_jsx_document: $mol_jsx.JSX.ElementClass['ownerDocument'];
+    const $mol_jsx_frag = "";
     function $mol_jsx<Props extends {
         id?: string;
-    }, Children extends Array<Node | string>>(Elem: string | ((props: Props, ...children: Children) => Element) | typeof $mol_jsx_view, props: Props, ...childNodes: Children): Element;
+    }, Children extends Array<Node | string>>(Elem: string | ((props: Props, ...children: Children) => Element), props: Props, ...childNodes: Children): Element | DocumentFragment;
     namespace $mol_jsx.JSX {
         interface Element extends HTMLElement {
             class?: string;
         }
         interface ElementClass {
             attributes: {};
-            ownerDocument: Pick<Document, 'getElementById' | 'createElement'>;
+            ownerDocument: Pick<Document, 'getElementById' | 'createElement' | 'createDocumentFragment'>;
             childNodes: Array<Node | string>;
             valueOf(): Element;
         }
@@ -3060,6 +3061,10 @@ declare namespace $.$$ {
             row: string[];
             col: string;
         }): any[];
+        cell_content_text(id: {
+            row: string[];
+            col: string;
+        }): any[];
         records(): any;
         record(id: string): any;
         record_ids(): string[];
@@ -3227,18 +3232,6 @@ declare namespace $.$$ {
     class $mol_form extends $.$mol_form {
         submit_blocked(): boolean;
         keydown(next: KeyboardEvent): void;
-    }
-}
-
-declare namespace $ {
-    class $mol_jsx_view extends $mol_object2 {
-        static of<This extends typeof $mol_jsx_view>(this: This, node: Element): InstanceType<This>;
-        [Symbol.toStringTag]: string;
-        attributes: Partial<Pick<this, Exclude<keyof this, 'valueOf'>>>;
-        ownerDocument: typeof $mol_jsx_document;
-        childNodes: Array<Node | string>;
-        valueOf(): HTMLElement;
-        render(): HTMLElement;
     }
 }
 
