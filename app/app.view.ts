@@ -294,7 +294,7 @@ namespace $.$$ {
 			const uri = this.result_uri( index )
 			try {
 				return decodeURI( uri )
-			} catch( error ) {
+			} catch( error: any ) {
 				return uri
 			}
 		}

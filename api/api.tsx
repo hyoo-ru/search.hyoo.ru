@@ -78,7 +78,7 @@ namespace $ {
 				
 				try {
 					future.done( Results( results ) )
-				} catch( error ) {
+				} catch( error: any ) {
 					future.fail( error )
 				}
 				
