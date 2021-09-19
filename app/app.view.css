@@ -64,7 +64,6 @@
 [hyoo_search_app_result_title] {
 	color: var(--mol_theme_text);
 	text-shadow: 0 0;
-	flex: 1 1 20rem;
 }
 
 [hyoo_search_app_result_descr] {
