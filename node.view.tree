@@ -37,6 +37,7 @@ $mol_image $mol_view
 		^
 		src <= uri \
 		alt <= title
+		loading <= loading \lazy
 
 $mol_link_iconed $mol_link
 	sub /
@@ -57,6 +58,8 @@ $mol_pop $mol_view
 	align_hor \
 	sub /
 		<= Anchor null
+	sub_visible /
+		<= Anchor
 		<= Bubble $mol_pop_bubble
 			align <= align \bottom_center
 			content <= bubble_content /$mol_view_content
@@ -282,6 +285,8 @@ $mol_icon_minus_circle_outline $mol_icon path \M12,20C7.59,20 4,16.41 4,12C4,7.5
 
 $mol_pick $mol_pop
 	Anchor <= Trigger $mol_check
+		minimal_width 40
+		minimal_height 40
 		enabled <= trigger_enabled true
 		checked?event <=> showed?event
 		sub <= trigger_content /$mol_view_content

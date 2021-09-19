@@ -843,6 +843,7 @@ declare namespace $.$$ {
         _event_scroll_timer(next?: $mol_after_timeout | null): $mol_after_timeout | null | undefined;
         event_scroll(next?: Event): void;
         minimal_height(): number;
+        minimal_width(): number;
     }
 }
 
@@ -1033,8 +1034,10 @@ declare namespace $ {
         field(): {
             src: string;
             alt: string;
+            loading: string;
         };
         uri(): string;
+        loading(): string;
     }
 }
 
@@ -1111,6 +1114,7 @@ declare namespace $ {
         align_vert(): string;
         align_hor(): string;
         sub(): readonly any[];
+        sub_visible(): readonly any[];
         keydown(event?: any): any;
         Anchor(): any;
         align(): string;
@@ -1244,7 +1248,7 @@ declare namespace $ {
 declare namespace $.$$ {
     class $mol_pop extends $.$mol_pop {
         showed(next?: boolean): boolean;
-        sub(): any[];
+        sub_visible(): any[];
         height_max(): number;
         align(): string;
         align_vert(): "suspense" | "top" | "bottom";
@@ -1664,6 +1668,7 @@ declare namespace $.$$ {
         maximal_width(): number;
         width_limit(): number;
         minimal_width(): number;
+        row_width(): number;
         minimal_height(): number;
     }
 }
