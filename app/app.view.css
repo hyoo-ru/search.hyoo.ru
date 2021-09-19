@@ -41,7 +41,6 @@
 	
 [hyoo_search_app_result_item] {
 	padding: 0;
-	margin: var(--mol_gap_block);
 }
 
 [hyoo_search_app_result_image] {
