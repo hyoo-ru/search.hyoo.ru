@@ -467,7 +467,7 @@ $mol_embed_native $mol_view
 		data <= uri?val \
 		type <= mime \
 	sub /
-		\
+		<= title?val \
 
 $mol_row $mol_view
 
@@ -773,7 +773,9 @@ $mol_text_image $mol_view
 		mol_text_type <= type?val \
 		data <= link?val \
 	sub /
-		<= title?val \
+		<= Image $mol_image
+			uri <= link
+			title <= title?val \
 
 $mol_form $mol_view
 	submit_blocked false

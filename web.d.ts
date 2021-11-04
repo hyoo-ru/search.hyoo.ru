@@ -2339,6 +2339,7 @@ declare namespace $ {
         sub(): readonly any[];
         uri(val?: any): string;
         mime(): string;
+        title(val?: any): string;
     }
 }
 
@@ -3179,6 +3180,7 @@ declare namespace $ {
         type(val?: any): string;
         link(val?: any): string;
         title(val?: any): string;
+        Image(): $mol_image;
     }
 }
 
