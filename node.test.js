@@ -6038,7 +6038,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_style_attach("mol/search/search.view.css", "[mol_search] {\n\talign-self: flex-start;\n\tflex: auto;\n}\n\n[mol_search_anchor] {\n\tflex: 1 1 auto;\n}\n\n[mol_search_query] {\n\tflex-grow: 1;\n}\n\n[mol_search_menu] {\n\tmin-height: .75rem;\n\tdisplay: flex;\n}\n\n[mol_search_suggest] {\n\ttext-align: left;\n}\n");
+    $.$mol_style_attach("mol/search/search.view.css", "[mol_search] {\n\talign-self: flex-start;\n\tflex: auto;\n}\n\n[mol_search_anchor] {\n\tflex: 1 1 auto;\n}\n\n[mol_search_query] {\n\tflex-grow: 1;\n}\n\n[mol_search_menu] {\n\tmin-height: .75rem;\n\tdisplay: flex;\n}\n\n[mol_search_suggest] {\n\ttext-align: left;\n}\n\n[mol_search_suggest_label_high] {\n\tcolor: var(--mol_theme_shade);\n\ttext-shadow: none;\n}\n");
 })($ || ($ = {}));
 //search.view.css.js.map
 ;
@@ -6098,7 +6098,8 @@ var $;
             }
             suggest_select(id, event) {
                 this.query(id);
-                this.Query().focused(false);
+                this.Query().selection([id.length, id.length]);
+                this.Query().focused(true);
             }
             clear(event) {
                 this.query('');
@@ -6113,6 +6114,9 @@ var $;
         __decorate([
             $.$mol_mem
         ], $mol_search.prototype, "nav_focused", null);
+        __decorate([
+            $.$mol_mem
+        ], $mol_search.prototype, "menu_items", null);
         $$.$mol_search = $mol_search;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
@@ -6655,6 +6659,7 @@ var $;
         }
         Pick() {
             const obj = new this.$.$mol_select();
+            obj.align_hor = () => this.align_hor();
             obj.options = () => this.options_pickable();
             obj.value = (val) => this.pick(val);
             obj.option_label = (key) => this.option_title(key);
@@ -6679,6 +6684,9 @@ var $;
         }
         drop_enabled() {
             return this.enabled();
+        }
+        align_hor() {
+            return "right";
         }
         options() {
             return [];
@@ -6786,8 +6794,10 @@ var $;
             }
             sub() {
                 return [
-                    ...this.value().map((_, index) => this.Badge(index)),
                     this.Pick(),
+                    ...this.value()
+                        .map((_, index) => this.Badge(index))
+                        .reverse(),
                 ];
             }
             title() {

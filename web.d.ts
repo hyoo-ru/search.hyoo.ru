@@ -2021,6 +2021,7 @@ declare namespace $ {
         badge_hint(): string;
         enabled(): boolean;
         drop_enabled(): boolean;
+        align_hor(): string;
         options(): readonly string[];
         options_pickable(): readonly string[];
         pick(val?: any): string;
