@@ -149,7 +149,9 @@ namespace $ {
 			const backend = this.backend()
 			if( !query ) return []
 			
-			backend.execute( query )
+			$mol_wait_timeout( 500 )
+			
+			$mol_fiber.run( ()=> backend.execute( query ) )
  
 			const future = this.future( query )
 			return $mol_fiber_sync( ()=> future.promise )()
