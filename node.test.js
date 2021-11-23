@@ -10708,23 +10708,16 @@ var $;
             $.$mol_assert_ok($.$mol_compare_deep(1, 1));
             $.$mol_assert_ok($.$mol_compare_deep(Number.NaN, Number.NaN));
             $.$mol_assert_not($.$mol_compare_deep(1, 2));
-        },
-        'Number'() {
             $.$mol_assert_ok($.$mol_compare_deep(Object(1), Object(1)));
-            $.$mol_assert_ok($.$mol_compare_deep(Object(Number.NaN), Object(Number.NaN)));
             $.$mol_assert_not($.$mol_compare_deep(Object(1), Object(2)));
         },
-        'empty POJOs'() {
+        'POJO'() {
             $.$mol_assert_ok($.$mol_compare_deep({}, {}));
-        },
-        'different POJOs'() {
             $.$mol_assert_not($.$mol_compare_deep({ a: 1 }, { b: 2 }));
-        },
-        'different POJOs with same keys but different values'() {
             $.$mol_assert_not($.$mol_compare_deep({ a: 1 }, { a: 2 }));
-        },
-        'different POJOs with different keys but same values'() {
             $.$mol_assert_not($.$mol_compare_deep({}, { a: undefined }));
+            $.$mol_assert_ok($.$mol_compare_deep({ a: 1, b: 2 }, { b: 2, a: 1 }));
+            $.$mol_assert_ok($.$mol_compare_deep({ a: { b: 1 } }, { a: { b: 1 } }));
         },
         'Array'() {
             $.$mol_assert_ok($.$mol_compare_deep([], []));
@@ -10732,17 +10725,12 @@ var $;
             $.$mol_assert_not($.$mol_compare_deep([1, 2], [1, 3]));
             $.$mol_assert_not($.$mol_compare_deep([1, 2,], [1, 3, undefined]));
         },
-        'same POJO trees'() {
-            $.$mol_assert_ok($.$mol_compare_deep({ a: { b: 1 } }, { a: { b: 1 } }));
-        },
-        'different classes with same values'() {
-            class Obj {
-                foo = 1;
+        'Non POJO are different'() {
+            class Thing extends Object {
             }
-            const a = new Obj;
-            const b = new class extends Obj {
-            };
-            $.$mol_assert_not($.$mol_compare_deep(a, b));
+            $.$mol_assert_not($.$mol_compare_deep(new Thing, new Thing));
+            $.$mol_assert_not($.$mol_compare_deep(() => 1, () => 1));
+            $.$mol_assert_not($.$mol_compare_deep(new RangeError('Test error'), new RangeError('Test error')));
         },
         'same POJOs with cyclic reference'() {
             const a = { foo: {} };
@@ -10750,41 +10738,6 @@ var $;
             const b = { foo: {} };
             b['self'] = b;
             $.$mol_assert_ok($.$mol_compare_deep(a, b));
-        },
-        'empty Element'() {
-            $.$mol_assert_ok($.$mol_compare_deep($.$mol_jsx("div", null), $.$mol_jsx("div", null)));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", null), $.$mol_jsx("span", null)));
-        },
-        'Element with attributes'() {
-            $.$mol_assert_ok($.$mol_compare_deep($.$mol_jsx("div", { dir: "rtl" }), $.$mol_jsx("div", { dir: "rtl" })));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", { dir: "rtl" }), $.$mol_jsx("div", null)));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", { dir: "rtl" }), $.$mol_jsx("div", { dir: "ltr" })));
-        },
-        'Element with styles'() {
-            $.$mol_assert_ok($.$mol_compare_deep($.$mol_jsx("div", { style: { color: 'red' } }), $.$mol_jsx("div", { style: { color: 'red' } })));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", { style: { color: 'red' } }), $.$mol_jsx("div", { style: {} })));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", { style: { color: 'red' } }), $.$mol_jsx("div", { style: { color: 'blue' } })));
-        },
-        'Element with content'() {
-            $.$mol_assert_ok($.$mol_compare_deep($.$mol_jsx("div", null,
-                "foo",
-                $.$mol_jsx("br", null)), $.$mol_jsx("div", null,
-                "foo",
-                $.$mol_jsx("br", null))));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", null,
-                "foo",
-                $.$mol_jsx("br", null)), $.$mol_jsx("div", null,
-                "bar",
-                $.$mol_jsx("br", null))));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", null,
-                "foo",
-                $.$mol_jsx("br", null)), $.$mol_jsx("div", null,
-                "foo",
-                $.$mol_jsx("hr", null))));
-        },
-        'Element with handlers'() {
-            $.$mol_assert_ok($.$mol_compare_deep($.$mol_jsx("div", { onclick: () => 1 }), $.$mol_jsx("div", { onclick: () => 1 })));
-            $.$mol_assert_not($.$mol_compare_deep($.$mol_jsx("div", { onclick: () => 1 }), $.$mol_jsx("div", { onclick: () => 2 })));
         },
         'Date'() {
             $.$mol_assert_ok($.$mol_compare_deep(new Date(12345), new Date(12345)));
@@ -10797,8 +10750,9 @@ var $;
         },
         'Map'() {
             $.$mol_assert_ok($.$mol_compare_deep(new Map, new Map));
-            $.$mol_assert_ok($.$mol_compare_deep(new Map([[[1], [2]]]), new Map([[[1], [2]]])));
+            $.$mol_assert_ok($.$mol_compare_deep(new Map([[1, [2]]]), new Map([[1, [2]]])));
             $.$mol_assert_not($.$mol_compare_deep(new Map([[1, 2]]), new Map([[1, 3]])));
+            $.$mol_assert_not($.$mol_compare_deep(new Map([[[1], 2]]), new Map([[[1], 2]])));
         },
         'Set'() {
             $.$mol_assert_ok($.$mol_compare_deep(new Set, new Set));
@@ -10817,97 +10771,118 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    const a_stack = [];
-    const b_stack = [];
-    let cache = null;
-    function $mol_compare_deep(a, b) {
-        if (Object.is(a, b))
+    let cache = new WeakMap();
+    function $mol_compare_deep(left, right) {
+        if (Object.is(left, right))
             return true;
-        const a_type = typeof a;
-        const b_type = typeof b;
-        if (a_type !== b_type)
+        if (left === null)
             return false;
-        if (a_type === 'function')
-            return a['toString']() === b['toString']();
-        if (a_type !== 'object')
+        if (right === null)
             return false;
-        if (!a || !b)
+        if (typeof left !== 'object')
             return false;
-        if (a instanceof Error)
+        if (typeof right !== 'object')
             return false;
-        if (a['constructor'] !== b['constructor'])
+        const left_proto = Reflect.getPrototypeOf(left);
+        const right_proto = Reflect.getPrototypeOf(right);
+        if (left_proto !== right_proto)
             return false;
-        if (a instanceof RegExp)
-            return a.toString() === b['toString']();
-        const ref = a_stack.indexOf(a);
-        if (ref >= 0) {
-            return Object.is(b_stack[ref], b);
-        }
-        if (!cache)
-            cache = new WeakMap;
-        let a_cache = cache.get(a);
-        if (a_cache) {
-            const b_cache = a_cache.get(b);
-            if (typeof b_cache === 'boolean')
-                return b_cache;
+        if (left instanceof Boolean)
+            return Object.is(left.valueOf(), right['valueOf']());
+        if (left instanceof Number)
+            return Object.is(left.valueOf(), right['valueOf']());
+        if (left instanceof String)
+            return Object.is(left.valueOf(), right['valueOf']());
+        if (left instanceof Date)
+            return Object.is(left.valueOf(), right['valueOf']());
+        if (left instanceof RegExp)
+            return left.source === right['source'] && left.flags === right['flags'];
+        let left_cache = cache.get(left);
+        if (left_cache) {
+            const right_cache = left_cache.get(right);
+            if (typeof right_cache === 'boolean')
+                return right_cache;
         }
         else {
-            a_cache = new WeakMap();
-            cache.set(a, a_cache);
+            left_cache = new WeakMap([[right, true]]);
+            cache.set(left, left_cache);
         }
-        a_stack.push(a);
-        b_stack.push(b);
         let result;
         try {
-            if (Symbol.iterator in a) {
-                const a_iter = a[Symbol.iterator]();
-                const b_iter = b[Symbol.iterator]();
-                while (true) {
-                    const a_next = a_iter.next();
-                    const b_next = b_iter.next();
-                    if (a_next.done !== b_next.done)
-                        return result = false;
-                    if (a_next.done)
-                        break;
-                    if (!$mol_compare_deep(a_next.value, b_next.value))
-                        return result = false;
-                }
-                return result = true;
-            }
-            let count = 0;
-            for (let key in a) {
-                try {
-                    if (!$mol_compare_deep(a[key], b[key]))
-                        return result = false;
-                }
-                catch (error) {
-                    $.$mol_fail_hidden(new $.$mol_error_mix(`Failed ${JSON.stringify(key)} fields comparison of ${a} and ${b}`, error));
-                }
-                ++count;
-            }
-            for (let key in b) {
-                --count;
-                if (count < 0)
-                    return result = false;
-            }
-            if (a instanceof Number || a instanceof String || a instanceof Symbol || a instanceof Boolean || a instanceof Date) {
-                if (!Object.is(a['valueOf'](), b['valueOf']()))
-                    return result = false;
-            }
-            return result = true;
+            if (left_proto && !Reflect.getPrototypeOf(left_proto))
+                result = compare_pojo(left, right);
+            else if (Array.isArray(left))
+                result = compare_array(left, right);
+            else if (left instanceof Set)
+                result = compare_set(left, right);
+            else if (left instanceof Map)
+                result = compare_map(left, right);
+            else if (ArrayBuffer.isView(left))
+                result = compare_buffer(left, right);
+            else
+                result = false;
         }
         finally {
-            a_stack.pop();
-            b_stack.pop();
-            if (a_stack.length === 0) {
-                cache = null;
-            }
-            else {
-                a_cache.set(b, result);
-            }
+            left_cache.set(right, result);
         }
+        return result;
     }
     $.$mol_compare_deep = $mol_compare_deep;
+    function compare_array(left, right) {
+        const len = left.length;
+        if (len !== right.length)
+            return false;
+        for (let i = 0; i < len; ++i) {
+            if (!$mol_compare_deep(left[i], right[i]))
+                return false;
+        }
+        return true;
+    }
+    function compare_buffer(left, right) {
+        const len = left.byteLength;
+        if (len !== right.byteLength)
+            return false;
+        for (let i = 0; i < len; ++i) {
+            if (left[i] !== right[i])
+                return false;
+        }
+        return true;
+    }
+    function compare_iterator(left, right, compare) {
+        while (true) {
+            const left_next = left.next();
+            const right_next = right.next();
+            if (left_next.done !== right_next.done)
+                return false;
+            if (left_next.done)
+                break;
+            if (!compare(left_next.value, right_next.value))
+                return false;
+        }
+        return true;
+    }
+    function compare_set(left, right) {
+        if (left.size !== right.size)
+            return false;
+        return compare_iterator(left.values(), right.values(), $mol_compare_deep);
+    }
+    function compare_map(left, right) {
+        if (left.size !== right.size)
+            return false;
+        return compare_iterator(left.keys(), right.keys(), Object.is)
+            && compare_iterator(left.values(), right.values(), $mol_compare_deep);
+    }
+    function compare_pojo(left, right) {
+        const left_keys = Object.getOwnPropertyNames(left);
+        const right_keys = Object.getOwnPropertyNames(right);
+        if (left_keys.length !== right_keys.length)
+            return false;
+        for (let key of left_keys) {
+            if (!$mol_compare_deep(left[key], Reflect.get(right, key)))
+                return false;
+        }
+        return true;
+    }
 })($ || ($ = {}));
 //deep.js.map
 ;
