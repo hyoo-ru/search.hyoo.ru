@@ -57,7 +57,7 @@ namespace $ {
 		@ $mol_mem
 		static backend() {
 			
-			$mol_mem_persist()
+			$mol_wire_solid()
 			
 			let done: ( gcs: typeof google.search.cse.element )=> void
 			const promise = $mol_fiber.run(
