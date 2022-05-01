@@ -54,6 +54,8 @@ namespace $ {
 		type() {
 			return 'web' as 'web' | 'image'
 		}
+		
+		static error = $mol_promise<string>()
 
 		@ $mol_memo.method
 		static async backend() {
@@ -74,9 +76,9 @@ namespace $ {
 				const future = $hyoo_search_api.type( type ).future( query )
 				
 				try {
-					future.done( Results( results ) )
+					future.promise.done( Results( results ) )
 				} catch( error: any ) {
-					future.fail( error )
+					future.promise.fail( error )
 				}
 				
 				return true
@@ -86,7 +88,24 @@ namespace $ {
 				
 				parsetags: 'explicit',
 				
-				initializationCallback: ()=> done( google.search.cse.element ),
+				initializationCallback: ()=> {
+					
+					google.search.cse = new Proxy( google.search.cse, {
+						get: ( sce, field )=> {
+							if( /^api/.test( String( field ) ) && typeof sce[ field ] === 'function' ) {
+								return function( ... args: any[] ) {
+									const error = args[0].error
+									if( error ) $hyoo_search_api.error.fail( new Error( 'Google: ' + error.message ) )
+									return sce[ field ]( ... args )
+								}
+							}
+							return sce[ field ]
+						}
+					} )
+					
+					done( google.search.cse.element )
+					
+				},
 				
 				searchCallbacks: {
 					web: { ready: ready( 'web' ) },
@@ -123,7 +142,9 @@ namespace $ {
 		@ $mol_mem_key
 		future( query: string ) {
 			$mol_wire_solid()
-			return $mol_promise< typeof Results.Value >()
+			const promise = $mol_promise< typeof Results.Value >()
+			$hyoo_search_api.error.catch( promise.fail )
+			return { promise }
 		}
 		
 		async execute_async( query: string ) {
@@ -133,11 +154,13 @@ namespace $ {
 			
 			backend.execute( query )
  
-			return this.future( query )
+			return this.future( query ).promise
 		}
 		
 		@ $mol_mem_key
 		async execute( query: string ) {
+			
+			$mol_wire_solid()
 			
 			const backend = await this.backend()
 			
@@ -147,8 +170,7 @@ namespace $ {
 			
 			backend.execute( query )
  
-			return await this.future( query )
-			
+			return await this.future( query ).promise
 		}
 		
 	}
