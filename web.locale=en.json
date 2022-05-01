@@ -3,7 +3,7 @@
 	"$hyoo_search_app_Blacklist_hint": "Every domain on new line",
 	"$hyoo_search_app_Exact_hint": "Exact Match",
 	"$hyoo_search_app_Exclude_pick_hint": "Exclude words..",
-	"$hyoo_search_app_Query_dump_field_title": "Query Dump",
+	"$hyoo_search_app_Query_dump_field_name": "Query Dump",
 	"$hyoo_search_app_Query_hint": "Search..",
 	"$hyoo_search_app_Result_ban_hint": "Ban site..",
 	"$hyoo_search_app_Result_cache_hint": "Open cached",

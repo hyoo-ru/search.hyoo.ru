@@ -3,7 +3,6 @@
 	"$hyoo_search_app_Blacklist_hint": "Каждый домен на новой строке",
 	"$hyoo_search_app_Exact_hint": "Точное Совпадение",
 	"$hyoo_search_app_Exclude_pick_hint": "Исключить слова..",
-	"$hyoo_search_app_Query_dump_field_title": "Полный Запрос",
 	"$hyoo_search_app_Query_hint": "Поиск..",
 	"$hyoo_search_app_Result_ban_hint": "Забанить сайт..",
 	"$hyoo_search_app_Result_cache_hint": "Открыть из кеша",
