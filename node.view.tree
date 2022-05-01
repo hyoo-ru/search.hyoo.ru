@@ -652,12 +652,14 @@ $hyoo_search_app $mol_book2
 	plugins /
 		<= Theme $mol_theme_auto
 	Placeholder null
+	query_results?next \
 	pages /
 		<= Main $mol_page
 			title <= query
 			Title <= Query $mol_search
 				hint @ \Search..
 				query?val <=> query?val \
+				submit?event <=> submit?event null
 			tools /
 				<= Exact $mol_check_icon
 					checked?val <=> exact?val false

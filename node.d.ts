@@ -2773,12 +2773,14 @@ declare namespace $ {
     class $hyoo_search_app extends $mol_book2 {
         plugins(): readonly any[];
         Placeholder(): any;
+        query_results(next?: any): string;
         pages(): readonly any[];
         Sideview(uri: any): $mol_view;
         Result_item(index: any): $$.$mol_link;
         Searcher_link(id: any): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
         query(val?: any): string;
+        submit(event?: any): any;
         Query(): $$.$mol_search;
         exact(val?: any): boolean;
         Exact_icon(): $mol_icon_bullseye_arrow;
@@ -3174,6 +3176,8 @@ declare namespace $.$$ {
             contextUrl?: string | undefined;
             visibleUrl: string;
         }>[];
+        query_results(next?: string): string;
+        submit(): void;
         result_list(): $mol_link[];
         result_image(index: number): string;
         result_icon(index: number): string;
