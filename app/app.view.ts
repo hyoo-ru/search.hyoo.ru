@@ -165,7 +165,9 @@ namespace $.$$ {
 				'Image'
 			].includes( this.type() ) ? 'image' : 'web'
 			
-			return this.$.$hyoo_search_api.type( type ).execute( this.query_backend() )
+			const api = $mol_wire_sync( this.$.$hyoo_search_api.type( type ) )
+			
+			return api.execute( this.query_backend() )
 		}
 		
 		@ $mol_mem

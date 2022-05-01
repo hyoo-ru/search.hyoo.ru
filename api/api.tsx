@@ -45,6 +45,7 @@ namespace $ {
 		
 		@ $mol_mem_key
 		static type( type: 'web' | 'image' ) {
+			$mol_wire_solid()
 			const api = new this
 			api.type = $mol_const( type )
 			return api
@@ -53,16 +54,12 @@ namespace $ {
 		type() {
 			return 'web' as 'web' | 'image'
 		}
-		
-		@ $mol_mem
-		static backend() {
-			
-			$mol_wire_solid()
+
+		@ $mol_memo.method
+		static async backend() {
 			
 			let done: ( gcs: typeof google.search.cse.element )=> void
-			const promise = $mol_fiber.run(
-				()=> new Promise< typeof google.search.cse.element >( d => done = d )
-			)
+			const promise = new Promise< typeof google.search.cse.element >( d => done = d )
 			
 			const ready = ( type: 'web' | 'image' ) => (
 				gname: string,
@@ -85,36 +82,30 @@ namespace $ {
 				return true
 			}
 			
-			window['__gcse'] = $mol_fiber.run( ()=> ({
+			window['__gcse'] = {
 				
 				parsetags: 'explicit',
 				
-				initializationCallback: ()=> {
-					
-					const api = google.search.cse.element
-					
-					done( api )
-					
-				},
+				initializationCallback: ()=> done( google.search.cse.element ),
 				
 				searchCallbacks: {
 					web: { ready: ready( 'web' ) },
 					image: { ready: ready( 'image' ) },
 				},
 				
-			}) )
+			}
 			
 			const uri = 'https://cse.google.com/cse.js?cx=002821183079327163555:WMX276788641&'
-			this.$.$mol_import.script( uri )
+			await $mol_wire_async( this.$.$mol_import ).script( uri )
 			
-			return $mol_fiber_sync( ()=> promise )()
+			return promise
 			
 		}
 		
-		@ $mol_mem
-		backend() {
+		@ $mol_memo.method
+		async backend() {
 			
-			const backend = $hyoo_search_api.backend()
+			const backend = await $hyoo_search_api.backend()
 			const gname = this.toString()
 					
 			backend.render({
@@ -131,30 +122,32 @@ namespace $ {
 		
 		@ $mol_mem_key
 		future( query: string ) {
+			$mol_wire_solid()
+			return $mol_promise< typeof Results.Value >()
+		}
+		
+		async execute_async( query: string ) {
 			
-			let done!: ( res: typeof Results.Value )=> void
-			let fail!: ( err: Error )=> void
+			if( !query ) return []
+			const backend = await this.backend()
 			
-			const promise = new Promise< typeof Results.Value >( ( d, f )=> {
-				done = d
-				fail = f
-			} )
-			
-			return { done, fail, promise }
+			backend.execute( query )
+ 
+			return this.future( query )
 		}
 		
 		@ $mol_mem_key
-		execute( query: string ): typeof Results.Value {
+		async execute( query: string ) {
 			
-			const backend = this.backend()
+			const backend = await this.backend()
+			
 			if( !query ) return []
 			
-			$mol_wait_timeout( 500 )
+			// this.$.$mol_wait_timeout( 500 )
 			
-			$mol_fiber.run( ()=> backend.execute( query ) )
+			backend.execute( query )
  
-			const future = this.future( query )
-			return $mol_fiber_sync( ()=> future.promise )()
+			return await this.future( query )
 			
 		}
 		

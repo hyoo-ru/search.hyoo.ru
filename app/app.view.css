@@ -31,7 +31,6 @@
 }
 
 [hyoo_search_app_main_body] {
-	flex: 0 1 auto;
 	padding: 0;
 }
 	
@@ -71,14 +70,6 @@
 
 [hyoo_search_app_main_foot] {
 	padding: var(--mol_gap_block);
-}
-
-[hyoo_search_app_settings_fields] {
-	padding: var(--mol_gap_block);
-}
-
-[hyoo_search_app_settings_fields] > * {
-	margin: var(--mol_gap_block);
 }
 
 [hyoo_search_app_result_title_low] {
