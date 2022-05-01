@@ -2476,7 +2476,7 @@ declare namespace $ {
         Table(id: any): $$.$mol_grid;
         Table_row(id: any): $mol_grid_row;
         Table_cell(id: any): $mol_grid_cell;
-        Table_cell_head(id: any): $mol_float;
+        Table_cell_head(id: any): $mol_grid_cell;
         quote_text(id: any): string;
         block_content(id: any): readonly any[];
         block_type(id: any): string;
@@ -2565,7 +2565,7 @@ declare namespace $.$$ {
         block_type(index: number): string;
         cell_contents(indexBlock: number): string[][];
         table_rows(blockId: number): $mol_grid_row[];
-        table_head_cells(blockId: number): $mol_float[];
+        table_head_cells(blockId: number): $mol_grid_cell[];
         table_cells(id: {
             block: number;
             row: number;
@@ -2991,33 +2991,14 @@ declare namespace $ {
     export class $hyoo_search_api extends $mol_object2 {
         static type(type: 'web' | 'image'): $hyoo_search_api;
         type(): "image" | "web";
+        static error: Promise<string> & {
+            done: (res: string | PromiseLike<string>) => void;
+            fail: (error?: any) => void;
+        };
         static backend(): Promise<typeof google.search.cse.element>;
         backend(): Promise<GCS>;
-        future(query: string): Promise<readonly Readonly<{
-            content?: string | undefined;
-            contentNoFormatting?: string | undefined;
-            richSnippet?: Readonly<{
-                metatags?: {
-                    [x: string]: string;
-                } | undefined;
-            }> | undefined;
-            thumbnailImage?: Readonly<{
-                url: string;
-                height: string;
-                width: string;
-            }> | undefined;
-            image?: Readonly<{
-                url: string;
-                height: string;
-                width: string;
-            }> | undefined;
-            title: string;
-            titleNoFormatting: string;
-            url?: string | undefined;
-            contextUrl?: string | undefined;
-            visibleUrl: string;
-        }>[]> & {
-            done: (res: readonly Readonly<{
+        future(query: string): {
+            promise: Promise<readonly Readonly<{
                 content?: string | undefined;
                 contentNoFormatting?: string | undefined;
                 richSnippet?: Readonly<{
@@ -3040,31 +3021,56 @@ declare namespace $ {
                 url?: string | undefined;
                 contextUrl?: string | undefined;
                 visibleUrl: string;
-            }>[] | PromiseLike<readonly Readonly<{
-                content?: string | undefined;
-                contentNoFormatting?: string | undefined;
-                richSnippet?: Readonly<{
-                    metatags?: {
-                        [x: string]: string;
-                    } | undefined;
-                }> | undefined;
-                thumbnailImage?: Readonly<{
-                    url: string;
-                    height: string;
-                    width: string;
-                }> | undefined;
-                image?: Readonly<{
-                    url: string;
-                    height: string;
-                    width: string;
-                }> | undefined;
-                title: string;
-                titleNoFormatting: string;
-                url?: string | undefined;
-                contextUrl?: string | undefined;
-                visibleUrl: string;
-            }>[]>) => void;
-            fail: (error?: any) => void;
+            }>[]> & {
+                done: (res: readonly Readonly<{
+                    content?: string | undefined;
+                    contentNoFormatting?: string | undefined;
+                    richSnippet?: Readonly<{
+                        metatags?: {
+                            [x: string]: string;
+                        } | undefined;
+                    }> | undefined;
+                    thumbnailImage?: Readonly<{
+                        url: string;
+                        height: string;
+                        width: string;
+                    }> | undefined;
+                    image?: Readonly<{
+                        url: string;
+                        height: string;
+                        width: string;
+                    }> | undefined;
+                    title: string;
+                    titleNoFormatting: string;
+                    url?: string | undefined;
+                    contextUrl?: string | undefined;
+                    visibleUrl: string;
+                }>[] | PromiseLike<readonly Readonly<{
+                    content?: string | undefined;
+                    contentNoFormatting?: string | undefined;
+                    richSnippet?: Readonly<{
+                        metatags?: {
+                            [x: string]: string;
+                        } | undefined;
+                    }> | undefined;
+                    thumbnailImage?: Readonly<{
+                        url: string;
+                        height: string;
+                        width: string;
+                    }> | undefined;
+                    image?: Readonly<{
+                        url: string;
+                        height: string;
+                        width: string;
+                    }> | undefined;
+                    title: string;
+                    titleNoFormatting: string;
+                    url?: string | undefined;
+                    contextUrl?: string | undefined;
+                    visibleUrl: string;
+                }>[]>) => void;
+                fail: (error?: any) => void;
+            };
         };
         execute_async(query: string): Promise<readonly Readonly<{
             content?: string | undefined;
