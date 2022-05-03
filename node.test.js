@@ -941,7 +941,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/theme/theme.css", ":root {\n\t--mol_theme_hue: 210deg;\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n}\n\n[mol_theme] {\n\t\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n\tfill: var(--mol_theme_text);\n\t\n\t--mol_theme_back: hsl( var(--mol_theme_hue), 50% , calc( 54% + 44% * var(--mol_theme_luma) ) );\n\t--mol_theme_text: hsl( var(--mol_theme_hue), 0% , calc( 50% - 30% * var(--mol_theme_luma) ) );\n\t--mol_theme_field: hsl( var(--mol_theme_hue), 0%, calc( 50% + 50% * var(--mol_theme_luma) ), .2 );\n\t\n\t--mol_theme_card: hsl( var(--mol_theme_hue), 0%, 50%, .05 );\n\t--mol_theme_hover: hsl( var(--mol_theme_hue), 0%, 50%, .1 );\n\t--mol_theme_line: hsl( var(--mol_theme_hue), 0%, 50%, .25 );\n\t--mol_theme_shade: hsl( var(--mol_theme_hue), 0%, 50%, 1 );\n\t\n\t--mol_theme_control: hsl( var(--mol_theme_hue), 50%, calc( 55% - 10% * var(--mol_theme_luma) ) );\n\t--mol_theme_current: hsl( calc( var(--mol_theme_hue) + 120deg ), 70%, calc( 60% - 10% * var(--mol_theme_luma) ) );\n\t--mol_theme_focus: hsl( calc( var(--mol_theme_hue) + 240deg ), 80%, calc( 50% - 10% * var(--mol_theme_luma) ) );\n\t\n}\n\n[mol_theme=\"$mol_theme_light\"] {\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n}\n\n[mol_theme=\"$mol_theme_dark\"] {\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate( 180deg );\n}\n\n[mol_theme=\"$mol_theme_base\"] {\n\t--mol_theme_luma: -2;\n\t--mol_theme_back: hsl( var(--mol_theme_hue), 50%, 40% );\n\t--mol_theme_hover: hsl( var(--mol_theme_hue), 60%, 30% );\n\t--mol_theme_current: hsl( var(--mol_theme_hue), 100%, 20% );\n}\n\n[mol_theme=\"$mol_theme_current\"] {\n\t--mol_theme_back: hsl( calc( var(--mol_theme_hue) + 120deg ), 50%, calc( 55% + 15% * var(--mol_theme_luma) ) );\n}\n\n[mol_theme=\"$mol_theme_accent\"] {\n\t--mol_theme_luma: -2;\n\t--mol_theme_back: hsl( calc( var(--mol_theme_hue) + 240deg ), 50%, 40% );\n\t--mol_theme_hover: hsl( calc( var(--mol_theme_hue) + 240deg ), 50%, 35% );\n}\n\n[mol_theme=\"$mol_theme_accent\"] [mol_theme=\"$mol_theme_accent\"] {\n\t--mol_theme_back: black;\n}\n");
+    $mol_style_attach("mol/theme/theme.css", ":root {\n\t--mol_theme_hue: 210deg;\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n}\n\n[mol_theme] {\n\t\n\tbackground-color: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n\tfill: var(--mol_theme_text);\n}\n\t\n:root, [mol_theme] {\n\t--mol_theme_back: hsl( var(--mol_theme_hue), 50% , calc( 54% + 44% * var(--mol_theme_luma) ) );\n\t--mol_theme_text: hsl( var(--mol_theme_hue), 0% , calc( 50% - 30% * var(--mol_theme_luma) ) );\n\t--mol_theme_field: hsl( var(--mol_theme_hue), 0%, calc( 50% + 50% * var(--mol_theme_luma) ), .2 );\n\t\n\t--mol_theme_card: hsl( var(--mol_theme_hue), 0%, 50%, .05 );\n\t--mol_theme_hover: hsl( var(--mol_theme_hue), 0%, 50%, .1 );\n\t--mol_theme_line: hsl( var(--mol_theme_hue), 0%, 50%, .25 );\n\t--mol_theme_shade: hsl( var(--mol_theme_hue), 0%, 50%, 1 );\n\t\n\t--mol_theme_control: hsl( var(--mol_theme_hue), 50%, calc( 55% - 10% * var(--mol_theme_luma) ) );\n\t--mol_theme_current: hsl( calc( var(--mol_theme_hue) + 120deg ), 70%, calc( 60% - 10% * var(--mol_theme_luma) ) );\n\t--mol_theme_focus: hsl( calc( var(--mol_theme_hue) + 240deg ), 80%, calc( 50% - 10% * var(--mol_theme_luma) ) );\n\t\n}\n\n[mol_theme=\"$mol_theme_light\"] {\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n}\n\n[mol_theme=\"$mol_theme_dark\"] {\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate( 180deg );\n}\n\n[mol_theme=\"$mol_theme_base\"] {\n\t--mol_theme_luma: -2;\n\t--mol_theme_back: hsl( var(--mol_theme_hue), 50%, 40% );\n\t--mol_theme_hover: hsl( var(--mol_theme_hue), 60%, 30% );\n\t--mol_theme_current: hsl( var(--mol_theme_hue), 100%, 20% );\n}\n\n[mol_theme=\"$mol_theme_current\"] {\n\t--mol_theme_back: hsl( calc( var(--mol_theme_hue) + 120deg ), 50%, calc( 55% + 15% * var(--mol_theme_luma) ) );\n}\n\n[mol_theme=\"$mol_theme_accent\"] {\n\t--mol_theme_luma: -2;\n\t--mol_theme_back: hsl( calc( var(--mol_theme_hue) + 240deg ), 50%, 40% );\n\t--mol_theme_hover: hsl( calc( var(--mol_theme_hue) + 240deg ), 50%, 35% );\n}\n\n[mol_theme=\"$mol_theme_accent\"] [mol_theme=\"$mol_theme_accent\"] {\n\t--mol_theme_back: black;\n}\n");
 })($ || ($ = {}));
 //mol/theme/-css/theme.css.ts
 ;
@@ -6760,10 +6760,10 @@ var $;
         dictionary() {
             return {};
         }
-        Badge(index) {
+        Badge(id) {
             const obj = new this.$.$mol_button_minor();
-            obj.title = () => this.badge_title(index);
-            obj.click = (event) => this.remove(index, event);
+            obj.title = () => this.badge_title(id);
+            obj.click = (event) => this.remove(id, event);
             obj.hint = () => this.badge_hint();
             obj.enabled = () => this.drop_enabled();
             return obj;
@@ -6773,16 +6773,16 @@ var $;
             obj.align_hor = () => this.align_hor();
             obj.options = () => this.options_pickable();
             obj.value = (val) => this.pick(val);
-            obj.option_label = (key) => this.option_title(key);
+            obj.option_label = (id) => this.option_title(id);
             obj.trigger_enabled = () => this.pick_enabled();
             obj.hint = () => this.pick_hint();
             obj.Trigger_icon = () => this.Pick_icon();
             return obj;
         }
-        badge_title(index) {
+        badge_title(id) {
             return "badge";
         }
-        remove(index, event) {
+        remove(id, event) {
             if (event !== undefined)
                 return event;
             return null;
@@ -6810,7 +6810,7 @@ var $;
                 return val;
             return "";
         }
-        option_title(key) {
+        option_title(id) {
             return "";
         }
         pick_enabled() {
@@ -7813,7 +7813,7 @@ var $;
         row_ids() {
             return [];
         }
-        row_id(index) {
+        row_id(id) {
             return null;
         }
         col_ids() {
@@ -8779,7 +8779,7 @@ var $;
             obj.selection = (val) => this.selection(val);
             return obj;
         }
-        row_numb(index) {
+        row_numb(id) {
             return 0;
         }
         highlight() {
@@ -8789,7 +8789,7 @@ var $;
             const obj = new this.$.$mol_text_code();
             obj.text = () => this.value();
             obj.render_visible_only = () => false;
-            obj.row_numb = (index) => this.row_numb(index);
+            obj.row_numb = (id) => this.row_numb(id);
             obj.sidebar_showed = () => this.sidebar_showed();
             obj.highlight = () => this.highlight();
             return obj;
@@ -8891,7 +8891,7 @@ var $;
         }
         Label() {
             const obj = new this.$.$mol_view();
-            obj.minimal_height = () => 16;
+            obj.minimal_height = () => 40;
             obj.sub = () => this.label();
             return obj;
         }
@@ -8918,7 +8918,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tcolor: var(--mol_theme_shade);\n\tz-index: 1;\n\tpadding: var(--mol_gap_text);\n\tgap: 0 var(--mol_gap_block);\n\tflex-wrap: wrap;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n}\n");
+    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tmin-height: 2.5rem;\n\tcolor: var(--mol_theme_shade);\n\tz-index: 1;\n\tpadding: var(--mol_gap_text);\n\tgap: 0 var(--mol_gap_block);\n\tflex-wrap: wrap;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n}\n");
 })($ || ($ = {}));
 //mol/labeler/-css/labeler.view.css.ts
 ;
@@ -8926,6 +8926,9 @@ var $;
 var $;
 (function ($) {
     class $mol_form_field extends $mol_labeler {
+        bids() {
+            return [];
+        }
         label() {
             return [
                 this.name(),
@@ -8967,6 +8970,24 @@ var $;
     $mol_style_attach("mol/form/field/field.view.css", "[mol_form_field] {\n\talign-items: stretch;\n\tpadding: var(--mol_gap_block);\n}\n\n[mol_form_field_bid] {\n\tcolor: var(--mol_theme_focus);\n\tdisplay: inline-block;\n}\n\n[mol_form_field_content] {\n\tborder-radius: var(--mol_gap_round);\n}\n");
 })($ || ($ = {}));
 //mol/form/field/-css/field.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_form_field extends $.$mol_form_field {
+            bid() {
+                return this.bids().filter(Boolean)[0] ?? '';
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_form_field.prototype, "bid", null);
+        $$.$mol_form_field = $mol_form_field;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//mol/form/field/field.view.ts
 ;
 "use strict";
 var $;
@@ -9270,8 +9291,15 @@ var $;
     var $$;
     (function ($$) {
         class $mol_form extends $.$mol_form {
+            form_fields() {
+                return [...this.view_find(view => view instanceof $mol_form_field)]
+                    .map(path => path[path.length - 1]);
+            }
+            submit_allowed() {
+                return this.form_fields().every(field => !field.bid());
+            }
             submit_blocked() {
-                return this.form_fields().some(field => field.bid());
+                return !this.submit_allowed();
             }
             keydown(next) {
                 if (next.ctrlKey && next.keyCode === $mol_keyboard_code.enter && !this.submit_blocked())
@@ -9280,7 +9308,10 @@ var $;
         }
         __decorate([
             $mol_mem
-        ], $mol_form.prototype, "submit_blocked", null);
+        ], $mol_form.prototype, "form_fields", null);
+        __decorate([
+            $mol_mem
+        ], $mol_form.prototype, "submit_allowed", null);
         $$.$mol_form = $mol_form;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
@@ -9309,22 +9340,22 @@ var $;
                 this.Settings()
             ];
         }
-        Sideview(uri) {
+        Sideview(id) {
             const obj = new this.$.$mol_view();
             obj.title = () => this.$.$mol_locale.text('$hyoo_search_app_Sideview_title');
             obj.sub = () => [
                 this.Sideview_hint(),
-                this.Sideview_embed(uri)
+                this.Sideview_embed(id)
             ];
             return obj;
         }
-        Result_item(index) {
+        Result_item(id) {
             const obj = new this.$.$mol_link();
-            obj.uri = () => this.result_uri(index);
+            obj.uri = () => this.result_uri(id);
             obj.target = () => "search_result";
             obj.sub = () => [
-                this.Result_info(index),
-                this.Result_tools(index)
+                this.Result_info(id),
+                this.Result_tools(id)
             ];
             return obj;
         }
@@ -9379,7 +9410,7 @@ var $;
         exclude_options() {
             return [];
         }
-        exclude_badge_title(index) {
+        exclude_badge_title(id) {
             return "";
         }
         Exclude_icon() {
@@ -9390,7 +9421,7 @@ var $;
             const obj = new this.$.$mol_select_list();
             obj.value = (val) => this.exclude(val);
             obj.options = () => this.exclude_options();
-            obj.badge_title = (index) => this.exclude_badge_title(index);
+            obj.badge_title = (id) => this.exclude_badge_title(id);
             obj.pick_hint = () => this.$.$mol_locale.text('$hyoo_search_app_Exclude_pick_hint');
             obj.pick_enabled = () => true;
             obj.Pick_icon = () => this.Exclude_icon();
@@ -9619,134 +9650,134 @@ var $;
                 return val;
             return "about:blank";
         }
-        Sideview_embed(uri) {
+        Sideview_embed(id) {
             const obj = new this.$.$mol_embed_native();
             obj.uri = () => this.sideview();
             obj.sub = () => [];
             return obj;
         }
-        result_uri(index) {
+        result_uri(id) {
             return "";
         }
-        result_image(index) {
+        result_image(id) {
             return "";
         }
-        Result_image(index) {
+        Result_image(id) {
             const obj = new this.$.$mol_image();
-            obj.uri = () => this.result_image(index);
+            obj.uri = () => this.result_image(id);
             obj.title = () => "";
             return obj;
         }
-        result_title(index) {
+        result_title(id) {
             return "";
         }
-        Result_title(index) {
+        Result_title(id) {
             const obj = new this.$.$mol_dimmer();
-            obj.haystack = () => this.result_title(index);
+            obj.haystack = () => this.result_title(id);
             obj.needle = () => this.query();
             return obj;
         }
-        result_host(index) {
+        result_host(id) {
             return "";
         }
-        Result_host(index) {
+        Result_host(id) {
             const obj = new this.$.$mol_dimmer();
-            obj.haystack = () => this.result_host(index);
+            obj.haystack = () => this.result_host(id);
             obj.needle = () => this.query();
             return obj;
         }
-        result_descr(index) {
+        result_descr(id) {
             return "";
         }
-        Result_descr(index) {
+        Result_descr(id) {
             const obj = new this.$.$mol_dimmer();
-            obj.haystack = () => this.result_descr(index);
+            obj.haystack = () => this.result_descr(id);
             obj.needle = () => this.query();
             return obj;
         }
-        result_main(index) {
+        result_main(id) {
             return [
-                this.Result_title(index),
-                this.Result_host(index),
-                this.Result_descr(index)
+                this.Result_title(id),
+                this.Result_host(id),
+                this.Result_descr(id)
             ];
         }
-        Result_main(index) {
+        Result_main(id) {
             const obj = new this.$.$mol_list();
-            obj.rows = () => this.result_main(index);
+            obj.rows = () => this.result_main(id);
             return obj;
         }
-        Result_info(index) {
+        Result_info(id) {
             const obj = new this.$.$mol_row();
             obj.sub = () => [
-                this.Result_image(index),
-                this.Result_main(index)
+                this.Result_image(id),
+                this.Result_main(id)
             ];
             return obj;
         }
-        Result_ban_icon(index) {
+        Result_ban_icon(id) {
             const obj = new this.$.$mol_icon_cross();
             return obj;
         }
-        result_ban_options(index) {
+        result_ban_options(id) {
             return [];
         }
-        result_ban(index, val) {
+        result_ban(id, val) {
             if (val !== undefined)
                 return val;
             return "";
         }
-        Result_ban(index) {
+        Result_ban(id) {
             const obj = new this.$.$mol_select();
-            obj.Trigger_icon = () => this.Result_ban_icon(index);
+            obj.Trigger_icon = () => this.Result_ban_icon(id);
             obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Result_ban_hint');
             obj.Filter = () => null;
             obj.align_hor = () => "left";
-            obj.options = () => this.result_ban_options(index);
-            obj.value = (val) => this.result_ban(index, val);
+            obj.options = () => this.result_ban_options(id);
+            obj.value = (val) => this.result_ban(id, val);
             return obj;
         }
-        result_cache(index) {
+        result_cache(id) {
             return "";
         }
-        Result_cache_icon(index) {
+        Result_cache_icon(id) {
             const obj = new this.$.$mol_icon_backup_restore();
             return obj;
         }
-        Result_cache(index) {
+        Result_cache(id) {
             const obj = new this.$.$mol_link();
-            obj.uri = () => this.result_cache(index);
+            obj.uri = () => this.result_cache(id);
             obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Result_cache_hint');
             obj.sub = () => [
-                this.Result_cache_icon(index)
+                this.Result_cache_icon(id)
             ];
             return obj;
         }
-        result_embed(index) {
+        result_embed(id) {
             return "";
         }
-        Result_open_icon(index) {
+        Result_open_icon(id) {
             const obj = new this.$.$mol_icon_book_open_outline();
             return obj;
         }
-        Result_open(index) {
+        Result_open(id) {
             const obj = new this.$.$mol_link();
             obj.arg = () => ({
                 settings: null,
-                sideview: this.result_embed(index)
+                sideview: this.result_embed(id)
             });
             obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Result_open_hint');
             obj.sub = () => [
-                this.Result_open_icon(index)
+                this.Result_open_icon(id)
             ];
             return obj;
         }
-        Result_tools(index) {
+        Result_tools(id) {
             const obj = new this.$.$mol_list();
             obj.rows = () => [
-                this.Result_ban(index),
-                this.Result_cache(index),
-                this.Result_open(index)
+                this.Result_ban(id),
+                this.Result_cache(id),
+                this.Result_open(id)
             ];
             return obj;
         }
@@ -12821,12 +12852,12 @@ var $;
 var $;
 (function ($) {
     class $mol_view_tree_test_attributes_subcomponent extends $mol_view {
-        Page(index) {
+        Page(id) {
             const obj = new this.$.$mol_view_tree_test_attributes_subcomponent_page();
-            obj.Sub = () => this.page(index);
+            obj.Sub = () => this.page(id);
             return obj;
         }
-        page(index) {
+        page(id) {
             return null;
         }
     }

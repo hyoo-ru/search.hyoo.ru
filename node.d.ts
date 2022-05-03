@@ -2059,10 +2059,10 @@ declare namespace $ {
     class $mol_select_list extends $mol_view {
         value(val?: any): readonly string[];
         dictionary(): {};
-        Badge(index: any): $mol_button_minor;
+        Badge(id: any): $mol_button_minor;
         Pick(): $$.$mol_select;
-        badge_title(index: any): string;
-        remove(index: any, event?: any): any;
+        badge_title(id: any): string;
+        remove(id: any, event?: any): any;
         badge_hint(): string;
         enabled(): boolean;
         drop_enabled(): boolean;
@@ -2070,7 +2070,7 @@ declare namespace $ {
         options(): readonly string[];
         options_pickable(): readonly string[];
         pick(val?: any): string;
-        option_title(key: any): string;
+        option_title(id: any): string;
         pick_enabled(): boolean;
         pick_hint(): string;
         Pick_icon(): $mol_icon_plus;
@@ -2350,7 +2350,7 @@ declare namespace $ {
     class $mol_grid extends $mol_view {
         row_height(): number;
         row_ids(): readonly string[][];
-        row_id(index: any): any;
+        row_id(id: any): any;
         col_ids(): readonly any[];
         records(): {};
         record(id: any): any;
@@ -2604,7 +2604,7 @@ declare namespace $ {
         length_max(): number;
         selection(val?: any): readonly number[];
         Edit(): $mol_textarea_edit;
-        row_numb(index: any): number;
+        row_numb(id: any): number;
         highlight(): string;
         View(): $$.$mol_text_code;
     }
@@ -2651,6 +2651,7 @@ declare namespace $ {
 
 declare namespace $ {
     class $mol_form_field extends $mol_labeler {
+        bids(): readonly string[];
         label(): readonly any[];
         content(): readonly any[];
         name(): string;
@@ -2661,6 +2662,12 @@ declare namespace $ {
 }
 
 declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_form_field extends $.$mol_form_field {
+        bid(): string;
+    }
 }
 
 declare namespace $ {
@@ -2764,6 +2771,8 @@ declare namespace $ {
 
 declare namespace $.$$ {
     class $mol_form extends $.$mol_form {
+        form_fields(): readonly $mol_form_field[];
+        submit_allowed(): boolean;
         submit_blocked(): boolean;
         keydown(next: KeyboardEvent): void;
     }
@@ -2775,8 +2784,8 @@ declare namespace $ {
         Placeholder(): any;
         query_results(next?: any): string;
         pages(): readonly any[];
-        Sideview(uri: any): $mol_view;
-        Result_item(index: any): $$.$mol_link;
+        Sideview(id: any): $mol_view;
+        Result_item(id: any): $$.$mol_link;
         Searcher_link(id: any): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
         query(val?: any): string;
@@ -2787,7 +2796,7 @@ declare namespace $ {
         Exact(): $mol_check_icon;
         exclude(val?: any): readonly string[];
         exclude_options(): readonly string[];
-        exclude_badge_title(index: any): string;
+        exclude_badge_title(id: any): string;
         Exclude_icon(): $mol_icon_minus_circle_outline;
         Exclude(): $$.$mol_select_list;
         where(next?: any): string;
@@ -2811,41 +2820,41 @@ declare namespace $ {
         Settings_close(): $$.$mol_link;
         searchers(next?: any): string;
         Searchers(): $$.$mol_textarea;
-        Searchers_field(): $mol_form_field;
+        Searchers_field(): $$.$mol_form_field;
         blacklist(next?: any): string;
         Blacklist(): $$.$mol_textarea;
-        Blacklist_field(): $mol_form_field;
+        Blacklist_field(): $$.$mol_form_field;
         query_dump(): string;
         Query_dump(): $$.$mol_text_code;
-        Query_dump_field(): $mol_form_field;
+        Query_dump_field(): $$.$mol_form_field;
         Settings_fields(): $$.$mol_list;
         Settings(): $mol_page;
         Sideview_hint(): $$.$mol_paragraph;
         sideview(val?: any): string;
-        Sideview_embed(uri: any): $$.$mol_embed_native;
-        result_uri(index: any): string;
-        result_image(index: any): string;
-        Result_image(index: any): $mol_image;
-        result_title(index: any): string;
-        Result_title(index: any): $$.$mol_dimmer;
-        result_host(index: any): string;
-        Result_host(index: any): $$.$mol_dimmer;
-        result_descr(index: any): string;
-        Result_descr(index: any): $$.$mol_dimmer;
-        result_main(index: any): readonly any[];
-        Result_main(index: any): $$.$mol_list;
-        Result_info(index: any): $mol_row;
-        Result_ban_icon(index: any): $mol_icon_cross;
-        result_ban_options(index: any): readonly string[];
-        result_ban(index: any, val?: any): string;
-        Result_ban(index: any): $$.$mol_select;
-        result_cache(index: any): string;
-        Result_cache_icon(index: any): $mol_icon_backup_restore;
-        Result_cache(index: any): $$.$mol_link;
-        result_embed(index: any): string;
-        Result_open_icon(index: any): $mol_icon_book_open_outline;
-        Result_open(index: any): $$.$mol_link;
-        Result_tools(index: any): $$.$mol_list;
+        Sideview_embed(id: any): $$.$mol_embed_native;
+        result_uri(id: any): string;
+        result_image(id: any): string;
+        Result_image(id: any): $mol_image;
+        result_title(id: any): string;
+        Result_title(id: any): $$.$mol_dimmer;
+        result_host(id: any): string;
+        Result_host(id: any): $$.$mol_dimmer;
+        result_descr(id: any): string;
+        Result_descr(id: any): $$.$mol_dimmer;
+        result_main(id: any): readonly any[];
+        Result_main(id: any): $$.$mol_list;
+        Result_info(id: any): $mol_row;
+        Result_ban_icon(id: any): $mol_icon_cross;
+        result_ban_options(id: any): readonly string[];
+        result_ban(id: any, val?: any): string;
+        Result_ban(id: any): $$.$mol_select;
+        result_cache(id: any): string;
+        Result_cache_icon(id: any): $mol_icon_backup_restore;
+        Result_cache(id: any): $$.$mol_link;
+        result_embed(id: any): string;
+        Result_open_icon(id: any): $mol_icon_book_open_outline;
+        Result_open(id: any): $$.$mol_link;
+        Result_tools(id: any): $$.$mol_list;
         searcher_link(id: any): string;
     }
 }
