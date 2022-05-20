@@ -2473,7 +2473,8 @@ declare namespace $ {
         uri(val?: any): string;
         mime(): string;
         title(val?: any): string;
-        Fallback(): $$.$mol_link;
+        Fallback_image(): $mol_image;
+        Fallback_link(): $$.$mol_link;
     }
 }
 
@@ -2542,7 +2543,6 @@ declare namespace $ {
         line_type(id: any): string;
         line_content(id: any): readonly any[];
         link_uri(id: any): string;
-        link_target(id: any): string;
     }
     class $mol_text_span extends $mol_paragraph {
         dom_name(): string;
