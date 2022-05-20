@@ -68,6 +68,10 @@
 	color: var(--mol_theme_text);
 }
 
+[hyoo_search_app_main_tools] {
+	flex-grow: 0;
+}
+
 [hyoo_search_app_main_foot] {
 	padding: var(--mol_gap_block);
 }
