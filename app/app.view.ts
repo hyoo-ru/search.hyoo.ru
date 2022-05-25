@@ -19,9 +19,7 @@ namespace $.$$ {
 		autofocus() {
 			if( this.query() ) return null
 			
-			$mol_fiber_defer( ()=> {
-				this.Query().Query().focused( true )
-			} )
+			this.Query().Query().focused( true )
 			
 			return null
 		}
@@ -146,12 +144,17 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		main_content() {
-			if( !this.query() ) return []
+			if( !this.query_results() ) return []
 			return super.main_content()
 		}
 		
 		@ $mol_mem
-		results_raw() {
+		Error() {
+			return this.$.$hyoo_search_api.error()
+		}
+		
+		@ $mol_mem
+		api() {
 			
 			const type = [
 				'PNG',
@@ -165,13 +168,18 @@ namespace $.$$ {
 				'Image'
 			].includes( this.type() ) ? 'image' : 'web'
 			
-			const api = $mol_wire_sync( this.$.$hyoo_search_api.type( type ) )
-			
-			return api.execute( this.query_results() )
+			return $mol_wire_sync( this.$.$hyoo_search_api.type( type ) )
+		
+		}
+		
+		@ $mol_mem
+		results_raw() {
+			return this.api().execute( this.query_results() )
 		}
 		
 		@ $mol_mem
 		query_results( next?: string ): string {
+			this.Main().body_scroll_top( 0 )
 			return next ?? $mol_wire_probe( ()=> this.query_results() ) ?? this.query_backend()
 		}
 		

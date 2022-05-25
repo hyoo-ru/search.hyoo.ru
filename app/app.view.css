@@ -1,3 +1,13 @@
+#recaptcha\-wrapper {
+	margin: var(--mol_gap_block) !important;
+}
+
+#recaptcha\-wrapper a,
+#recaptcha\-wrapper .gs\-captcha\-info\-link {
+	text-decoration: none;
+	color: var(--mol_theme_control);
+}
+
 [hyoo_search_app_main] {
 	flex: 1 0 40rem;
 }

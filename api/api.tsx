@@ -1,13 +1,13 @@
 /** @jsx $mol_jsx */
 namespace $ {
 	
-	interface GCS {
+	export interface $hyoo_search_api_external {
 		execute: ( query: string )=> void
 	}
 	
 	declare namespace google.search.cse.element {
 		
-		function getElement( gname: string ): GCS
+		function getElement( gname: string ): $hyoo_search_api_external
 		
 		function render( options: {
 			div: Element
@@ -55,8 +55,6 @@ namespace $ {
 			return 'web' as 'web' | 'image'
 		}
 		
-		static error = $mol_promise<string>()
-
 		@ $mol_memo.method
 		static async backend() {
 			
@@ -95,7 +93,13 @@ namespace $ {
 							if( /^api/.test( String( field ) ) && typeof sce[ field ] === 'function' ) {
 								return function( ... args: any[] ) {
 									const error = args[0].error
-									if( error ) $hyoo_search_api.error.fail( new Error( 'Google: ' + error.message ) )
+									if( error ) {
+										setTimeout( ()=> {
+											$hyoo_search_api.error(
+												$hyoo_search_api.output().querySelector( '#recaptcha-wrapper' )
+											)
+										} )
+									}
 									return sce[ field ]( ... args )
 								}
 							}
@@ -121,6 +125,16 @@ namespace $ {
 			
 		}
 		
+		@ $mol_mem
+		static output() {
+			return <div></div>
+		}
+		
+		@ $mol_mem
+		static error( next = null as null | Element ) {
+			return next
+		}
+		
 		@ $mol_memo.method
 		async backend() {
 			
@@ -128,7 +142,7 @@ namespace $ {
 			const gname = this.toString()
 					
 			backend.render({
-				div: <div></div>,
+				div: $hyoo_search_api.output(),
 				tag: 'search',
 				gname,
 				attributes: {
@@ -143,7 +157,6 @@ namespace $ {
 		future( query: string ) {
 			$mol_wire_solid()
 			const promise = $mol_promise< typeof Results.Value >()
-			$hyoo_search_api.error.catch( promise.fail )
 			return { promise }
 		}
 		
@@ -165,8 +178,6 @@ namespace $ {
 			const backend = await this.backend()
 			
 			if( !query ) return []
-			
-			// this.$.$mol_wait_timeout( 500 )
 			
 			backend.execute( query )
  
