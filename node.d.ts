@@ -114,10 +114,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_deprecated(message: string): <Method extends (this: Host, ...args: readonly any[]) => any, Host extends { [key in Field]: Method; }, Field extends keyof Host>(host: Host, field: Field, descr: TypedPropertyDescriptor<Method>) => void;
-}
-
-declare namespace $ {
     const $mol_tree_convert: unique symbol;
     type $mol_tree_path = Array<string | number | null>;
     type $mol_tree_hack = (input: $mol_tree, context: $mol_tree_context) => readonly $mol_tree[];
@@ -163,6 +159,7 @@ declare namespace $ {
 declare namespace $ {
 }
 
+/// <reference types="node" />
 /// <reference types="node" />
 declare namespace $ {
     function $mol_exec(this: $, dir: string, command: string, ...args: string[]): import("child_process").SpawnSyncReturns<Buffer>;
@@ -536,7 +533,7 @@ declare namespace $ {
 
 declare namespace $ {
     class $mol_memo extends $mol_wrapper {
-        static wrap<This extends object, Value>(task: (this: This, next?: Value) => Value): (this: This, next?: Value | undefined) => Value | undefined;
+        static wrap<This extends object, Value>(task: (this: This, next?: Value) => Value): (this: This, next?: Value) => Value | undefined;
     }
 }
 
@@ -2498,7 +2495,7 @@ declare namespace $.$$ {
         uri_resource(): string;
         uri_listener(): $mol_dom_listener;
         uri_change(event?: MessageEvent<[string, string]>): void;
-        auto(): ($mol_dom_listener | Window)[];
+        auto(): (Window | $mol_dom_listener)[];
     }
 }
 
@@ -2772,6 +2769,7 @@ declare namespace $ {
         Type(): $$.$mol_select;
         Settings_open_icon(): $mol_icon_settings;
         Settings_open(): $$.$mol_link;
+        Error(): any;
         result_list(): readonly any[];
         result_list_empty(): string;
         Result_list_empty(): $mol_view;
@@ -2884,9 +2882,9 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_data_record<Sub extends Record<string, $mol_data_value<any>>>(sub: Sub): ((val: unknown) => Readonly<$mol_type_merge<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>>) & {
+    function $mol_data_record<Sub extends Record<string, $mol_data_value<any>>>(sub: Sub): ((val: unknown) => Readonly<$mol_type_merge<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, ({ [key in keyof Sub]: ReturnType<Sub[key]>; } extends infer T ? { [Field in keyof T]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; } : never)[keyof Sub]>>>) & {
         config: Sub;
-        Value: Readonly<$mol_type_merge<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, { [Field in keyof { [key in keyof Sub]: ReturnType<Sub[key]>; }]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; }[keyof Sub]>>>;
+        Value: Readonly<$mol_type_merge<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, ({ [key in keyof Sub]: ReturnType<Sub[key]>; } extends infer T_1 ? { [Field in keyof T_1]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; } : never)[keyof Sub]>>>;
     };
 }
 
@@ -2954,11 +2952,11 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    interface GCS {
+    export interface $hyoo_search_api_external {
         execute: (query: string) => void;
     }
     namespace google.search.cse.element {
-        function getElement(gname: string): GCS;
+        function getElement(gname: string): $hyoo_search_api_external;
         function render(options: {
             div: Element;
             tag: 'search';
@@ -2969,12 +2967,10 @@ declare namespace $ {
     export class $hyoo_search_api extends $mol_object2 {
         static type(type: 'web' | 'image'): $hyoo_search_api;
         type(): "image" | "web";
-        static error: Promise<string> & {
-            done: (res: string | PromiseLike<string>) => void;
-            fail: (error?: any) => void;
-        };
         static backend(): Promise<typeof google.search.cse.element>;
-        backend(): Promise<GCS>;
+        static output(): $mol_jsx.JSX.Element;
+        static error(next?: Element | null): Element | null;
+        backend(): Promise<$hyoo_search_api_external>;
         future(query: string): {
             promise: Promise<readonly Readonly<{
                 content?: string | undefined;
@@ -3128,6 +3124,139 @@ declare namespace $.$$ {
         pages(): ($mol_view | $mol_page)[];
         title(): string;
         main_content(): readonly any[];
+        Error(): Element | null;
+        api(): {
+            type: () => "image" | "web";
+            backend: () => $hyoo_search_api_external;
+            future: (query: string) => {
+                promise: Promise<readonly Readonly<{
+                    content?: string | undefined;
+                    contentNoFormatting?: string | undefined;
+                    richSnippet?: Readonly<{
+                        metatags?: {
+                            [x: string]: string;
+                        } | undefined;
+                    }> | undefined;
+                    thumbnailImage?: Readonly<{
+                        url: string;
+                        height: string;
+                        width: string;
+                    }> | undefined;
+                    image?: Readonly<{
+                        url: string;
+                        height: string;
+                        width: string;
+                    }> | undefined;
+                    title: string;
+                    titleNoFormatting: string;
+                    url?: string | undefined;
+                    contextUrl?: string | undefined;
+                    visibleUrl: string;
+                }>[]> & {
+                    done: (res: readonly Readonly<{
+                        content?: string | undefined;
+                        contentNoFormatting?: string | undefined;
+                        richSnippet?: Readonly<{
+                            metatags?: {
+                                [x: string]: string;
+                            } | undefined;
+                        }> | undefined;
+                        thumbnailImage?: Readonly<{
+                            url: string;
+                            height: string;
+                            width: string;
+                        }> | undefined;
+                        image?: Readonly<{
+                            url: string;
+                            height: string;
+                            width: string;
+                        }> | undefined;
+                        title: string;
+                        titleNoFormatting: string;
+                        url?: string | undefined;
+                        contextUrl?: string | undefined;
+                        visibleUrl: string;
+                    }>[] | PromiseLike<readonly Readonly<{
+                        content?: string | undefined;
+                        contentNoFormatting?: string | undefined;
+                        richSnippet?: Readonly<{
+                            metatags?: {
+                                [x: string]: string;
+                            } | undefined;
+                        }> | undefined;
+                        thumbnailImage?: Readonly<{
+                            url: string;
+                            height: string;
+                            width: string;
+                        }> | undefined;
+                        image?: Readonly<{
+                            url: string;
+                            height: string;
+                            width: string;
+                        }> | undefined;
+                        title: string;
+                        titleNoFormatting: string;
+                        url?: string | undefined;
+                        contextUrl?: string | undefined;
+                        visibleUrl: string;
+                    }>[]>) => void;
+                    fail: (error?: any) => void;
+                };
+            };
+            execute_async: (query: string) => readonly Readonly<{
+                content?: string | undefined;
+                contentNoFormatting?: string | undefined;
+                richSnippet?: Readonly<{
+                    metatags?: {
+                        [x: string]: string;
+                    } | undefined;
+                }> | undefined;
+                thumbnailImage?: Readonly<{
+                    url: string;
+                    height: string;
+                    width: string;
+                }> | undefined;
+                image?: Readonly<{
+                    url: string;
+                    height: string;
+                    width: string;
+                }> | undefined;
+                title: string;
+                titleNoFormatting: string;
+                url?: string | undefined;
+                contextUrl?: string | undefined;
+                visibleUrl: string;
+            }>[];
+            execute: (query: string) => readonly Readonly<{
+                content?: string | undefined;
+                contentNoFormatting?: string | undefined;
+                richSnippet?: Readonly<{
+                    metatags?: {
+                        [x: string]: string;
+                    } | undefined;
+                }> | undefined;
+                thumbnailImage?: Readonly<{
+                    url: string;
+                    height: string;
+                    width: string;
+                }> | undefined;
+                image?: Readonly<{
+                    url: string;
+                    height: string;
+                    width: string;
+                }> | undefined;
+                title: string;
+                titleNoFormatting: string;
+                url?: string | undefined;
+                contextUrl?: string | undefined;
+                visibleUrl: string;
+            }>[];
+            $: typeof $$;
+            destructor: () => void;
+            toString: () => unknown;
+            toJSON: () => unknown;
+            [$mol_ambient_ref]: typeof $$;
+        };
         results_raw(): readonly Readonly<{
             content?: string | undefined;
             contentNoFormatting?: string | undefined;

@@ -9034,6 +9034,9 @@ var $;
             ];
             return obj;
         }
+        Error() {
+            return null;
+        }
         result_list() {
             return [];
         }
@@ -9070,6 +9073,7 @@ var $;
         }
         main_content() {
             return [
+                this.Error(),
                 this.Result_list(),
                 this.Attribution(),
                 this.Attribution_loader()
@@ -9861,7 +9865,6 @@ var $;
         type() {
             return 'web';
         }
-        static error = $mol_promise();
         static async backend() {
             let done;
             const promise = new Promise(d => done = d);
@@ -9885,8 +9888,11 @@ var $;
                             if (/^api/.test(String(field)) && typeof sce[field] === 'function') {
                                 return function (...args) {
                                     const error = args[0].error;
-                                    if (error)
-                                        $hyoo_search_api.error.fail(new Error('Google: ' + error.message));
+                                    if (error) {
+                                        setTimeout(() => {
+                                            $hyoo_search_api.error($hyoo_search_api.output().querySelector('#recaptcha-wrapper'));
+                                        });
+                                    }
                                     return sce[field](...args);
                                 };
                             }
@@ -9904,11 +9910,17 @@ var $;
             await $mol_wire_async(this.$.$mol_import).script(uri);
             return promise;
         }
+        static output() {
+            return $mol_jsx("div", null);
+        }
+        static error(next = null) {
+            return next;
+        }
         async backend() {
             const backend = await $hyoo_search_api.backend();
             const gname = this.toString();
             backend.render({
-                div: $mol_jsx("div", null),
+                div: $hyoo_search_api.output(),
                 tag: 'search',
                 gname,
                 attributes: {
@@ -9920,7 +9932,6 @@ var $;
         future(query) {
             $mol_wire_solid();
             const promise = $mol_promise();
-            $hyoo_search_api.error.catch(promise.fail);
             return { promise };
         }
         async execute_async(query) {
@@ -9954,6 +9965,12 @@ var $;
     __decorate([
         $mol_memo.method
     ], $hyoo_search_api, "backend", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_search_api, "output", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_search_api, "error", null);
     $.$hyoo_search_api = $hyoo_search_api;
 })($ || ($ = {}));
 //hyoo/search/api/api.tsx
@@ -9961,7 +9978,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("hyoo/search/app/app.view.css", "[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\n[hyoo_search_app_sideview] {\n\tflex: 10000 0 40rem;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n\tz-index: 2;\n\tbackground: white;\n}\n\n[hyoo_search_app_sideview_hint] {\n\tflex: 1 1 auto;\n\tpadding: 0 .25rem;\n\tfont-size: .75rem;\n\tjustify-content: center;\n}\n\n[hyoo_search_app_sideview_embed] {\n\tposition: absolute;\n\twidth: 100%;\n\theight: 100%;\n\tmax-height: 100%;\n\taspect-ratio: auto;\n\tborder-radius: 0;\n\tbackground: transparent;\n}\n\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tpadding: 0;\n}\n\n[hyoo_search_app_result_image] {\n\tflex: 1 0 6rem;\n\tmax-height: 6rem;\n\tobject-fit: scale-down;\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n\tflex-wrap: wrap;\n\talign-items: center;\n\talign-content: center;\n}\n\n[hyoo_search_app_result_main] {\n\tflex: 10000 1 14rem;\n}\n\n[hyoo_search_app_result_title] {\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n}\n\n[hyoo_search_app_result_descr] {\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_tools] {\n\tflex-grow: 0;\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_ban_option_label] {\n\ttext-align: right;\n}\n");
+    $mol_style_attach("hyoo/search/app/app.view.css", "#recaptcha\\-wrapper {\n\tmargin: var(--mol_gap_block) !important;\n}\n\n#recaptcha\\-wrapper a,\n#recaptcha\\-wrapper .gs\\-captcha\\-info\\-link {\n\ttext-decoration: none;\n\tcolor: var(--mol_theme_control);\n}\n\n[hyoo_search_app_main] {\n\tflex: 1 0 40rem;\n}\n\n[hyoo_search_app_sideview] {\n\tflex: 10000 0 40rem;\n\tbox-shadow: 0 0 0 1px var(--mol_theme_line);\n\tz-index: 2;\n\tbackground: white;\n}\n\n[hyoo_search_app_sideview_hint] {\n\tflex: 1 1 auto;\n\tpadding: 0 .25rem;\n\tfont-size: .75rem;\n\tjustify-content: center;\n}\n\n[hyoo_search_app_sideview_embed] {\n\tposition: absolute;\n\twidth: 100%;\n\theight: 100%;\n\tmax-height: 100%;\n\taspect-ratio: auto;\n\tborder-radius: 0;\n\tbackground: transparent;\n}\n\n[hyoo_search_app_settings] {\n\tflex: 0 0 25rem;\n}\n\n[hyoo_search_app_main_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_settings_body] {\n\tpadding: 0;\n}\n\t\n[hyoo_search_app_result_item] {\n\tpadding: 0;\n}\n\n[hyoo_search_app_result_image] {\n\tflex: 1 0 6rem;\n\tmax-height: 6rem;\n\tobject-fit: scale-down;\n}\n\n[hyoo_search_app_result_info] {\n\tflex: 1 1 auto;\n\tflex-wrap: wrap;\n\talign-items: center;\n\talign-content: center;\n}\n\n[hyoo_search_app_result_main] {\n\tflex: 10000 1 14rem;\n}\n\n[hyoo_search_app_result_title] {\n\tcolor: var(--mol_theme_text);\n\ttext-shadow: 0 0;\n}\n\n[hyoo_search_app_result_descr] {\n\tcolor: var(--mol_theme_text);\n}\n\n[hyoo_search_app_main_tools] {\n\tflex-grow: 0;\n}\n\n[hyoo_search_app_main_foot] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_title_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_descr_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_host_low] {\n\topacity: 1;\n}\n\n[hyoo_search_app_result_list] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_list_empty] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_search_app_attribution] {\n\tpadding: var(--mol_gap_text);\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_search_app_result_ban_option_label] {\n\ttext-align: right;\n}\n");
 })($ || ($ = {}));
 //hyoo/search/app/-css/app.view.css.ts
 ;
@@ -9984,9 +10001,7 @@ var $;
             autofocus() {
                 if (this.query())
                     return null;
-                $mol_fiber_defer(() => {
-                    this.Query().Query().focused(true);
-                });
+                this.Query().Query().focused(true);
                 return null;
             }
             auto() {
@@ -10076,11 +10091,14 @@ var $;
                 return `${super.title()} | $hyoo_search`;
             }
             main_content() {
-                if (!this.query())
+                if (!this.query_results())
                     return [];
                 return super.main_content();
             }
-            results_raw() {
+            Error() {
+                return this.$.$hyoo_search_api.error();
+            }
+            api() {
                 const type = [
                     'PNG',
                     'SVG',
@@ -10092,10 +10110,13 @@ var $;
                     'RAW',
                     'Image'
                 ].includes(this.type()) ? 'image' : 'web';
-                const api = $mol_wire_sync(this.$.$hyoo_search_api.type(type));
-                return api.execute(this.query_results());
+                return $mol_wire_sync(this.$.$hyoo_search_api.type(type));
+            }
+            results_raw() {
+                return this.api().execute(this.query_results());
             }
             query_results(next) {
+                this.Main().body_scroll_top(0);
                 return next ?? $mol_wire_probe(() => this.query_results()) ?? this.query_backend();
             }
             submit() {
@@ -10243,6 +10264,12 @@ var $;
         __decorate([
             $mol_mem
         ], $hyoo_search_app.prototype, "main_content", null);
+        __decorate([
+            $mol_mem
+        ], $hyoo_search_app.prototype, "Error", null);
+        __decorate([
+            $mol_mem
+        ], $hyoo_search_app.prototype, "api", null);
         __decorate([
             $mol_mem
         ], $hyoo_search_app.prototype, "results_raw", null);
