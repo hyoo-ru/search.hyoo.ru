@@ -15,7 +15,7 @@
 	"$hyoo_search_app_Sideview_hint_title": "Откройте в новой вкладке если не загрузилось",
 	"$hyoo_search_app_Searchers_hint": "Каждый префикс на отдельной строке",
 	"$hyoo_search_app_Searchers_field_name": "Альтернативные Поисковики",
-	"$hyoo_search_app_Query_dump_field_title": "Полный Запрос",
+	"$hyoo_search_app_Query_dump_field_name": "Полный Запрос",
 	"$hyoo_search_app_Result_ban_hint": "Забанить сайт..",
 	"$hyoo_search_app_Result_cache_hint": "Открыть из кеша",
 	"$hyoo_search_app_Result_open_hint": "Открыть в боковой панели"
