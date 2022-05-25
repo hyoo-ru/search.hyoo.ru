@@ -9213,16 +9213,10 @@ var $;
                 return val;
             return "";
         }
-        submit(event) {
-            if (event !== undefined)
-                return event;
-            return null;
-        }
         Query() {
             const obj = new this.$.$mol_search();
             obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Query_hint');
             obj.query = (val) => this.query(val);
-            obj.submit = (event) => this.submit(event);
             return obj;
         }
         exact(val) {
@@ -9646,9 +9640,6 @@ var $;
     __decorate([
         $mol_mem
     ], $hyoo_search_app.prototype, "query", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_search_app.prototype, "submit", null);
     __decorate([
         $mol_mem
     ], $hyoo_search_app.prototype, "Query", null);
@@ -10410,10 +10401,7 @@ var $;
             }
             query_results(next) {
                 this.Main().body_scroll_top(0);
-                return next ?? $mol_wire_probe(() => this.query_results()) ?? this.query_backend();
-            }
-            submit() {
-                this.query_results(this.query_backend());
+                return this.query_backend();
             }
             result_list() {
                 return this.results_raw().map((_, i) => this.Result_item(i));
@@ -10569,9 +10557,6 @@ var $;
         __decorate([
             $mol_mem
         ], $hyoo_search_app.prototype, "query_results", null);
-        __decorate([
-            $mol_action
-        ], $hyoo_search_app.prototype, "submit", null);
         __decorate([
             $mol_mem
         ], $hyoo_search_app.prototype, "result_list", null);
