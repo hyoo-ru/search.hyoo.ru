@@ -180,12 +180,7 @@ namespace $.$$ {
 		@ $mol_mem
 		query_results( next?: string ): string {
 			this.Main().body_scroll_top( 0 )
-			return next ?? $mol_wire_probe( ()=> this.query_results() ) ?? this.query_backend()
-		}
-		
-		@ $mol_action
-		submit() {
-			this.query_results( this.query_backend() )
+			return this.query_backend()
 		}
 		
 		@ $mol_mem
