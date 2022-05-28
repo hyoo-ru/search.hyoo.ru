@@ -162,6 +162,7 @@
     "$mol_icon_github",
     "$mol_icon_close",
     "$mol_textarea",
+    "$mol_stack",
     "$mol_text_code",
     "$mol_text",
     "$mol_grid",
