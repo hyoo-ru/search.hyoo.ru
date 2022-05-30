@@ -1748,17 +1748,27 @@ var $;
                 };
             }
         }
-        recall(...args) {
-            if (this.cursor > $mol_wire_cursor.fresh) {
-                try {
-                    this.once();
-                }
-                catch (error) {
-                    if (error instanceof Promise)
-                        $mol_fail_hidden(error);
-                }
+        resync(...args) {
+            let res;
+            try {
+                res = this.recall(...args);
             }
-            return this.put(this.task.call(this.host, ...args));
+            catch (error) {
+                if (error instanceof Promise)
+                    $mol_fail_hidden(error);
+                res = error;
+            }
+            try {
+                this.once();
+            }
+            catch (error) {
+                if (error instanceof Promise)
+                    $mol_fail_hidden(error);
+            }
+            return this.put(res);
+        }
+        recall(...args) {
+            return this.task.call(this.host, ...args);
         }
         once() {
             return this.sync();
@@ -1806,6 +1816,9 @@ var $;
     }
     __decorate([
         $mol_wire_method
+    ], $mol_wire_atom.prototype, "resync", null);
+    __decorate([
+        $mol_wire_method
     ], $mol_wire_atom.prototype, "recall", null);
     __decorate([
         $mol_wire_method
@@ -1851,7 +1864,7 @@ var $;
                         return atom.sync();
                     }
                 }
-                return atom.recall(...args);
+                return atom.resync(...args);
             };
             Object.defineProperty(wrapper, 'name', { value: func.name + ' ' });
             Object.assign(wrapper, { orig: func });
@@ -2587,7 +2600,10 @@ var $;
             const selector = (prefix, path) => {
                 if (path.length === 0)
                     return prefix || `[${block}]`;
-                return `${prefix ? prefix + ' ' : ''}[${block}_${path.join('_')}]`;
+                let res = `[${block}_${path.join('_')}]`;
+                if (prefix)
+                    res = prefix + ' :where(' + res + ')';
+                return res;
             };
             for (const key of Object.keys(config).reverse()) {
                 if (/^[a-z]/.test(key)) {
@@ -2624,19 +2640,19 @@ var $;
                     make_class(prefix, [...path, key.toLowerCase()], config[key]);
                 }
                 else if (key[0] === '$') {
-                    make_class(selector(prefix, path) + ' [' + $mol_dom_qname(key) + ']', [], config[key]);
+                    make_class(selector(prefix, path) + ' :where([' + $mol_dom_qname(key) + '])', [], config[key]);
                 }
                 else if (key === '>') {
                     const types = config[key];
                     for (let type in types) {
-                        make_class(selector(prefix, path) + ' > [' + $mol_dom_qname(type) + ']', [], types[type]);
+                        make_class(selector(prefix, path) + ' > :where([' + $mol_dom_qname(type) + '])', [], types[type]);
                     }
                 }
                 else if (key === '@') {
                     const attrs = config[key];
                     for (let name in attrs) {
                         for (let val in attrs[name]) {
-                            make_class(selector(prefix, path) + '[' + name + '=' + JSON.stringify(val) + ']', [], attrs[name][val]);
+                            make_class(selector(prefix, path) + ':where([' + name + '=' + JSON.stringify(val) + '])', [], attrs[name][val]);
                         }
                     }
                 }
@@ -4544,7 +4560,7 @@ var $;
     var $$;
     (function ($$) {
         class $mol_button extends $.$mol_button {
-            status(next = null) { return next; }
+            status(next = [null]) { return next; }
             disabled() {
                 return !this.enabled();
             }
@@ -4556,10 +4572,11 @@ var $;
                 try {
                     this.event_click(next);
                     this.click(next);
-                    this.status(null);
+                    this.status([null]);
                 }
                 catch (error) {
-                    this.status(error);
+                    this.status([error]);
+                    $mol_fail_hidden(error);
                 }
             }
             event_key_press(event) {
@@ -4571,16 +4588,13 @@ var $;
                 return this.enabled() ? super.tab_index() : -1;
             }
             error() {
-                try {
-                    this.status();
+                const [error] = this.status();
+                if (!error)
                     return '';
+                if (error instanceof Promise) {
+                    return $mol_fail_hidden(error);
                 }
-                catch (error) {
-                    if (error instanceof Promise) {
-                        return $mol_fail_hidden(error);
-                    }
-                    return String(error.message ?? error);
-                }
+                return String(error.message ?? error);
             }
             sub_visible() {
                 return [
@@ -5247,11 +5261,11 @@ var $;
                 let top2 = top;
                 let bottom2 = bottom;
                 if (anchoring && (top <= limit_top) && (bottom2 < limit_bottom)) {
-                    min2 = max;
+                    min2 = Math.max(0, max - 1);
                     top2 = bottom;
                 }
                 if ((bottom >= limit_bottom) && (top2 >= limit_top)) {
-                    max2 = min;
+                    max2 = Math.min(min + 1, kids.length);
                     bottom2 = top;
                 }
                 while (bottom2 < limit_bottom && max2 < kids.length) {
@@ -7617,8 +7631,10 @@ var $;
             '@': {
                 'mol_text_code_sidebar_showed': {
                     true: {
-                        margin: {
-                            left: rem(1.5),
+                        $mol_text_code_row: {
+                            margin: {
+                                left: rem(1.5),
+                            },
                         },
                     },
                 },
@@ -7757,7 +7773,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/check/expand/expand.view.css", "[mol_check_expand] {\n\tmin-width: 20px;\n}\n\n[mol_check_expand][disabled] [mol_check_expand_icon] {\n\tvisibility: hidden;\n}\n\n[mol_check_expand_icon] {\n\tbox-shadow: none;\n\tmargin: .25rem -.25rem;\n}\n[mol_check_expand_icon] {\n\ttransform: rotateZ(0deg);\n}\n\n[mol_check_checked] [mol_check_expand_icon_path] {\n\ttransform: rotateZ(90deg);\n}\n\n[mol_check_expand_icon] {\n\tvertical-align: text-top;\n}\n\n[mol_check_expand_label] {\n\tmargin-left: 0;\n}\n");
+    $mol_style_attach("mol/check/expand/expand.view.css", "[mol_check_expand] {\n\tmin-width: 20px;\n}\n\n:where([mol_check_expand][disabled]) [mol_check_expand_icon] {\n\tvisibility: hidden;\n}\n\n[mol_check_expand_icon] {\n\tbox-shadow: none;\n\tmargin: .25rem -.25rem;\n}\n[mol_check_expand_icon] {\n\ttransform: rotateZ(0deg);\n}\n\n:where([mol_check_checked]) [mol_check_expand_icon_path] {\n\ttransform: rotateZ(90deg);\n}\n\n[mol_check_expand_icon] {\n\tvertical-align: text-top;\n}\n\n[mol_check_expand_label] {\n\tmargin-left: 0;\n}\n");
 })($ || ($ = {}));
 //mol/check/expand/-css/expand.view.css.ts
 ;
@@ -11469,6 +11485,19 @@ var $;
             App.value(2);
             $mol_assert_equal(App.value(), 3);
         },
+        'Read Pushed'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static value(next = 0) {
+                    return next;
+                }
+            }
+            __decorate([
+                $mol_wire_mem(0)
+            ], App, "value", null);
+            $mol_assert_equal(App.value(1), 1);
+            $mol_assert_equal(App.value(), 1);
+        },
         'Mem overrides mem'($) {
             class Base extends $mol_object2 {
                 static $ = $;
@@ -11638,6 +11667,33 @@ var $;
                 $mol_wire_method
             ], App, "test", null);
             App.test();
+        },
+        'Update deps on push'($) {
+            class App extends $mol_object2 {
+                static $ = $;
+                static left(next = false) {
+                    return next;
+                }
+                static right(next = false) {
+                    return next;
+                }
+                static res(next) {
+                    return this.left(next) && this.right();
+                }
+            }
+            __decorate([
+                $mol_wire_mem(0)
+            ], App, "left", null);
+            __decorate([
+                $mol_wire_mem(0)
+            ], App, "right", null);
+            __decorate([
+                $mol_wire_mem(0)
+            ], App, "res", null);
+            $mol_assert_equal(App.res(), false);
+            $mol_assert_equal(App.res(true), false);
+            $mol_assert_equal(App.right(true), true);
+            $mol_assert_equal(App.res(), true);
         },
         'Different order of pull and push'($) {
             class App extends $mol_object2 {
@@ -12579,7 +12635,7 @@ var $;
                     },
                 },
             });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test][mol_theme="$mol_theme_dark"] {\n\tcolor: red;\n\tdisplay: block;\n}\n');
+            $mol_assert_equal(sheet, '[mol_style_sheet_test]:where([mol_theme="$mol_theme_dark"]) {\n\tcolor: red;\n\tdisplay: block;\n}\n');
         },
         'component element styles'() {
             class $mol_style_sheet_test extends $mol_view {
@@ -12624,7 +12680,7 @@ var $;
                     },
                 },
             });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test][mol_theme="$mol_theme_dark"] [mol_style_sheet_test_item] {\n\tcolor: red;\n}\n');
+            $mol_assert_equal(sheet, '[mol_style_sheet_test]:where([mol_theme="$mol_theme_dark"]) :where([mol_style_sheet_test_item]) {\n\tcolor: red;\n}\n');
         },
         'inner component styles by class'() {
             const sheet = $mol_style_sheet($mol_style_sheet_test2, {
@@ -12633,7 +12689,7 @@ var $;
                     display: 'block',
                 },
             });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test2] [mol_style_sheet_test1] {\n\tcolor: red;\n\tdisplay: block;\n}\n');
+            $mol_assert_equal(sheet, '[mol_style_sheet_test2] :where([mol_style_sheet_test1]) {\n\tcolor: red;\n\tdisplay: block;\n}\n');
         },
         'child component styles by class'() {
             const sheet = $mol_style_sheet($mol_style_sheet_test2, {
@@ -12644,7 +12700,7 @@ var $;
                     },
                 },
             });
-            $mol_assert_equal(sheet, '[mol_style_sheet_test2] > [mol_style_sheet_test1] {\n\tcolor: red;\n\tdisplay: block;\n}\n');
+            $mol_assert_equal(sheet, '[mol_style_sheet_test2] > :where([mol_style_sheet_test1]) {\n\tcolor: red;\n\tdisplay: block;\n}\n');
         },
     });
 })($ || ($ = {}));
@@ -13248,7 +13304,7 @@ var $;
                 });
                 const event = $mol_dom_context.document.createEvent('mouseevent');
                 $mol_assert_fail(() => clicker.event_activate(event), 'Test error');
-                $mol_assert_fail(() => clicker.status(), 'Test error');
+                $mol_assert_equal(clicker.status()[0].message, 'Test error');
             },
         });
     })($$ = $_1.$$ || ($_1.$$ = {}));
