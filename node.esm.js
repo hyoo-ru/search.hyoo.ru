@@ -2139,6 +2139,8 @@ var $;
 var $;
 (function ($) {
     function $mol_wire_async(obj) {
+        let fiber;
+        const temp = $mol_wire_task.getter(obj);
         return new Proxy(obj, {
             get(obj, field) {
                 const val = obj[field];
@@ -2153,8 +2155,8 @@ var $;
                 };
             },
             apply(obj, self, args) {
-                const temp = $mol_wire_task.getter(obj);
-                const fiber = temp(self, args);
+                fiber?.destructor();
+                fiber = temp(self, args);
                 return fiber.async();
             },
         });
@@ -7527,7 +7529,7 @@ var $;
         'code-global': /[$]+\w*|\b[A-Z][a-z0-9]+[A-Z]\w*/,
         'code-decorator': /@\s*\S+/,
         'code-tag': /<\/?[\w-]+\/?>?|&\w+;/,
-        'code-punctuation': /[\-\[\]\{\}\(\)<=>~!\?@#%&\*_\+\\\/\|;:\.,\^]+/,
+        'code-punctuation': /[\-\[\]\{\}\(\)<=>~!\?@#%&\*_\+\\\/\|;:\.,\^]+?/,
     });
 })($ || ($ = {}));
 //mol/syntax2/md/md.ts
