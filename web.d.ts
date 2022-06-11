@@ -2810,6 +2810,7 @@ declare namespace $ {
         Searcher_link(id: any): $$.$mol_link_iconed;
         Theme(): $$.$mol_theme_auto;
         query(val?: any): string;
+        submit(event?: any): any;
         Query(): $$.$mol_search;
         exact(val?: any): boolean;
         Exact_icon(): $mol_icon_bullseye_arrow;
@@ -3338,6 +3339,7 @@ declare namespace $.$$ {
             visibleUrl: string;
         }>[];
         query_results(next?: string): string;
+        submit(): void;
         result_list(): $mol_link[];
         result_image(index: number): string;
         result_icon(index: number): string;
