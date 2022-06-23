@@ -8745,6 +8745,7 @@ var $;
             const obj = new this.$.$mol_text();
             obj.uri_resolve = (id) => this.uri_resolve(id);
             obj.text = () => this.quote_text(id);
+            obj.highlight = () => this.highlight();
             obj.auto_scroll = () => null;
             return obj;
         }
@@ -8752,6 +8753,7 @@ var $;
             const obj = new this.$.$mol_text();
             obj.uri_resolve = (id) => this.uri_resolve(id);
             obj.text = () => this.list_text(id);
+            obj.highlight = () => this.highlight();
             obj.auto_scroll = () => null;
             return obj;
         }
@@ -8783,6 +8785,7 @@ var $;
         Table_cell(id) {
             const obj = new this.$.$mol_text();
             obj.auto_scroll = () => null;
+            obj.highlight = () => this.highlight();
             obj.uri_resolve = (id) => this.uri_resolve(id);
             obj.text = () => this.table_cell_text(id);
             return obj;
@@ -8840,6 +8843,9 @@ var $;
         quote_text(id) {
             return "";
         }
+        highlight() {
+            return "";
+        }
         list_text(id) {
             return "";
         }
@@ -8850,9 +8856,6 @@ var $;
             return {};
         }
         code_text(id) {
-            return "";
-        }
-        highlight() {
             return "";
         }
         code_sidebar_showed() {
