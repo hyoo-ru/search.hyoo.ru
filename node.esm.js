@@ -9718,7 +9718,7 @@ var $;
                 return str.split(' ').filter(Boolean);
             }
             query_backend() {
-                const query = this.query().trim();
+                const query = this.query_results().trim();
                 if (!query)
                     return '';
                 return [
@@ -9781,7 +9781,7 @@ var $;
                 return `${super.title()} | $hyoo_search`;
             }
             main_content() {
-                if (!this.query_results())
+                if (!this.query_backend())
                     return [];
                 return super.main_content();
             }
@@ -9803,14 +9803,14 @@ var $;
                 return $mol_wire_sync(this.$.$hyoo_search_api.type(type));
             }
             results_raw() {
-                return this.api().execute(this.query_results());
+                return this.api().execute(this.query_backend());
             }
             query_results(next) {
                 this.Main().body_scroll_top(0);
-                return next ?? $mol_wire_probe(() => this.query_results()) ?? this.query_backend();
+                return next ?? $mol_wire_probe(() => this.query_results()) ?? this.query();
             }
             submit() {
-                this.query_results(this.query_backend());
+                this.query_results(this.query());
             }
             result_list() {
                 return this.results_raw().map((_, i) => this.Result_item(i));
@@ -9912,7 +9912,7 @@ var $;
                 return this.searcher_list().map((_, i) => this.Searcher_link(i));
             }
             searcher_link(index) {
-                return this.searcher_list()[index] + encodeURIComponent(this.query());
+                return this.searcher_list()[index] + encodeURIComponent(this.query_results());
             }
         }
         __decorate([
