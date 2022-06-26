@@ -59,7 +59,7 @@ namespace $.$$ {
 		@ $mol_mem
 		query_backend() {
 			
-			const query = this.query().trim()
+			const query = this.query_results().trim()
 			if( !query ) return ''
 			
 			return [
@@ -144,7 +144,7 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		main_content() {
-			if( !this.query_results() ) return []
+			if( !this.query_backend() ) return []
 			return super.main_content()
 		}
 		
@@ -174,18 +174,18 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		results_raw() {
-			return this.api().execute( this.query_results() )
+			return this.api().execute( this.query_backend() )
 		}
 		
 		@ $mol_mem
 		query_results( next?: string ): string {
 			this.Main().body_scroll_top( 0 )
-			return next ?? $mol_wire_probe( ()=> this.query_results() ) ?? this.query_backend()
+			return next ?? $mol_wire_probe( ()=> this.query_results() ) ?? this.query()
 		}
 		
 		@ $mol_action
 		submit() {
-			this.query_results( this.query_backend() )
+			this.query_results( this.query() )
 		}
 		
 		@ $mol_mem
@@ -331,7 +331,7 @@ namespace $.$$ {
 		
 		@ $mol_mem_key
 		searcher_link( index: number ) {
-			return this.searcher_list()[ index ] + encodeURIComponent( this.query() )
+			return this.searcher_list()[ index ] + encodeURIComponent( this.query_results() )
 		}
 		
 	}
