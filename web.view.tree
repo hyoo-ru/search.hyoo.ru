@@ -356,6 +356,9 @@ $mol_icon_settings $mol_icon path \M12,15.5C10.07,15.5 8.5,13.93 8.5,12C8.5,10.0
 
 $mol_page $mol_view
 	dom_name \article
+	field *
+		^
+		tabIndex <= tabindex -1
 	sub /
 		<= Head $mol_view
 			minimal_height 64
