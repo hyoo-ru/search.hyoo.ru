@@ -15,19 +15,6 @@ namespace $.$$ {
 			})
 		}
 		
-		@ $mol_mem
-		autofocus() {
-			if( this.query() ) return null
-			
-			this.Query().Query().bring()
-			
-			return null
-		}
-		
-		auto() {
-			this.autofocus()
-		}
-		
 		query( next?: string ) {
 			return this.$.$mol_state_arg.value( 'query', next ) ?? ''
 		}
