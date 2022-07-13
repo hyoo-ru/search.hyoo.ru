@@ -9753,7 +9753,7 @@ var $;
             autofocus() {
                 if (this.query())
                     return null;
-                this.Query().Query().focused(true);
+                this.Query().Query().bring();
                 return null;
             }
             auto() {
