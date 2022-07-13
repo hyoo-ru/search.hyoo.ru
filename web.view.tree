@@ -247,6 +247,7 @@ $mol_search $mol_pop
 				hint <= hint @ \Search...
 				submit?event <=> submit?event null
 				enabled <= enabled true
+				bring => bring
 			<= Clear $mol_button_minor
 				hint @ \Clear
 				click?event <=> clear?event null
@@ -542,10 +543,12 @@ $hyoo_search_app $mol_book2
 	pages /
 		<= Main $mol_page
 			title <= query
+			bring <= main_bring
 			Title <= Query $mol_search
 				hint @ \Search..
 				query?val <=> query?val \
 				submit?event <=> submit?event null
+				bring => main_bring
 			tools /
 				<= Exact $mol_check_icon
 					checked?val <=> exact?val false

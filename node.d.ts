@@ -1874,6 +1874,7 @@ declare namespace $ {
         hint(): string;
         submit(event?: any): any;
         enabled(): boolean;
+        bring(): void;
         Query(): $$.$mol_string;
         Clear_icon(): $mol_icon_cross;
         Clear(): $mol_button_minor;
@@ -2597,6 +2598,7 @@ declare namespace $ {
         Theme(): $$.$mol_theme_auto;
         query(val?: any): string;
         submit(event?: any): any;
+        main_bring(): void;
         Query(): $$.$mol_search;
         exact(val?: any): boolean;
         Exact_icon(): $mol_icon_bullseye_arrow;
@@ -2948,8 +2950,6 @@ declare namespace $ {
 declare namespace $.$$ {
     class $hyoo_search_app extends $.$hyoo_search_app {
         get $(): typeof $$;
-        autofocus(): null;
-        auto(): void;
         query(next?: string): string;
         type(next?: string): string;
         where(next?: string): string;

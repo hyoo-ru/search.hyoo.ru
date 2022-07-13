@@ -6017,6 +6017,9 @@ var $;
         enabled() {
             return true;
         }
+        bring() {
+            return this.Query().bring();
+        }
         Query() {
             const obj = new this.$.$mol_string();
             obj.value = (val) => this.query(val);
@@ -8647,6 +8650,9 @@ var $;
                 return event;
             return null;
         }
+        main_bring() {
+            return this.Query().bring();
+        }
         Query() {
             const obj = new this.$.$mol_search();
             obj.hint = () => this.$.$mol_locale.text('$hyoo_search_app_Query_hint');
@@ -8807,6 +8813,7 @@ var $;
         Main() {
             const obj = new this.$.$mol_page();
             obj.title = () => this.query();
+            obj.bring = () => this.main_bring();
             obj.Title = () => this.Query();
             obj.tools = () => [
                 this.Exact(),
@@ -9758,15 +9765,6 @@ var $;
                     }
                 });
             }
-            autofocus() {
-                if (this.query())
-                    return null;
-                this.Query().Query().bring();
-                return null;
-            }
-            auto() {
-                this.autofocus();
-            }
             query(next) {
                 return this.$.$mol_state_arg.value('query', next) ?? '';
             }
@@ -9988,9 +9986,6 @@ var $;
         __decorate([
             $mol_memo.field
         ], $hyoo_search_app.prototype, "$", null);
-        __decorate([
-            $mol_mem
-        ], $hyoo_search_app.prototype, "autofocus", null);
         __decorate([
             $mol_mem
         ], $hyoo_search_app.prototype, "exact", null);
