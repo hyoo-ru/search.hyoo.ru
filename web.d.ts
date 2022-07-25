@@ -2678,9 +2678,9 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_data_record<Sub extends Record<string, $mol_data_value<any>>>(sub: Sub): ((val: unknown) => Readonly<$mol_type_merge<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, ({ [key in keyof Sub]: ReturnType<Sub[key]>; } extends infer T ? { [Field in keyof T]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; } : never)[keyof Sub]>>>) & {
+    function $mol_data_record<Sub extends Record<string, $mol_data_value>>(sub: Sub): ((val: $mol_type_merge<Partial<{ [key in keyof Sub]: Parameters<Sub[key]>[0]; }> & Pick<{ [key in keyof Sub]: Parameters<Sub[key]>[0]; }, ({ [key in keyof Sub]: Parameters<Sub[key]>[0]; } extends infer T ? { [Field in keyof T]: undefined extends { [key in keyof Sub]: Parameters<Sub[key]>[0]; }[Field] ? never : Field; } : never)[keyof Sub]>>) => Readonly<$mol_type_merge<Partial<{ [key_1 in keyof Sub]: ReturnType<Sub[key_1]>; }> & Pick<{ [key_1 in keyof Sub]: ReturnType<Sub[key_1]>; }, ({ [key_1 in keyof Sub]: ReturnType<Sub[key_1]>; } extends infer T_1 ? { [Field_1 in keyof T_1]: undefined extends { [key_1 in keyof Sub]: ReturnType<Sub[key_1]>; }[Field_1] ? never : Field_1; } : never)[keyof Sub]>>>) & {
         config: Sub;
-        Value: Readonly<$mol_type_merge<Partial<{ [key in keyof Sub]: ReturnType<Sub[key]>; }> & Pick<{ [key in keyof Sub]: ReturnType<Sub[key]>; }, ({ [key in keyof Sub]: ReturnType<Sub[key]>; } extends infer T_1 ? { [Field in keyof T_1]: undefined extends { [key in keyof Sub]: ReturnType<Sub[key]>; }[Field] ? never : Field; } : never)[keyof Sub]>>>;
+        Value: Readonly<$mol_type_merge<Partial<{ [key_1 in keyof Sub]: ReturnType<Sub[key_1]>; }> & Pick<{ [key_1 in keyof Sub]: ReturnType<Sub[key_1]>; }, ({ [key_1 in keyof Sub]: ReturnType<Sub[key_1]>; } extends infer T_2 ? { [Field_1 in keyof T_2]: undefined extends { [key_1 in keyof Sub]: ReturnType<Sub[key_1]>; }[Field_1] ? never : Field_1; } : never)[keyof Sub]>>>;
     };
 }
 
@@ -2709,7 +2709,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_data_array<Sub extends $mol_data_value>(sub: Sub): ((val: readonly Parameters<Sub>[0][] | unknown) => readonly ReturnType<Sub>[]) & {
+    function $mol_data_array<Sub extends $mol_data_value>(sub: Sub): ((val: readonly Parameters<Sub>[0][]) => readonly ReturnType<Sub>[]) & {
         config: Sub;
         Value: readonly ReturnType<Sub>[];
     };
@@ -2726,7 +2726,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_data_dict<Sub extends $mol_data_value>(sub: Sub): ((val: readonly Parameters<Sub>[0][] | unknown) => Readonly<Record<string, ReturnType<Sub>>>) & {
+    function $mol_data_dict<Sub extends $mol_data_value>(sub: Sub): ((val: readonly Parameters<Sub>[0][]) => Readonly<Record<string, ReturnType<Sub>>>) & {
         config: Sub;
         Value: Readonly<Record<string, ReturnType<Sub>>>;
     };
