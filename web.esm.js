@@ -55,7 +55,7 @@ var $;
 var $;
 (function ($) {
     const blacklist = new Set([
-        'http://cse.google.com/adsense/search/async-ads.js'
+        '//cse.google.com/adsense/search/async-ads.js'
     ]);
     function $mol_offline(uri = 'web.js') {
         if (typeof window === 'undefined') {
@@ -67,7 +67,7 @@ var $;
                 console.info('$mol_offline activated');
             });
             self.addEventListener('fetch', (event) => {
-                if (blacklist.has(event.request.url)) {
+                if (blacklist.has(event.request.url.replace(/^https?:/, ''))) {
                     return event.respondWith(new Response(null, {
                         status: 418,
                         statusText: 'Blocked'
