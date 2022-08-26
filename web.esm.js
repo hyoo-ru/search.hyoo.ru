@@ -2830,10 +2830,17 @@ var $;
 //mol/state/local/local.web.ts
 ;
 "use strict";
+//mol/charset/encoding/encoding.ts
+;
+"use strict";
 var $;
 (function ($) {
-    function $mol_charset_decode(value, code = 'utf8') {
-        return new TextDecoder(code).decode(value);
+    const decoders = {};
+    function $mol_charset_decode(buffer, encoding = 'utf8') {
+        let decoder = decoders[encoding];
+        if (!decoder)
+            decoder = decoders[encoding] = new TextDecoder(encoding);
+        return decoder.decode(buffer);
     }
     $.$mol_charset_decode = $mol_charset_decode;
 })($ || ($ = {}));
@@ -5413,6 +5420,9 @@ var $;
         }
         generate(params) {
             return null;
+        }
+        get native() {
+            return new RegExp(this.source, this.flags);
         }
         static repeat(source, min = 0, max = Number.POSITIVE_INFINITY) {
             const regexp = $mol_regexp.from(source);
