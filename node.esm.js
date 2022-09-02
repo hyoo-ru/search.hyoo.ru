@@ -1478,7 +1478,7 @@ var $;
                         return res;
                     };
                     result = Object.assign(result.then(put, put), {
-                        destructor: result['destructor']
+                        destructor: result['destructor'] ?? (() => { })
                     });
                     handled.add(result);
                 }
@@ -1495,7 +1495,7 @@ var $;
                         if (this.cache === result)
                             this.absorb();
                     }), {
-                        destructor: result['destructor']
+                        destructor: result['destructor'] ?? (() => { })
                     });
                     handled.add(result);
                 }
@@ -1743,6 +1743,8 @@ var $;
             };
         }
         complete() {
+            if (this.cache instanceof Promise)
+                return;
             this.destructor();
         }
         put(next) {
@@ -1870,7 +1872,9 @@ var $;
                     try {
                         next[Symbol.toStringTag] = this[Symbol.toStringTag];
                     }
-                    catch { }
+                    catch {
+                        Object.defineProperty(next, Symbol.toStringTag, { value: this[Symbol.toStringTag] });
+                    }
                 }
                 if (this.sub_from < this.data.length) {
                     if (!$mol_compare_deep(prev, next)) {
@@ -2502,7 +2506,7 @@ var $;
         }
         dom_tree(next) {
             const node = this.dom_node(next);
-            try {
+            render: try {
                 $mol_dom_render_attributes(node, { mol_view_error: null });
                 try {
                     this.render();
@@ -2514,21 +2518,26 @@ var $;
                         }
                     }
                 }
-                this.auto();
             }
             catch (error) {
                 $mol_fail_log(error);
                 $mol_dom_render_attributes(node, { mol_view_error: error.name || error.constructor.name });
                 if (error instanceof Promise)
-                    return node;
+                    break render;
                 if ((error_showed.get(error) ?? this) !== this)
-                    return node;
+                    break render;
                 try {
                     const message = error.message || error;
                     node.innerText = message.replace(/^|$/mg, '\xA0\xA0');
                 }
                 catch { }
                 error_showed.set(error, this);
+            }
+            try {
+                this.auto();
+            }
+            catch (error) {
+                $mol_fail_log(error);
             }
             return node;
         }
