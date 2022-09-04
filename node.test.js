@@ -1617,7 +1617,7 @@ var $;
         if (left instanceof RegExp)
             return left.source === right['source'] && left.flags === right['flags'];
         if (left instanceof Error)
-            return left.stack === right['stack'];
+            return left.message === right['message'] && left.stack === right['stack'];
         let left_cache = $.$mol_compare_deep_cache.get(left);
         if (left_cache) {
             const right_cache = left_cache.get(right);
@@ -4207,9 +4207,10 @@ var $;
                 return url.hostname;
             }
             title() {
-                const suffix = this.uri().split(this.host(), 2)[1].replace(/^[\/\?#!]+/, '')
-                    || this.host();
-                return decodeURIComponent(suffix).replace(/^\//, ' ');
+                const uri = this.uri();
+                const host = this.host();
+                const suffix = (host ? uri.split(this.host(), 2)[1] : uri).replace(/^[\/\?#!]+/, '');
+                return decodeURIComponent(suffix || host).replace(/^\//, ' ');
             }
             sub() {
                 return [
