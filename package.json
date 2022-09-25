@@ -184,6 +184,7 @@
     "$mol_labeler",
     "$mol_embed_native",
     "$mol_embed",
+    "$mol_wire_solid",
     "$mol_wait_timeout",
     "$mol_wait",
     "$mol_promise",
@@ -210,7 +211,6 @@
     "$mol_data_array",
     "$mol_data_optional",
     "$mol_data_dict",
-    "$mol_wire_solid",
     "$mol_import"
   ],
   "dependencies": {
