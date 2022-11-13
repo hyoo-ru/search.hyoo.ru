@@ -123,6 +123,7 @@
     "$mol_media",
     "$mol_search",
     "$mol_pop",
+    "$mol_layer",
     "$mol_button_minor",
     "$mol_button",
     "$mol_speck",
