@@ -1615,10 +1615,19 @@ var $;
                     }
                 }
             }
-            if (prev !== undefined && !$mol_compare_deep(prev, next)) {
+            if (fiber.host === this)
+                return next;
+            if ($mol_compare_deep(prev, next)) {
                 this.$.$mol_log3_rise({
-                    message: 'Changed',
+                    message: '💧 Same',
                     place: fiber,
+                });
+            }
+            else if (prev !== undefined) {
+                this.$.$mol_log3_rise({
+                    message: '🔥 Next',
+                    place: fiber,
+                    prev,
                 });
             }
             return next;
@@ -2710,6 +2719,27 @@ var $;
     });
 })($ || ($ = {}));
 //mol/charset/encode/encode.test.ts
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        class $mol_locale_mock extends $mol_locale {
+            lang(next = 'en') { return next; }
+            static source(lang) {
+                return {};
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_locale_mock.prototype, "lang", null);
+        __decorate([
+            $mol_mem_key
+        ], $mol_locale_mock, "source", null);
+        $.$mol_locale = $mol_locale_mock;
+    });
+})($ || ($ = {}));
+//mol/locale/locale.test.ts
 ;
 "use strict";
 var $;

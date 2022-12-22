@@ -65,10 +65,10 @@ declare namespace $ {
         get $(): $;
         set $(next: $);
         static create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
-        static [Symbol.toPrimitive](): unknown;
-        static toString(): unknown;
+        static [Symbol.toPrimitive](): string;
+        static toString(): string;
         destructor(): void;
-        toString(): any;
+        toString(): string;
         toJSON(): any;
     }
 }
@@ -662,7 +662,7 @@ declare namespace $ {
             top: number;
             bottom: number;
         } | null;
-        dom_id(): any;
+        dom_id(): string;
         dom_node(next?: Element): Element;
         dom_final(): Element | undefined;
         dom_tree(next?: Element): Element;
@@ -1840,15 +1840,15 @@ declare namespace $ {
     export class $mol_regexp<Groups extends Record<string, string>> extends RegExp {
         readonly groups: (Extract<keyof Groups, string>)[];
         constructor(source: string, flags?: string, groups?: (Extract<keyof Groups, string>)[]);
-        [Symbol.matchAll](str: string): IterableIterator<$mol_type_override<RegExpExecArray, {
+        [Symbol.matchAll](str: string): IterableIterator<RegExpMatchArray & $mol_type_override<RegExpMatchArray, {
             groups?: {
                 [key in keyof Groups]: string;
             };
         }>>;
-        [Symbol.match](str: string): null | string[];
+        [Symbol.match](str: string): null | RegExpMatchArray;
         [Symbol.split](str: string): string[];
         test(str: string): boolean;
-        exec(str: string): $mol_type_override<RegExpExecArray, {
+        exec(str: string): RegExpExecArray & $mol_type_override<RegExpExecArray, {
             groups?: {
                 [key in keyof Groups]: string;
             };
@@ -2341,6 +2341,7 @@ declare namespace $ {
         'code-field': RegExp;
         'code-keyword': RegExp;
         'code-global': RegExp;
+        'code-word': RegExp;
         'code-decorator': RegExp;
         'code-tag': RegExp;
         'code-punctuation': RegExp;
@@ -2829,7 +2830,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_data_dict<Sub extends $mol_data_value>(sub: Sub): ((val: readonly Parameters<Sub>[0][]) => Readonly<Record<string, ReturnType<Sub>>>) & {
+    function $mol_data_dict<Sub extends $mol_data_value>(sub: Sub): ((val: Readonly<Record<string, ReturnType<Sub>>>) => Readonly<Record<string, ReturnType<Sub>>>) & {
         config: Sub;
         Value: Readonly<Record<string, ReturnType<Sub>>>;
     };
@@ -3146,7 +3147,7 @@ declare namespace $.$$ {
             }>[];
             $: typeof $$;
             destructor: () => void;
-            toString: () => unknown;
+            toString: () => string;
             toJSON: () => unknown;
             [$mol_ambient_ref]: typeof $$;
         };
