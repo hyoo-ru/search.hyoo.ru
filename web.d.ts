@@ -2278,14 +2278,17 @@ declare namespace $ {
         code: RegExp;
         'code-indent': RegExp;
         table: RegExp;
+        cut: RegExp;
         block: RegExp;
     }>;
     var $mol_syntax2_md_line: $mol_syntax2<{
         strong: RegExp;
         emphasis: RegExp;
-        code3: RegExp;
         code: RegExp;
-        strike: RegExp;
+        insert: RegExp;
+        delete: RegExp;
+        embed: RegExp;
+        link: RegExp;
         'image-link': RegExp;
         'text-link': RegExp;
         'text-link-http': RegExp;
