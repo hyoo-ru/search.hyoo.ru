@@ -5137,6 +5137,9 @@ var $;
                 return event;
             return null;
         }
+        submit_with_ctrl() {
+            return false;
+        }
         submit(event) {
             if (event !== undefined)
                 return event;
@@ -5144,6 +5147,7 @@ var $;
         }
         Submit() {
             const obj = new this.$.$mol_hotkey();
+            obj.mod_ctrl = () => this.submit_with_ctrl();
             obj.key = () => ({
                 enter: (event) => this.submit(event)
             });
@@ -8324,6 +8328,11 @@ var $;
                 return val;
             return [];
         }
+        submit(next) {
+            if (next !== undefined)
+                return next;
+            return null;
+        }
         bring() {
             return this.Edit().bring();
         }
@@ -8335,6 +8344,8 @@ var $;
             obj.spellcheck = () => this.spellcheck();
             obj.length_max = () => this.length_max();
             obj.selection = (val) => this.selection(val);
+            obj.submit = (next) => this.submit(next);
+            obj.submit_with_ctrl = () => true;
             return obj;
         }
         row_numb(id) {
@@ -8368,6 +8379,9 @@ var $;
     __decorate([
         $mol_mem
     ], $mol_textarea.prototype, "selection", null);
+    __decorate([
+        $mol_mem
+    ], $mol_textarea.prototype, "submit", null);
     __decorate([
         $mol_mem
     ], $mol_textarea.prototype, "Edit", null);
