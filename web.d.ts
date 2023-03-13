@@ -1898,19 +1898,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-    function $mol_fiber_defer<Value = void>(calculate: () => Value): $mol_wire_task<{}, [], Value>;
-    function $mol_fiber_root<Calculate extends (this: This, ...args: any[]) => Result, Result = void, This = void>(calculate: Calculate): Calculate;
-    function $mol_fiber_sync<Args extends any[], Value = void, This = void>(request: (this: This, ...args: Args) => PromiseLike<Value>): (...args: Args) => Value;
-    function $mol_fiber_warp(): Promise<void>;
-    class $mol_fiber_solid extends $mol_wrapper {
-        static func<This, Args extends any[], Result>(task: (this: This, ...args: Args) => Result): (this: This, ...args: Args) => Result;
-    }
-    class $mol_fiber {
-        static method: typeof $mol_wire_method;
-    }
-}
-
 declare namespace $.$$ {
     class $mol_search extends $.$mol_search {
         anchor_content(): ($mol_string | $mol_button_minor)[];
@@ -2088,8 +2075,10 @@ declare namespace $ {
     class $mol_select_list extends $mol_view {
         value(val?: any): readonly string[];
         dictionary(): {};
+        Badges(): readonly $mol_view[];
+        badges_list(): readonly $mol_view[];
         Badge(id: any): $mol_button_minor;
-        Pick(): $$.$mol_select;
+        sub(): readonly $mol_view[];
         badge_title(id: any): string;
         remove(id: any, event?: any): any;
         badge_hint(): string;
@@ -2103,6 +2092,7 @@ declare namespace $ {
         pick_enabled(): boolean;
         pick_hint(): string;
         Pick_icon(): $mol_icon_plus;
+        Pick(): $$.$mol_select;
     }
 }
 
@@ -2115,7 +2105,7 @@ declare namespace $.$$ {
         option_title(key: string): string;
         badge_title(index: number): string;
         pick_enabled(): boolean;
-        sub(): ($mol_button_minor | $mol_select)[];
+        Badges(): $mol_button_minor[];
         title(): string;
         remove(index: number): void;
     }
