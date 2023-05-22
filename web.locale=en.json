@@ -1,6 +1,7 @@
 {
 	"$hyoo_search_app_Blacklist_field_name": "Domain Black List",
 	"$hyoo_search_app_Blacklist_hint": "Every domain on new line",
+	"$hyoo_search_app_Donate_hint": "Support Us",
 	"$hyoo_search_app_Exact_hint": "Exact Match",
 	"$hyoo_search_app_Exclude_pick_hint": "Exclude words..",
 	"$hyoo_search_app_Query_dump_field_name": "Query Dump",

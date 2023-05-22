@@ -1,6 +1,7 @@
 {
 	"$hyoo_search_app_Blacklist_field_name": "Чёрный Список Доменов",
 	"$hyoo_search_app_Blacklist_hint": "Каждый домен на новой строке",
+	"$hyoo_search_app_Donate_hint": "Поддержать рублём",
 	"$hyoo_search_app_Exact_hint": "Точное Совпадение",
 	"$hyoo_search_app_Exclude_pick_hint": "Исключить слова..",
 	"$hyoo_search_app_Query_dump_field_name": "Полный Запрос",
