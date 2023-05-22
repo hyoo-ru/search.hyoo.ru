@@ -42,6 +42,7 @@
 
 [hyoo_search_app_result_item] {
 	padding: 0;
+	background: var(--mol_theme_card);
 }
 
 [hyoo_search_app_result_image] {
@@ -84,6 +85,10 @@
 
 [hyoo_search_app_result_host_low] {
 	opacity: 1;
+}
+
+[hyoo_search_app_result_list] {
+	gap: var(--mol_gap_block);
 }
 
 [hyoo_search_app_result_list_empty] {
