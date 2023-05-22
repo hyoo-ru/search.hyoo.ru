@@ -82,14 +82,14 @@ namespace $ {
 				return true
 			}
 			
-			window['__gcse'] = {
+			;( window as any )['__gcse'] = {
 				
 				parsetags: 'explicit',
 				
 				initializationCallback: ()=> {
 					
 					google.search.cse = new Proxy( google.search.cse, {
-						get: ( sce, field )=> {
+						get: ( sce: any, field )=> {
 							if( /^api/.test( String( field ) ) && typeof sce[ field ] === 'function' ) {
 								return function( ... args: any[] ) {
 									const error = args[0].error
