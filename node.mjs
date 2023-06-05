@@ -7620,6 +7620,7 @@ var $;
                 new $mol_after_frame(() => {
                     if (!this.pick_enabled())
                         return;
+                    this.Pick().filter_pattern('');
                     this.Pick().Trigger().focused(true);
                     this.Pick().open();
                 });
