@@ -2999,14 +2999,14 @@ var $;
 var $;
 (function ($) {
     class $mol_scroll extends $mol_view {
-        scroll_top(val) {
-            if (val !== undefined)
-                return val;
+        scroll_top(next) {
+            if (next !== undefined)
+                return next;
             return 0;
         }
-        scroll_left(val) {
-            if (val !== undefined)
-                return val;
+        scroll_left(next) {
+            if (next !== undefined)
+                return next;
             return 0;
         }
         field() {
@@ -4760,9 +4760,9 @@ var $;
 var $;
 (function ($) {
     class $mol_pop extends $mol_view {
-        showed(val) {
-            if (val !== undefined)
-                return val;
+        showed(next) {
+            if (next !== undefined)
+                return next;
             return false;
         }
         align_vert() {
@@ -5389,9 +5389,9 @@ var $;
 var $;
 (function ($) {
     class $mol_nav extends $mol_plugin {
-        cycle(val) {
-            if (val !== undefined)
-                return val;
+        cycle(next) {
+            if (next !== undefined)
+                return next;
             return false;
         }
         mod_ctrl() {
@@ -5403,24 +5403,24 @@ var $;
         mod_alt() {
             return false;
         }
-        keys_x(val) {
-            if (val !== undefined)
-                return val;
+        keys_x(next) {
+            if (next !== undefined)
+                return next;
             return [];
         }
-        keys_y(val) {
-            if (val !== undefined)
-                return val;
+        keys_y(next) {
+            if (next !== undefined)
+                return next;
             return [];
         }
-        current_x(val) {
-            if (val !== undefined)
-                return val;
+        current_x(next) {
+            if (next !== undefined)
+                return next;
             return null;
         }
-        current_y(val) {
-            if (val !== undefined)
-                return val;
+        current_y(next) {
+            if (next !== undefined)
+                return next;
             return null;
         }
         event_up(event) {
@@ -5603,9 +5603,9 @@ var $;
         autocomplete() {
             return false;
         }
-        selection(val) {
-            if (val !== undefined)
-                return val;
+        selection(next) {
+            if (next !== undefined)
+                return next;
             return [
                 0,
                 0
@@ -5654,13 +5654,13 @@ var $;
         disabled() {
             return false;
         }
-        value(val) {
-            if (val !== undefined)
-                return val;
+        value(next) {
+            if (next !== undefined)
+                return next;
             return "";
         }
-        value_changed(val) {
-            return this.value(val);
+        value_changed(next) {
+            return this.value(next);
         }
         hint() {
             return "";
@@ -5689,9 +5689,9 @@ var $;
         length_max() {
             return +Infinity;
         }
-        type(val) {
-            if (val !== undefined)
-                return val;
+        type(next) {
+            if (next !== undefined)
+                return next;
             return "text";
         }
         event_change(event) {
@@ -6677,9 +6677,9 @@ var $;
 var $;
 (function ($) {
     class $mol_search extends $mol_pop {
-        query(val) {
-            if (val !== undefined)
-                return val;
+        query(next) {
+            if (next !== undefined)
+                return next;
             return "";
         }
         suggests() {
@@ -6692,8 +6692,8 @@ var $;
                 this.Nav()
             ];
         }
-        showed(val) {
-            return this.suggests_showed(val);
+        showed(next) {
+            return this.suggests_showed(next);
         }
         align_hor() {
             return "right";
@@ -6714,15 +6714,15 @@ var $;
             obj.sub = () => this.suggest_content(id);
             return obj;
         }
-        clear(val) {
-            if (val !== undefined)
-                return val;
+        clear(next) {
+            if (next !== undefined)
+                return next;
             return null;
         }
         Hotkey() {
             const obj = new this.$.$mol_hotkey();
             obj.key = () => ({
-                escape: (val) => this.clear(val)
+                escape: (next) => this.clear(next)
             });
             return obj;
         }
@@ -6740,9 +6740,9 @@ var $;
             obj.current_y = (component) => this.nav_focused(component);
             return obj;
         }
-        suggests_showed(val) {
-            if (val !== undefined)
-                return val;
+        suggests_showed(next) {
+            if (next !== undefined)
+                return next;
             return false;
         }
         hint() {
@@ -6767,7 +6767,7 @@ var $;
         }
         Query() {
             const obj = new this.$.$mol_string();
-            obj.value = (val) => this.query(val);
+            obj.value = (next) => this.query(next);
             obj.hint = () => this.hint();
             obj.submit = (event) => this.submit(event);
             obj.enabled = () => this.enabled();
@@ -7172,7 +7172,7 @@ var $;
             obj.minimal_width = () => 40;
             obj.minimal_height = () => 40;
             obj.enabled = () => this.trigger_enabled();
-            obj.checked = (val) => this.showed(val);
+            obj.checked = (next) => this.showed(next);
             obj.sub = () => this.trigger_content();
             obj.hint = () => this.hint();
             return obj;
@@ -7235,17 +7235,17 @@ var $;
 var $;
 (function ($) {
     class $mol_select extends $mol_pick {
-        dictionary(val) {
-            if (val !== undefined)
-                return val;
+        dictionary(next) {
+            if (next !== undefined)
+                return next;
             return {};
         }
         options() {
             return [];
         }
-        value(val) {
-            if (val !== undefined)
-                return val;
+        value(next) {
+            if (next !== undefined)
+                return next;
             return "";
         }
         option_label_default() {
@@ -7281,7 +7281,7 @@ var $;
         }
         Filter() {
             const obj = new this.$.$mol_string();
-            obj.value = (val) => this.filter_pattern(val);
+            obj.value = (next) => this.filter_pattern(next);
             obj.hint = () => this.$.$mol_locale.text('$mol_select_Filter_hint');
             obj.submit = (event) => this.submit(event);
             obj.enabled = () => this.enabled();
@@ -7299,9 +7299,9 @@ var $;
         option_label(id) {
             return "";
         }
-        filter_pattern(val) {
-            if (val !== undefined)
-                return val;
+        filter_pattern(next) {
+            if (next !== undefined)
+                return next;
             return "";
         }
         Option_label(id) {
@@ -7326,16 +7326,16 @@ var $;
                 return component;
             return null;
         }
-        nav_cycle(val) {
-            if (val !== undefined)
-                return val;
+        nav_cycle(next) {
+            if (next !== undefined)
+                return next;
             return true;
         }
         Nav() {
             const obj = new this.$.$mol_nav();
             obj.keys_y = () => this.nav_components();
             obj.current_y = (component) => this.option_focused(component);
-            obj.cycle = (val) => this.nav_cycle(val);
+            obj.cycle = (next) => this.nav_cycle(next);
             return obj;
         }
         menu_content() {
@@ -7537,9 +7537,9 @@ var $;
 var $;
 (function ($) {
     class $mol_select_list extends $mol_view {
-        value(val) {
-            if (val !== undefined)
-                return val;
+        value(next) {
+            if (next !== undefined)
+                return next;
             return [];
         }
         dictionary() {
@@ -7591,9 +7591,9 @@ var $;
         options_pickable() {
             return this.options();
         }
-        pick(val) {
-            if (val !== undefined)
-                return val;
+        pick(next) {
+            if (next !== undefined)
+                return next;
             return "";
         }
         option_title(id) {
@@ -7613,7 +7613,7 @@ var $;
             const obj = new this.$.$mol_select();
             obj.align_hor = () => this.align_hor();
             obj.options = () => this.options_pickable();
-            obj.value = (val) => this.pick(val);
+            obj.value = (next) => this.pick(next);
             obj.option_label = (id) => this.option_title(id);
             obj.trigger_enabled = () => this.pick_enabled();
             obj.hint = () => this.pick_hint();
@@ -7814,8 +7814,8 @@ var $;
         body() {
             return [];
         }
-        body_scroll_top(val) {
-            return this.Body().scroll_top(val);
+        body_scroll_top(next) {
+            return this.Body().scroll_top(next);
         }
         Body() {
             const obj = new this.$.$mol_scroll();
@@ -7996,16 +7996,16 @@ var $;
         hint() {
             return this.$.$mol_locale.text('$mol_lights_toggle_hint');
         }
-        checked(val) {
-            return this.lights(val);
+        checked(next) {
+            return this.lights(next);
         }
         Lights_icon() {
             const obj = new this.$.$mol_icon_brightness_6();
             return obj;
         }
-        lights(val) {
-            if (val !== undefined)
-                return val;
+        lights(next) {
+            if (next !== undefined)
+                return next;
             return false;
         }
     }
@@ -8925,9 +8925,9 @@ var $;
                 bracketClose: "}"
             };
         }
-        clickable(val) {
-            if (val !== undefined)
-                return val;
+        clickable(next) {
+            if (next !== undefined)
+                return next;
             return false;
         }
         sidebar_showed() {
@@ -8943,9 +8943,9 @@ var $;
                 return event;
             return null;
         }
-        value(val) {
-            if (val !== undefined)
-                return val;
+        value(next) {
+            if (next !== undefined)
+                return next;
             return "";
         }
         hint() {
@@ -8960,9 +8960,9 @@ var $;
         length_max() {
             return +Infinity;
         }
-        selection(val) {
-            if (val !== undefined)
-                return val;
+        selection(next) {
+            if (next !== undefined)
+                return next;
             return [];
         }
         submit(next) {
@@ -8975,12 +8975,12 @@ var $;
         }
         Edit() {
             const obj = new this.$.$mol_textarea_edit();
-            obj.value = (val) => this.value(val);
+            obj.value = (next) => this.value(next);
             obj.hint = () => this.hint();
             obj.enabled = () => this.enabled();
             obj.spellcheck = () => this.spellcheck();
             obj.length_max = () => this.length_max();
-            obj.selection = (val) => this.selection(val);
+            obj.selection = (next) => this.selection(next);
             obj.submit = (next) => this.submit(next);
             obj.submit_with_ctrl = () => true;
             return obj;
@@ -9250,9 +9250,9 @@ var $;
 var $;
 (function ($) {
     class $mol_embed_native extends $mol_scroll {
-        uri(val) {
-            if (val !== undefined)
-                return val;
+        uri(next) {
+            if (next !== undefined)
+                return next;
             return "";
         }
         dom_name() {
@@ -12951,15 +12951,15 @@ var $;
 var $;
 (function ($) {
     class $mol_view_tree_test_binding extends $mol_view {
-        value(val) {
-            return this.task_title_new(val);
+        value(next) {
+            return this.task_title_new(next);
         }
         enabled() {
             return this.head_complete_enabled();
         }
-        task_title_new(val) {
-            if (val !== undefined)
-                return val;
+        task_title_new(next) {
+            if (next !== undefined)
+                return next;
             return "123";
         }
         head_complete_enabled() {
@@ -13040,9 +13040,9 @@ var $;
     ], $mol_view_tree_test_binding_right.prototype, "Test", null);
     $.$mol_view_tree_test_binding_right = $mol_view_tree_test_binding_right;
     class $mol_view_tree_test_binding_right_test extends $mol_view {
-        width(val) {
-            if (val !== undefined)
-                return val;
+        width(next) {
+            if (next !== undefined)
+                return next;
             return 0;
         }
     }
