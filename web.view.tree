@@ -345,12 +345,13 @@ $mol_select $mol_pick
 	hint @ \Pick..
 	bubble_content /
 		<= Filter
-		<= Bubble_pane $mol_scroll sub /
-			<= Menu $mol_list
-				rows <= menu_content /$mol_view
-	Filter $mol_string
-		value? <=> filter_pattern? \
-		hint @ \Filter..
+		<= Bubble_pane $mol_scroll
+			sub /
+				<= Menu $mol_list
+					rows <= menu_content /$mol_view
+	Filter $mol_search
+		query? <=> filter_pattern? \
+		hint <= filter_hint @ \Filter..
 		submit?event <=> submit?event null
 		enabled <= enabled true
 	Trigger_icon $mol_icon_dots_vertical
@@ -368,12 +369,14 @@ $mol_select_list $mol_view
 		enabled <= drop_enabled <= enabled true
 	sub /$mol_view
 		<= Pick $mol_select
+			event_select*? <=> event_select*? null
 			align_hor <= align_hor \right
 			options <= options_pickable <= options /string
 			value? <=> pick? \
 			option_label* <= option_title* \
 			trigger_enabled <= pick_enabled <= enabled true
 			hint <= pick_hint @ \Add..
+			filter_pattern? => filter_pattern?
 			Trigger_icon <= Pick_icon $mol_icon_plus
 		^ badges_list
 
