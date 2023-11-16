@@ -19,6 +19,11 @@
 	background: white;
 }
 
+[hyoo_search_app_content] {
+	flex-direction: column;
+	padding: var(--mol_gap_block);
+}
+
 [hyoo_search_app_sideview_hint] {
 	flex: 1 1 auto;
 	padding: 0 .25rem;
@@ -97,7 +102,6 @@
 
 [hyoo_search_app_attribution] {
 	padding: var(--mol_gap_text);
-	margin: var(--mol_gap_block);
 }
 
 [hyoo_search_app_result_ban_option_label] {
