@@ -58,7 +58,7 @@ $hyoo_search_app $mol_book2
 					sub /
 						<= Settings_open_icon $mol_icon_settings
 			body <= main_content /
-				<= Error null
+				<= Error $mol_view sub / <= error null
 				<= Result_list $mol_list
 					rows <= result_list /
 					Empty <= Result_list_empty $mol_view

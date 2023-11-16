@@ -136,7 +136,7 @@ namespace $.$$ {
 		}
 		
 		@ $mol_mem
-		Error() {
+		error() {
 			return this.$.$hyoo_search_api.error()
 		}
 		
