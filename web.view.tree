@@ -697,7 +697,7 @@ $hyoo_search_app $mol_book2
 					arg * settings \
 					sub /
 						<= Settings_open_icon $mol_icon_settings
-			body <= main_content /
+			body_content / <= Content $mol_view sub <= main_content /
 				<= Error $mol_view sub / <= error null
 				<= Result_list $mol_list
 					rows <= result_list /

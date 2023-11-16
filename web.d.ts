@@ -2740,6 +2740,7 @@ declare namespace $ {
         Attribution(): $mol_view;
         Attribution_loader(): $mol_view;
         main_content(): readonly any[];
+        Content(): $mol_view;
         searcher_links(): readonly any[];
         Main(): $mol_page;
         Donate_icon(): $mol_icon_gift_outline;
