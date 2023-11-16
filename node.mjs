@@ -891,11 +891,15 @@ var $;
 (function ($) {
     $.$mol_key_store = new WeakMap();
     function $mol_key(value) {
+        if (typeof value === 'bigint')
+            return value.toString() + 'n';
         if (!value)
             return JSON.stringify(value);
         if (typeof value !== 'object' && typeof value !== 'function')
             return JSON.stringify(value);
         return JSON.stringify(value, (field, value) => {
+            if (typeof value === 'bigint')
+                return value.toString() + 'n';
             if (!value)
                 return value;
             if (typeof value !== 'object' && typeof value !== 'function')
@@ -9943,8 +9947,15 @@ var $;
             ];
             return obj;
         }
-        Error() {
+        error() {
             return null;
+        }
+        Error() {
+            const obj = new this.$.$mol_view();
+            obj.sub = () => [
+                this.error()
+            ];
+            return obj;
         }
         result_list() {
             return [];
@@ -10319,6 +10330,9 @@ var $;
     __decorate([
         $mol_mem
     ], $hyoo_search_app.prototype, "Settings_open", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_search_app.prototype, "Error", null);
     __decorate([
         $mol_mem
     ], $hyoo_search_app.prototype, "Result_list_empty", null);
@@ -11060,7 +11074,7 @@ var $;
                     return [];
                 return super.main_content();
             }
-            Error() {
+            error() {
                 return this.$.$hyoo_search_api.error();
             }
             api() {
@@ -11228,7 +11242,7 @@ var $;
         ], $hyoo_search_app.prototype, "main_content", null);
         __decorate([
             $mol_mem
-        ], $hyoo_search_app.prototype, "Error", null);
+        ], $hyoo_search_app.prototype, "error", null);
         __decorate([
             $mol_mem
         ], $hyoo_search_app.prototype, "api", null);
