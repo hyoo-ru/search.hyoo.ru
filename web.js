@@ -388,8 +388,6 @@ var $;
     function $mol_dev_format_native(obj) {
         if (typeof obj === 'undefined')
             return $.$mol_dev_format_shade('undefined');
-        if (typeof obj !== 'object' && typeof obj !== 'function')
-            return obj;
         return [
             'object',
             {
@@ -1013,11 +1011,11 @@ var $;
         return true;
     }
     function compare_buffer(left, right) {
-        if (left instanceof DataView)
-            return compare_buffer(new Uint8Array(left.buffer, left.byteOffset, left.byteLength), new Uint8Array(right.buffer, left.byteOffset, left.byteLength));
         const len = left.byteLength;
         if (len !== right.byteLength)
             return false;
+        if (left instanceof DataView)
+            return compare_buffer(new Uint8Array(left.buffer, left.byteOffset, left.byteLength), new Uint8Array(right.buffer, left.byteOffset, left.byteLength));
         for (let i = 0; i < len; ++i) {
             if (left[i] !== right[i])
                 return false;
@@ -6680,6 +6678,11 @@ var $;
         trigger_enabled() {
             return true;
         }
+        clicks(next) {
+            if (next !== undefined)
+                return next;
+            return null;
+        }
         trigger_content() {
             return [
                 this.title()
@@ -6694,6 +6697,7 @@ var $;
             obj.minimal_height = () => 40;
             obj.enabled = () => this.trigger_enabled();
             obj.checked = (next) => this.showed(next);
+            obj.clicks = (next) => this.clicks(next);
             obj.sub = () => this.trigger_content();
             obj.hint = () => this.hint();
             return obj;
@@ -6702,6 +6706,9 @@ var $;
     __decorate([
         $mol_mem
     ], $mol_pick.prototype, "keydown", null);
+    __decorate([
+        $mol_mem
+    ], $mol_pick.prototype, "clicks", null);
     __decorate([
         $mol_mem
     ], $mol_pick.prototype, "Trigger", null);
