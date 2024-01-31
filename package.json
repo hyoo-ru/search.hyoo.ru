@@ -231,8 +231,6 @@
     "$mol_data_string",
     "$mol_data_error",
     "$mol_error_mix",
-    "$mol_diff_path",
-    "$mol_diff",
     "$mol_data_array",
     "$mol_data_optional",
     "$mol_data_dict",
