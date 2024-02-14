@@ -6503,7 +6503,7 @@ var $;
 		}
 		Clear(){
 			const obj = new this.$.$mol_button_minor();
-			(obj.hint) = () => (this.$.$mol_locale.text("$mol_search_Clear_hint"));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$mol_search_Clear_hint")));
 			(obj.click) = (next) => ((this.clear(next)));
 			(obj.sub) = () => ([(this.Clear_icon())]);
 			return obj;
@@ -8268,7 +8268,7 @@ var $;
 		}
 		Copy(){
 			const obj = new this.$.$mol_button_copy();
-			(obj.hint) = () => (this.$.$mol_locale.text("$mol_text_code_Copy_hint"));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$mol_text_code_Copy_hint")));
 			(obj.text) = () => ((this.text_export()));
 			return obj;
 		}
@@ -9084,7 +9084,7 @@ var $;
 		}
 		Sideview(id){
 			const obj = new this.$.$mol_view();
-			(obj.title) = () => (this.$.$mol_locale.text("$hyoo_search_app_Sideview_title"));
+			(obj.title) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Sideview_title")));
 			(obj.sub) = () => ([(this.Sideview_hint()), (this.Sideview_embed(id))]);
 			return obj;
 		}
@@ -9118,7 +9118,7 @@ var $;
 		}
 		Query(){
 			const obj = new this.$.$mol_search();
-			(obj.hint) = () => (this.$.$mol_locale.text("$hyoo_search_app_Query_hint"));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Query_hint")));
 			(obj.query) = (next) => ((this.query(next)));
 			(obj.submit) = (next) => ((this.submit(next)));
 			return obj;
@@ -9135,7 +9135,7 @@ var $;
 			const obj = new this.$.$mol_check_icon();
 			(obj.checked) = (next) => ((this.exact(next)));
 			(obj.Icon) = () => ((this.Exact_icon()));
-			(obj.hint) = () => (this.$.$mol_locale.text("$hyoo_search_app_Exact_hint"));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Exact_hint")));
 			return obj;
 		}
 		exclude(next){
@@ -9157,7 +9157,7 @@ var $;
 			(obj.value) = (next) => ((this.exclude(next)));
 			(obj.options) = () => ((this.exclude_options()));
 			(obj.badge_title) = (id) => ((this.exclude_badge_title(id)));
-			(obj.pick_hint) = () => (this.$.$mol_locale.text("$hyoo_search_app_Exclude_pick_hint"));
+			(obj.pick_hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Exclude_pick_hint")));
 			(obj.pick_enabled) = () => (true);
 			(obj.Pick_icon) = () => ((this.Exclude_icon()));
 			return obj;
@@ -9171,11 +9171,11 @@ var $;
 			(obj.value) = (next) => ((this.where(next)));
 			(obj.Filter) = () => (null);
 			(obj.dictionary) = () => ({
-				"anywhere": (this.$.$mol_locale.text("$hyoo_search_app_Where_anywhere")), 
-				"allintitle": (this.$.$mol_locale.text("$hyoo_search_app_Where_allintitle")), 
-				"allintext": (this.$.$mol_locale.text("$hyoo_search_app_Where_allintext")), 
-				"allinurl": (this.$.$mol_locale.text("$hyoo_search_app_Where_allinurl")), 
-				"allinanchor": (this.$.$mol_locale.text("$hyoo_search_app_Where_allinanchor"))
+				"anywhere": (this.$.$mol_locale.text("$hyoo_search_app_Where_dictionary_anywhere")), 
+				"allintitle": (this.$.$mol_locale.text("$hyoo_search_app_Where_dictionary_allintitle")), 
+				"allintext": (this.$.$mol_locale.text("$hyoo_search_app_Where_dictionary_allintext")), 
+				"allinurl": (this.$.$mol_locale.text("$hyoo_search_app_Where_dictionary_allinurl")), 
+				"allinanchor": (this.$.$mol_locale.text("$hyoo_search_app_Where_dictionary_allinanchor"))
 			});
 			return obj;
 		}
@@ -9292,7 +9292,7 @@ var $;
 		}
 		Donate(){
 			const obj = new this.$.$mol_link();
-			(obj.hint) = () => (this.$.$mol_locale.text("$hyoo_search_app_Donate_hint"));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Donate_hint")));
 			(obj.uri) = () => ("https://boosty.to/hyoo");
 			(obj.sub) = () => ([(this.Donate_icon())]);
 			return obj;
@@ -9322,13 +9322,13 @@ var $;
 		}
 		Searchers(){
 			const obj = new this.$.$mol_textarea();
-			(obj.hint) = () => (this.$.$mol_locale.text("$hyoo_search_app_Searchers_hint"));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Searchers_hint")));
 			(obj.value) = (next) => ((this.searchers(next)));
 			return obj;
 		}
 		Searchers_field(){
 			const obj = new this.$.$mol_form_field();
-			(obj.name) = () => (this.$.$mol_locale.text("$hyoo_search_app_Searchers_field_name"));
+			(obj.name) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Searchers_field_name")));
 			(obj.Content) = () => ((this.Searchers()));
 			return obj;
 		}
@@ -9338,13 +9338,13 @@ var $;
 		}
 		Blacklist(){
 			const obj = new this.$.$mol_textarea();
-			(obj.hint) = () => (this.$.$mol_locale.text("$hyoo_search_app_Blacklist_hint"));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Blacklist_hint")));
 			(obj.value) = (next) => ((this.blacklist(next)));
 			return obj;
 		}
 		Blacklist_field(){
 			const obj = new this.$.$mol_form_field();
-			(obj.name) = () => (this.$.$mol_locale.text("$hyoo_search_app_Blacklist_field_name"));
+			(obj.name) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Blacklist_field_name")));
 			(obj.Content) = () => ((this.Blacklist()));
 			return obj;
 		}
@@ -9358,7 +9358,7 @@ var $;
 		}
 		Query_dump_field(){
 			const obj = new this.$.$mol_form_field();
-			(obj.name) = () => (this.$.$mol_locale.text("$hyoo_search_app_Query_dump_field_name"));
+			(obj.name) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Query_dump_field_name")));
 			(obj.Content) = () => ((this.Query_dump()));
 			return obj;
 		}
@@ -9373,7 +9373,7 @@ var $;
 		}
 		Settings(){
 			const obj = new this.$.$mol_page();
-			(obj.title) = () => (this.$.$mol_locale.text("$hyoo_search_app_Settings_title"));
+			(obj.title) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Settings_title")));
 			(obj.tools) = () => ([
 				(this.Donate()), 
 				(this.Lights()), 
@@ -9385,7 +9385,7 @@ var $;
 		}
 		Sideview_hint(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => (this.$.$mol_locale.text("$hyoo_search_app_Sideview_hint_title"));
+			(obj.title) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Sideview_hint_title")));
 			return obj;
 		}
 		sideview(next){
@@ -9468,7 +9468,7 @@ var $;
 		Result_ban(id){
 			const obj = new this.$.$mol_select();
 			(obj.Trigger_icon) = () => ((this.Result_ban_icon(id)));
-			(obj.hint) = () => (this.$.$mol_locale.text("$hyoo_search_app_Result_ban_hint"));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Result_ban_hint")));
 			(obj.Filter) = () => (null);
 			(obj.align_hor) = () => ("left");
 			(obj.options) = () => ((this.result_ban_options(id)));
@@ -9485,7 +9485,7 @@ var $;
 		Result_cache(id){
 			const obj = new this.$.$mol_link();
 			(obj.uri) = () => ((this.result_cache(id)));
-			(obj.hint) = () => (this.$.$mol_locale.text("$hyoo_search_app_Result_cache_hint"));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Result_cache_hint")));
 			(obj.sub) = () => ([(this.Result_cache_icon(id))]);
 			return obj;
 		}
@@ -9499,7 +9499,7 @@ var $;
 		Result_open(id){
 			const obj = new this.$.$mol_link();
 			(obj.arg) = () => ({"settings": null, "sideview": (this.result_embed(id))});
-			(obj.hint) = () => (this.$.$mol_locale.text("$hyoo_search_app_Result_open_hint"));
+			(obj.hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Result_open_hint")));
 			(obj.sub) = () => ([(this.Result_open_icon(id))]);
 			return obj;
 		}
@@ -9751,12 +9751,28 @@ var $;
 var $;
 (function ($) {
     class $mol_error_mix extends AggregateError {
-        name = '$mol_error_mix';
+        name = $$.$mol_func_name(this.constructor);
         constructor(message, ...errors) {
-            super(errors, [message, ...errors.map(e => '  ' + e.message)].join('\n'));
+            super(errors, [message, ...errors.map(e => e.message.replace(/^/gm, '  '))].join('\n'));
+        }
+        get cause() {
+            return [].concat(...this.errors.map(e => e.cause).filter(Boolean));
         }
         toJSON() {
-            return this.message;
+            return this.errors.map(e => e.message);
+        }
+        pick(Class) {
+            if (this instanceof Class)
+                return this;
+            for (const e of this.errors) {
+                if (e instanceof Class)
+                    return e;
+            }
+            for (const e of this.cause) {
+                if (e && e instanceof Class)
+                    return e;
+            }
+            return null;
         }
     }
     $.$mol_error_mix = $mol_error_mix;
