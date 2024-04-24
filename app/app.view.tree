@@ -141,7 +141,7 @@ $hyoo_search_app $mol_book2
 			<= Result_tools!index $mol_list
 				rows /
 					<= Result_ban!index $mol_select
-						Trigger_icon <= Result_ban_icon!index $mol_icon_cross
+						Trigger_icon <= Result_ban_icon!index $mol_icon_close
 						hint @ \Ban site..
 						Filter null
 						align_hor \left
