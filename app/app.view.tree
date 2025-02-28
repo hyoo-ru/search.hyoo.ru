@@ -81,6 +81,11 @@ $hyoo_search_app $mol_book2
 					uri \https://boosty.to/hyoo
 					sub / <= Donate_icon $mol_icon_gift_outline
 				<= Lights $mol_lights_toggle
+				<= Info $mol_link
+					hint @ \Article about
+					uri \https://page.hyoo.ru/#!=o9jnhf_7v21c4
+					sub /
+						<= Info_icon $mol_icon_information_slab_circle_outline
 				<= Sources $mol_link_source
 					uri \https://github.com/hyoo-ru/search.hyoo.ru
 				<= Settings_close $mol_link
