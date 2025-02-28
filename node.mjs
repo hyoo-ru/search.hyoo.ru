@@ -8091,6 +8091,39 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_icon_information) = class $mol_icon_information extends ($.$mol_icon) {
+		path(){
+			return "M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z";
+		}
+	};
+
+
+;
+"use strict";
+
+;
+	($.$mol_icon_information_slab_circle) = class $mol_icon_information_slab_circle extends ($.$mol_icon) {
+		path(){
+			return "M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22M11 7H13V9H11V7M14 17H10V15H11V13H10V11H13V15H14V17Z";
+		}
+	};
+
+
+;
+"use strict";
+
+;
+	($.$mol_icon_information_slab_circle_outline) = class $mol_icon_information_slab_circle_outline extends ($.$mol_icon) {
+		path(){
+			return "M11 7V9H13V7H11M14 17V15H13V11H10V13H11V15H10V17H14M22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2C17.5 2 22 6.5 22 12M20 12C20 7.58 16.42 4 12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C16.42 20 20 16.42 20 12Z";
+		}
+	};
+
+
+;
+"use strict";
+
+;
 	($.$mol_icon_script) = class $mol_icon_script extends ($.$mol_icon) {
 		path(){
 			return "M17.8,20C17.4,21.2 16.3,22 15,22H5C3.3,22 2,20.7 2,19V18H5L14.2,18C14.6,19.2 15.7,20 17,20H17.8M19,2H8C6.3,2 5,3.3 5,5V16H16V17C16,17.6 16.4,18 17,18H18V5C18,4.4 18.4,4 19,4C19.6,4 20,4.4 20,5V6H22V5C22,3.3 20.7,2 19,2Z";
@@ -9904,6 +9937,17 @@ var $;
 			const obj = new this.$.$mol_lights_toggle();
 			return obj;
 		}
+		Info_icon(){
+			const obj = new this.$.$mol_icon_information_slab_circle_outline();
+			return obj;
+		}
+		Info(){
+			const obj = new this.$.$mol_link();
+			(obj.hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Info_hint")));
+			(obj.uri) = () => ("https://page.hyoo.ru/#!=o9jnhf_7v21c4");
+			(obj.sub) = () => ([(this.Info_icon())]);
+			return obj;
+		}
 		Sources(){
 			const obj = new this.$.$mol_link_source();
 			(obj.uri) = () => ("https://github.com/hyoo-ru/search.hyoo.ru");
@@ -9980,6 +10024,7 @@ var $;
 			(obj.tools) = () => ([
 				(this.Donate()), 
 				(this.Lights()), 
+				(this.Info()), 
 				(this.Sources()), 
 				(this.Settings_close())
 			]);
@@ -10177,6 +10222,8 @@ var $;
 	($mol_mem(($.$hyoo_search_app.prototype), "Donate_icon"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Donate"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Lights"));
+	($mol_mem(($.$hyoo_search_app.prototype), "Info_icon"));
+	($mol_mem(($.$hyoo_search_app.prototype), "Info"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Sources"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Settings_close_icon"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Settings_close"));
