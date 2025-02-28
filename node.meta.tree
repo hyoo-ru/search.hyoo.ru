@@ -1,13 +1,17 @@
 \/
+	pack bun git \https://github.com/spleekz/mam_bun.git
 	pack hyoo git \https://github.com/hyoo-ru/mam_hyoo.git
+	pack iva git \https://github.com/thenesterov/mam_iva.git
 	pack jin git \https://github.com/nin-jin/mam_jin.git
-	pack node git \https://github.com/hyoo-ru/mam_node.git
-	pack mol git \https://github.com/hyoo-ru/mam_mol.git
 	pack lib git \https://github.com/hyoo-ru/mam_lib.git
+	pack mol git \https://github.com/hyoo-ru/mam_mol.git
+	pack milis git \https://github.com/Lyumih/milis.git
+	pack mpds git \https://github.com/mpds-io/mam_mpds.git
+	pack node git \https://github.com/hyoo-ru/mam_node.git
+	pack optimade git \https://github.com/mpds-io/mam_optimade.git
 	pack piterjs git \https://github.com/piterjs/piterjs.git
 	pack psb git \https://github.com/MolDevHack/psb.git
-	pack mpds git \https://github.com/mpds-io/mam_mpds
-	pack bun git \https://github.com/spleekz/mam_bun
+	pack rise git \https://github.com/stan-donarise/mam_rise.git
 	pack yuf git \https://github.com/zerkalica/yuf.git
 \/hyoo
 	pack about git \https://github.com/hyoo-ru/about.hyoo.ru.git
@@ -16,6 +20,8 @@
 	pack aura git \https://github.com/hyoo-ru/aura.hyoo.ru.git
 	pack bench git \https://github.com/hyoo-ru/bench.hyoo.ru.git
 	pack board git \https://github.com/hyoo-ru/board.hyoo.ru.git
+	pack budget git \https://github.com/hyoo-ru/budget.hyoo.ru.git
+	pack bunker git \https://github.com/hyoo-ru/bunker.hyoo.ru.git
 	pack calc git \https://github.com/hyoo-ru/calc.hyoo.ru.git
 	pack case git \https://github.com/hyoo-ru/case.hyoo.ru.git
 	pack crowd git \https://github.com/hyoo-ru/crowd.hyoo.ru.git
@@ -48,6 +54,7 @@
 	pack play git \https://github.com/hyoo-ru/play.hyoo.ru.git
 	pack rdf git \https://github.com/hyoo-ru/rdf.hyoo.ru.git
 	pack realworld git \https://github.com/hyoo-ru/realworld.hyoo.ru.git
+	pack science git \https://github.com/hyoo-ru/science.hyoo.ru.git
 	pack scout git \https://github.com/hyoo-ru/scout.hyoo.ru.git
 	pack search git \https://github.com/hyoo-ru/search.hyoo.ru.git
 	pack shelter git \https://github.com/hyoo-ru/shelter.hyoo.ru.git
@@ -59,6 +66,7 @@
 	pack studio git \https://github.com/hyoo-ru/studio.hyoo.ru.git
 	pack sporno git \https://github.com/hyoo-ru/hyoo_sporno.git
 	pack static git \https://github.com/hyoo-ru/hyoo_static.git
+	pack survey git \https://github.com/hyoo-ru/survey.hyoo.ru.git
 	pack talks git \https://github.com/hyoo-ru/talks.hyoo.ru.git
 	pack todomvc git \https://github.com/hyoo-ru/todomvc.hyoo.ru.git
 	pack toys git \https://github.com/hyoo-ru/toys.hyoo.ru.git

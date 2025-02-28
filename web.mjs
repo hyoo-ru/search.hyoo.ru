@@ -299,9 +299,8 @@ var $;
             if (sub_pos !== end) {
                 this.peer_move(end, sub_pos);
             }
-            this.data.pop();
-            this.data.pop();
-            if (this.data.length === this.sub_from)
+            this.data.length = end;
+            if (end === this.sub_from)
                 this.reap();
         }
         reap() { }
@@ -533,9 +532,8 @@ var $;
                 const sub = this.data[cursor];
                 const pos = this.data[cursor + 1];
                 sub.pub_off(pos);
-                this.data.pop();
-                this.data.pop();
             }
+            this.data.length = this.sub_from;
             this.cursor = this.pub_from;
             this.track_cut();
             this.cursor = $mol_wire_cursor.final;
@@ -544,23 +542,15 @@ var $;
             if (this.cursor < this.pub_from) {
                 $mol_fail(new Error('Cut of non begun sub'));
             }
-            let tail = 0;
+            let end = this.data.length;
             for (let cursor = this.cursor; cursor < this.sub_from; cursor += 2) {
                 const pub = this.data[cursor];
                 pub?.sub_off(this.data[cursor + 1]);
-                if (this.sub_from < this.data.length) {
-                    this.peer_move(this.data.length - 2, cursor);
-                    this.data.pop();
-                    this.data.pop();
-                }
-                else {
-                    ++tail;
-                }
+                end -= 2;
+                if (this.sub_from <= end)
+                    this.peer_move(end, cursor);
             }
-            for (; tail; --tail) {
-                this.data.pop();
-                this.data.pop();
-            }
+            this.data.length = end;
             this.sub_from = this.cursor;
         }
         complete() { }
@@ -598,31 +588,18 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_after_frame extends $mol_object2 {
+    class $mol_after_tick extends $mol_object2 {
         task;
-        static _promise = null;
-        static get promise() {
-            if (this._promise)
-                return this._promise;
-            return this._promise = new Promise(done => {
-                const complete = () => {
-                    this._promise = null;
-                    done();
-                };
-                if (typeof requestAnimationFrame === 'function') {
-                    requestAnimationFrame(complete);
-                }
-                else {
-                    setTimeout(complete, 16);
-                }
-            });
-        }
+        static promise = null;
         cancelled = false;
-        promise;
         constructor(task) {
             super();
             this.task = task;
-            this.promise = $mol_after_frame.promise.then(() => {
+            if (!$mol_after_tick.promise)
+                $mol_after_tick.promise = Promise.resolve().then(() => {
+                    $mol_after_tick.promise = null;
+                });
+            $mol_after_tick.promise.then(() => {
                 if (this.cancelled)
                     return;
                 task();
@@ -632,7 +609,7 @@ var $;
             this.cancelled = true;
         }
     }
-    $.$mol_after_frame = $mol_after_frame;
+    $.$mol_after_tick = $mol_after_tick;
 })($ || ($ = {}));
 
 ;
@@ -640,7 +617,12 @@ var $;
 var $;
 (function ($) {
     function $mol_promise_like(val) {
-        return val && typeof val === 'object' && 'then' in val && typeof val.then === 'function';
+        try {
+            return val && typeof val === 'object' && 'then' in val && typeof val.then === 'function';
+        }
+        catch {
+            return false;
+        }
     }
     $.$mol_promise_like = $mol_promise_like;
 })($ || ($ = {}));
@@ -649,7 +631,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    const handled = new WeakSet();
+    const wrappers = new WeakMap();
     class $mol_wire_fiber extends $mol_wire_pub_sub {
         task;
         host;
@@ -660,7 +642,7 @@ var $;
         static plan() {
             if (this.plan_task)
                 return;
-            this.plan_task = new $mol_after_frame(() => {
+            this.plan_task = new $mol_after_tick(() => {
                 try {
                     this.sync();
                 }
@@ -720,6 +702,7 @@ var $;
         plan() {
             $mol_wire_fiber.planning.add(this);
             $mol_wire_fiber.plan();
+            return this;
         }
         reap() {
             $mol_wire_fiber.reaping.add(this);
@@ -783,13 +766,21 @@ var $;
                         result = this.task.call(this.host, ...this.args);
                         break;
                 }
-                if ($mol_promise_like(result) && !handled.has(result)) {
-                    const put = (res) => {
-                        if (this.cache === result)
-                            this.put(res);
-                        return res;
-                    };
-                    result = result.then(put, put);
+                if ($mol_promise_like(result)) {
+                    if (wrappers.has(result)) {
+                        result = wrappers.get(result).then(a => a);
+                    }
+                    else {
+                        const put = (res) => {
+                            if (this.cache === result)
+                                this.put(res);
+                            return res;
+                        };
+                        wrappers.set(result, result = Object.assign(result.then(put, put), { destructor: result.destructor || (() => { }) }));
+                        wrappers.set(result, result);
+                        const error = new Error(`Promise in ${this}`);
+                        Object.defineProperty(result, 'stack', { get: () => error.stack });
+                    }
                 }
             }
             catch (error) {
@@ -799,26 +790,26 @@ var $;
                 else {
                     result = new Error(String(error), { cause: error });
                 }
-                if ($mol_promise_like(result) && !handled.has(result)) {
-                    result = result.finally(() => {
-                        if (this.cache === result)
-                            this.absorb();
-                    });
+                if ($mol_promise_like(result)) {
+                    if (wrappers.has(result)) {
+                        result = wrappers.get(result);
+                    }
+                    else {
+                        wrappers.set(result, result = Object.assign(result.finally(() => {
+                            if (this.cache === result)
+                                this.absorb();
+                        }), { destructor: result.destructor || (() => { }) }));
+                        const error = new Error(`Promise in ${this}`);
+                        Object.defineProperty(result, 'stack', { get: () => error.stack });
+                    }
                 }
-            }
-            if ($mol_promise_like(result) && !handled.has(result)) {
-                result = Object.assign(result, {
-                    destructor: result['destructor'] ?? (() => { })
-                });
-                handled.add(result);
-                const error = new Error(`Promise in ${this}`);
-                Object.defineProperty(result, 'stack', { get: () => error.stack });
             }
             if (!$mol_promise_like(result)) {
                 this.track_cut();
             }
             this.track_off(bu);
             this.put(result);
+            return this;
         }
         refresh() {
             this.cursor = $mol_wire_cursor.stale;
@@ -838,7 +829,7 @@ var $;
             }
             return this.cache;
         }
-        async async() {
+        async async_raw() {
             while (true) {
                 this.fresh();
                 if (this.cache instanceof Error) {
@@ -854,6 +845,12 @@ var $;
                 }
             }
         }
+        async() {
+            const promise = this.async_raw();
+            if (!promise.destructor)
+                promise.destructor = () => this.destructor();
+            return promise;
+        }
         step() {
             return new Promise(done => {
                 const sub = new $mol_wire_pub_sub;
@@ -862,9 +859,15 @@ var $;
                 sub.track_off(prev);
                 sub.absorb = () => {
                     done(null);
-                    sub.destructor();
+                    setTimeout(() => sub.destructor());
                 };
             });
+        }
+        destructor() {
+            super.destructor();
+            if ($mol_owning_check(this, this.cache)) {
+                this.cache.destructor();
+            }
         }
     }
     $.$mol_wire_fiber = $mol_wire_fiber;
@@ -890,6 +893,7 @@ var $;
 var $;
 (function ($) {
     $.$mol_key_store = new WeakMap();
+    const TypedArray = Object.getPrototypeOf(Uint8Array);
     function $mol_key(value) {
         if (typeof value === 'bigint')
             return value.toString() + 'n';
@@ -919,7 +923,7 @@ var $;
                 return value;
             if (value instanceof RegExp)
                 return value.toString();
-            if (value instanceof Uint8Array)
+            if (value instanceof TypedArray)
                 return [...value];
             let key = $.$mol_key_store.get(value);
             if (key)
@@ -930,6 +934,47 @@ var $;
         });
     }
     $.$mol_key = $mol_key;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_after_frame extends $mol_object2 {
+        task;
+        static _promise = null;
+        static get promise() {
+            if (this._promise)
+                return this._promise;
+            return this._promise = new Promise(done => {
+                const complete = () => {
+                    this._promise = null;
+                    done();
+                };
+                if (typeof requestAnimationFrame === 'function') {
+                    requestAnimationFrame(complete);
+                }
+                else {
+                    setTimeout(complete, 16);
+                }
+            });
+        }
+        cancelled = false;
+        promise;
+        constructor(task) {
+            super();
+            this.task = task;
+            this.promise = $mol_after_frame.promise.then(() => {
+                if (this.cancelled)
+                    return;
+                task();
+            });
+        }
+        destructor() {
+            this.cancelled = true;
+        }
+    }
+    $.$mol_after_frame = $mol_after_frame;
 })($ || ($ = {}));
 
 ;
@@ -971,9 +1016,10 @@ var $;
                 return right_cache;
         }
         else {
-            left_cache = new WeakMap([[right, true]]);
+            left_cache = new WeakMap();
             $.$mol_compare_deep_cache.set(left, left_cache);
         }
+        left_cache.set(right, true);
         let result;
         try {
             if (!left_proto)
@@ -1108,12 +1154,12 @@ var $;
             if (pending)
                 pending();
             let tpl = '%c';
-            const chunks = Object.values(event);
+            const chunks = Object.entries(event);
             for (let i = 0; i < chunks.length; ++i) {
-                tpl += (typeof chunks[i] === 'string') ? ' ▫ %s' : ' ▫ %o';
+                tpl += (typeof chunks[i][1] === 'string') ? '%s: %s\n' : '%s: %o\n';
             }
             const style = `color:${color};font-weight:bolder`;
-            this.console[level](tpl, style, ...chunks);
+            this.console[level](tpl.trim(), style, ...[].concat(...chunks));
             const self = this;
             return () => self.console.groupEnd();
         };
@@ -1147,12 +1193,14 @@ var $;
                         break reuse;
                     return existen;
                 }
-                const next = new $mol_wire_task(`${host?.[Symbol.toStringTag] ?? host}.${task.name}<#>`, task, host, args);
+                const key = (host?.[Symbol.toStringTag] ?? host) + ('.' + task.name + '<#>');
+                const next = new $mol_wire_task(key, task, host, args);
                 if (existen?.temp) {
                     $$.$mol_log3_warn({
                         place: '$mol_wire_task',
                         message: `Non idempotency`,
-                        existen,
+                        sub,
+                        pubs: [...sub?.pub_list ?? [], existen],
                         next,
                         hint: 'Ignore it',
                     });
@@ -1175,6 +1223,14 @@ var $;
                 this.cursor = $mol_wire_cursor.fresh;
                 if (next !== prev)
                     this.emit();
+                if ($mol_owning_catch(this, next)) {
+                    try {
+                        next[Symbol.toStringTag] = this[Symbol.toStringTag];
+                    }
+                    catch {
+                        Object.defineProperty(next, Symbol.toStringTag, { value: this[Symbol.toStringTag] });
+                    }
+                }
                 return next;
             }
             this.cursor = $mol_wire_cursor.final;
@@ -1264,7 +1320,7 @@ var $;
             if (existen)
                 return existen;
             const prefix = host?.[Symbol.toStringTag] ?? (host instanceof Function ? $$.$mol_func_name(host) : host);
-            const key = `${prefix}.${field}`;
+            const key = prefix + ('.' + field);
             const fiber = new $mol_wire_atom(key, task, host, []);
             (host ?? task)[field] = fiber;
             return fiber;
@@ -1282,7 +1338,7 @@ var $;
             else {
                 dict = (host ?? task)[field] = new Map();
             }
-            const id = `${prefix}.${task.name}<${key_str.replace(/^"|"$/g, "'")}>`;
+            const id = prefix + ('.' + task.name) + ('<' + key_str.replace(/^"|"$/g, "'") + '>');
             const fiber = new $mol_wire_atom(id, task, host, [key]);
             dict.set(key_str, fiber);
             return fiber;
@@ -1329,10 +1385,6 @@ var $;
         }
         destructor() {
             super.destructor();
-            const prev = this.cache;
-            if ($mol_owning_check(this, prev)) {
-                prev.destructor();
-            }
             if (this.pub_from === 0) {
                 ;
                 (this.host ?? this.task)[this.field()] = null;
@@ -1508,30 +1560,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_after_tick extends $mol_object2 {
-        task;
-        promise;
-        cancelled = false;
-        constructor(task) {
-            super();
-            this.task = task;
-            this.promise = Promise.resolve().then(() => {
-                if (this.cancelled)
-                    return;
-                task();
-            });
-        }
-        destructor() {
-            this.cancelled = true;
-        }
-    }
-    $.$mol_after_tick = $mol_after_tick;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
     class $mol_view_selection extends $mol_object {
         static focused(next, notify) {
             const parents = [];
@@ -1624,16 +1652,25 @@ var $;
     class $mol_memo extends $mol_wrapper {
         static wrap(task) {
             const store = new WeakMap();
-            return function (next) {
+            const fun = function (next) {
                 if (next === undefined && store.has(this))
                     return store.get(this);
                 const val = task.call(this, next) ?? next;
                 store.set(this, val);
                 return val;
             };
+            Reflect.defineProperty(fun, 'name', { value: task.name + ' ' });
+            return fun;
         }
     }
     $.$mol_memo = $mol_memo;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_dom = $mol_dom_context;
 })($ || ($ = {}));
 
 ;
@@ -1724,7 +1761,7 @@ var $;
             if (val === undefined) {
                 continue;
             }
-            if (val === null || val === false) {
+            else if (val === null || val === false) {
                 if (!el.hasAttribute(name))
                     continue;
                 el.removeAttribute(name);
@@ -1836,6 +1873,8 @@ var $;
             const val = fields[key];
             if (val === undefined)
                 continue;
+            if (val === el[key])
+                continue;
             el[key] = val;
         }
     }
@@ -1874,37 +1913,80 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    class $mol_after_timeout extends $mol_object2 {
+        delay;
+        task;
+        id;
+        constructor(delay, task) {
+            super();
+            this.delay = delay;
+            this.task = task;
+            this.id = setTimeout(task, delay);
+        }
+        destructor() {
+            clearTimeout(this.id);
+        }
+    }
+    $.$mol_after_timeout = $mol_after_timeout;
+})($ || ($ = {}));
+
+;
+"use strict";
 
 ;
 "use strict";
 var $;
 (function ($) {
-    let all = [];
-    let el = null;
-    let timer = null;
-    function $mol_style_attach_force() {
-        if (all.length) {
-            el.innerHTML += '\n' + all.join('\n\n');
-            all = [];
-        }
-        timer = null;
-        return el;
-    }
-    $.$mol_style_attach_force = $mol_style_attach_force;
     function $mol_style_attach(id, text) {
-        all.push(`/* ${id} */\n\n${text}`);
-        if (timer)
-            return el;
         const doc = $mol_dom_context.document;
         if (!doc)
             return null;
-        el = doc.createElement('style');
-        el.id = `$mol_style_attach`;
-        doc.head.appendChild(el);
-        timer = new $mol_after_tick($mol_style_attach_force);
+        const elid = `$mol_style_attach:${id}`;
+        let el = doc.getElementById(elid);
+        if (!el) {
+            el = doc.createElement('style');
+            el.id = elid;
+            doc.head.appendChild(el);
+        }
+        if (el.innerHTML != text)
+            el.innerHTML = text;
         return el;
     }
     $.$mol_style_attach = $mol_style_attach;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_promise extends Promise {
+        done;
+        fail;
+        constructor(executor) {
+            let done;
+            let fail;
+            super((d, f) => {
+                done = d;
+                fail = f;
+                executor?.(d, f);
+            });
+            this.done = done;
+            this.fail = fail;
+        }
+    }
+    $.$mol_promise = $mol_promise;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_promise_blocker extends $mol_promise {
+        static [Symbol.toStringTag] = '$mol_promise_blocker';
+    }
+    $.$mol_promise_blocker = $mol_promise_blocker;
 })($ || ($ = {}));
 
 ;
@@ -2101,7 +2183,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/theme/theme.css", ":root {\n\t--mol_theme_hue: 210deg;\n\t--mol_theme_hue_spread: 90deg;\n}\n\n:where([mol_theme]) {\n\tcolor: var(--mol_theme_text);\n\tfill: var(--mol_theme_text);\n\tbackground-color: var(--mol_theme_back);\n}\n\t\n:root, [mol_theme=\"$mol_theme_dark\"], :where([mol_theme=\"$mol_theme_dark\"]) [mol_theme]  {\n\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate( 180deg );\n\n\t--mol_theme_back: hsl( var(--mol_theme_hue), 20%, 10% );\n\t--mol_theme_card: hsl( var(--mol_theme_hue), 50%, 20%, .25 );\n\t--mol_theme_field: hsl( var(--mol_theme_hue), 50%, 8%, .25 );\n\t--mol_theme_hover: hsl( var(--mol_theme_hue), 0%, 50%, .1 );\n\t\n\t--mol_theme_text: hsl( var(--mol_theme_hue), 0%, 80% );\n\t--mol_theme_shade: hsl( var(--mol_theme_hue), 0%, 60%, 1 );\n\t--mol_theme_line: hsl( var(--mol_theme_hue), 0%, 50%, .25 );\n\t--mol_theme_focus: hsl( calc( var(--mol_theme_hue) + 180deg ), 100%, 65% );\n\t\n\t--mol_theme_control: hsl( var(--mol_theme_hue), 60%, 65% );\n\t--mol_theme_current: hsl( calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ), 60%, 65% );\n\t--mol_theme_special: hsl( calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ), 60%, 65% );\n\n\t/* --mol_theme_back: oklch( 20% .03 var(--mol_theme_hue) );\n\t--mol_theme_card: oklch( 35% .05 var(--mol_theme_hue) / .25 );\n\t--mol_theme_field: oklch( 0% 0 var(--mol_theme_hue) / .25 );\n\t--mol_theme_hover: oklch( 70% 0 var(--mol_theme_hue) / .1 );\n\t\n\t--mol_theme_text: oklch( 80% 0 var(--mol_theme_hue) );\n\t--mol_theme_shade: oklch( 60% 0 var(--mol_theme_hue) );\n\t--mol_theme_line: oklch( 50% 0 var(--mol_theme_hue) / .2 );\n\t--mol_theme_focus: oklch( 80% .2 calc( var(--mol_theme_hue) + 120deg ) );\n\t\n\t--mol_theme_control: oklch( 70% .1 var(--mol_theme_hue) );\n\t--mol_theme_current: oklch( 80% .2 calc( var(--mol_theme_hue) - 60deg ) );\n\t--mol_theme_special: oklch( 80% .3 calc( var(--mol_theme_hue) + 60deg ) ); */\n\n}\n\n[mol_theme=\"$mol_theme_light\"], :where([mol_theme=\"$mol_theme_light\"]) [mol_theme] {\n\t\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n\t\n\t--mol_theme_back: hsl( var(--mol_theme_hue), 20%, 92% );\n\t--mol_theme_card: hsl( var(--mol_theme_hue), 50%, 100%, .5 );\n\t--mol_theme_field: hsl( var(--mol_theme_hue), 50%, 100%, .75 );\n\t--mol_theme_hover: hsl( var(--mol_theme_hue), 0%, 50%, .1 );\n\t\n\t--mol_theme_text: hsl( var(--mol_theme_hue), 0%, 0% );\n\t--mol_theme_shade: hsl( var(--mol_theme_hue), 0%, 40%, 1 );\n\t--mol_theme_line: hsl( var(--mol_theme_hue), 0%, 50%, .25 );\n\t--mol_theme_focus: hsl( calc( var(--mol_theme_hue) + 180deg ), 100%, 40% );\n\t\n\t--mol_theme_control: hsl( var(--mol_theme_hue), 80%, 30% );\n\t--mol_theme_current: hsl( calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ), 80%, 30% );\n\t--mol_theme_special: hsl( calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ), 80%, 30% );\n\t\n\t/* --mol_theme_back: oklch( 93% .01 var(--mol_theme_hue) );\n\t--mol_theme_card: oklch( 100% .02 var(--mol_theme_hue) / .25 );\n\t--mol_theme_field: oklch( 100% 0 var(--mol_theme_hue) / .5 );\n\t--mol_theme_hover: oklch( 70% 0 var(--mol_theme_hue) / .1 );\n\t\n\t--mol_theme_text: oklch( 20% 0 var(--mol_theme_hue) );\n\t--mol_theme_shade: oklch( 60% 0 var(--mol_theme_hue) );\n\t--mol_theme_line: oklch( 70% 0 var(--mol_theme_hue) / .2 );\n\t--mol_theme_focus: oklch( 20% .8 calc( var(--mol_theme_hue) + 120deg ) );\n\t\n\t--mol_theme_control: oklch( 45% .25 var(--mol_theme_hue) );\n\t--mol_theme_current: oklch( 45% .5 calc( var(--mol_theme_hue) - 60deg ) );\n\t--mol_theme_special: oklch( 45% .5 calc( var(--mol_theme_hue) + 60deg ) ); */\n\n}\n\n:where( :root, [mol_theme=\"$mol_theme_dark\"] ) [mol_theme=\"$mol_theme_base\"] {\n\t--mol_theme_back: hsl( var(--mol_theme_hue), 50%, 30% );\n\t--mol_theme_card: hsl( var(--mol_theme_hue), 40%, 20%, .25 );\n\t/* --mol_theme_back: oklch( 25% .05 var(--mol_theme_hue) );\n\t--mol_theme_card: oklch( 35% .1 var(--mol_theme_hue) / .25 ); */\n}\n:where( [mol_theme=\"$mol_theme_light\"] ) [mol_theme=\"$mol_theme_base\"] {\n\t--mol_theme_back: hsl( var(--mol_theme_hue), 50%, 80% );\n\t--mol_theme_card: hsl( var(--mol_theme_hue), 80%, 95%, .25 );\n\t/* --mol_theme_back: oklch( 95% .02 var(--mol_theme_hue) );\n\t--mol_theme_card: oklch( 80% .05 var(--mol_theme_hue) / .25 ); */\n}\n\n:where( :root, [mol_theme=\"$mol_theme_dark\"] ) [mol_theme=\"$mol_theme_accent\"] {\n\t--mol_theme_back: hsl( calc( var(--mol_theme_hue) + 180deg ), 90%, 30% );\n\t--mol_theme_card: hsl( calc( var(--mol_theme_hue) + 180deg ), 80%, 20%, .25 );\n\t/* --mol_theme_back: oklch( 40% .2 calc( var(--mol_theme_hue) + 120deg ) );\n\t--mol_theme_card: oklch( 50% .3 calc( var(--mol_theme_hue) + 120deg ) / .25 ); */\n}\n:where( [mol_theme=\"$mol_theme_light\"] ) [mol_theme=\"$mol_theme_accent\"] {\n\t--mol_theme_back: hsl( calc( var(--mol_theme_hue) + 180deg ), 90%, 75% );\n\t--mol_theme_card: hsl( calc( var(--mol_theme_hue) + 180deg ), 80%, 90%, .25 );\n\t/* --mol_theme_back: oklch( 90% .03 calc( var(--mol_theme_hue) + 120deg ) );\n\t--mol_theme_card: oklch( 80% .05 calc( var(--mol_theme_hue) + 120deg ) / .25 ); */\n}\n\n:where( :root, [mol_theme=\"$mol_theme_dark\"] ) [mol_theme=\"$mol_theme_current\"] {\n\t--mol_theme_back: hsl( calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ), 50%, 30% );\n\t--mol_theme_card: hsl( calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ), 40%, 20%, .25 );\n\t/* --mol_theme_back: oklch( 25% .05 calc( var(--mol_theme_hue) - 60deg ) );\n\t--mol_theme_card: oklch( 35% .1 calc( var(--mol_theme_hue) - 60deg ) / .25 ); */\n}\n:where( [mol_theme=\"$mol_theme_light\"] ) [mol_theme=\"$mol_theme_current\"] {\n\t--mol_theme_back: hsl( calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ), 50%, 92% );\n\t--mol_theme_card: hsl( calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ), 80%, 100%, .5 );\n\t/* --mol_theme_back: oklch( 95% .02 calc( var(--mol_theme_hue) - 60deg ) );\n\t--mol_theme_card: oklch( 80% .05 calc( var(--mol_theme_hue) - 60deg ) / .25 ); */\n}\n\n:where( :root, [mol_theme=\"$mol_theme_dark\"] ) [mol_theme=\"$mol_theme_special\"] {\n\t--mol_theme_back: hsl( calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ), 50%, 30% );\n\t--mol_theme_card: hsl( calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ), 40%, 20%, .25 );\n\t/* --mol_theme_back: oklch( 25% .05 calc( var(--mol_theme_hue) + 60deg ) );\n\t--mol_theme_card: oklch( 35% .1 calc( var(--mol_theme_hue) + 60deg ) / .25 ); */\n}\n:where( [mol_theme=\"$mol_theme_light\"] ) [mol_theme=\"$mol_theme_special\"] {\n\t--mol_theme_back: hsl( calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ), 50%, 92% );\n\t--mol_theme_card: hsl( calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ), 80%, 100%, .5 );\n\t/* --mol_theme_back: oklch( 95% .02 calc( var(--mol_theme_hue) + 60deg ) );\n\t--mol_theme_card: oklch( 80% .05 calc( var(--mol_theme_hue) + 60deg ) / .25 ); */\n}\n");
+    $mol_style_attach("mol/theme/theme.css", ":root {\n\t--mol_theme_hue: 240deg;\n\t--mol_theme_hue_spread: 90deg;\n}\n\n:where([mol_theme]) {\n\tcolor: var(--mol_theme_text);\n\tfill: var(--mol_theme_text);\n\tbackground-color: var(--mol_theme_back);\n}\n\t\n:root, [mol_theme=\"$mol_theme_dark\"], :where([mol_theme=\"$mol_theme_dark\"]) [mol_theme]  {\n\n\t--mol_theme_luma: -1;\n\t--mol_theme_image: invert(1) hue-rotate( 180deg );\n\n\t--mol_theme_back: hsl( var(--mol_theme_hue), 20%, 10% );\n\t--mol_theme_card: hsl( var(--mol_theme_hue), 50%, 20%, .25 );\n\t--mol_theme_field: hsl( var(--mol_theme_hue), 50%, 8%, .25 );\n\t--mol_theme_hover: hsl( var(--mol_theme_hue), 0%, 50%, .1 );\n\t\n\t--mol_theme_text: hsl( var(--mol_theme_hue), 0%, 80% );\n\t--mol_theme_shade: hsl( var(--mol_theme_hue), 0%, 60%, 1 );\n\t--mol_theme_line: hsl( var(--mol_theme_hue), 0%, 50%, .25 );\n\t--mol_theme_focus: hsl( calc( var(--mol_theme_hue) + 180deg ), 100%, 65% );\n\t\n\t--mol_theme_control: hsl( var(--mol_theme_hue), 60%, 65% );\n\t--mol_theme_current: hsl( calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ), 60%, 65% );\n\t--mol_theme_special: hsl( calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ), 60%, 65% );\n\n} @supports( color: oklch( 0% 0 0deg ) ) {\n:root, [mol_theme=\"$mol_theme_dark\"], :where([mol_theme=\"$mol_theme_dark\"]) [mol_theme]  {\n\t\n\t--mol_theme_back: oklch( 20% .03 var(--mol_theme_hue) );\n\t--mol_theme_card: oklch( 30% .05 var(--mol_theme_hue) / .25 );\n\t--mol_theme_field: oklch( 15% 0 var(--mol_theme_hue) / .25 );\n\t--mol_theme_hover: oklch( 70% 0 var(--mol_theme_hue) / .1 );\n\t\n\t--mol_theme_text: oklch( 80% 0 var(--mol_theme_hue) );\n\t--mol_theme_shade: oklch( 60% 0 var(--mol_theme_hue) );\n\t--mol_theme_line: oklch( 60% 0 var(--mol_theme_hue) / .25 );\n\t--mol_theme_focus: oklch( 80% .2 calc( var(--mol_theme_hue) + 180deg ) );\n\t\n\t--mol_theme_control: oklch( 70% .1 var(--mol_theme_hue) );\n\t--mol_theme_current: oklch( 70% .2 calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ) );\n\t--mol_theme_special: oklch( 70% .2 calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ) );\n\n} }\n\n[mol_theme=\"$mol_theme_light\"], :where([mol_theme=\"$mol_theme_light\"]) [mol_theme] {\n\t\n\t--mol_theme_luma: 1;\n\t--mol_theme_image: none;\n\t\n\t--mol_theme_back: hsl( var(--mol_theme_hue), 20%, 92% );\n\t--mol_theme_card: hsl( var(--mol_theme_hue), 50%, 100%, .5 );\n\t--mol_theme_field: hsl( var(--mol_theme_hue), 50%, 100%, .75 );\n\t--mol_theme_hover: hsl( var(--mol_theme_hue), 0%, 50%, .1 );\n\t\n\t--mol_theme_text: hsl( var(--mol_theme_hue), 0%, 0% );\n\t--mol_theme_shade: hsl( var(--mol_theme_hue), 0%, 40%, 1 );\n\t--mol_theme_line: hsl( var(--mol_theme_hue), 0%, 50%, .25 );\n\t--mol_theme_focus: hsl( calc( var(--mol_theme_hue) + 180deg ), 100%, 40% );\n\t\n\t--mol_theme_control: hsl( var(--mol_theme_hue), 80%, 30% );\n\t--mol_theme_current: hsl( calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ), 80%, 30% );\n\t--mol_theme_special: hsl( calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ), 80%, 30% );\n\n} @supports( color: oklch( 0% 0 0deg ) ) {\n[mol_theme=\"$mol_theme_light\"], :where([mol_theme=\"$mol_theme_light\"]) [mol_theme] {\n\t--mol_theme_back: oklch( 92% .01 var(--mol_theme_hue) );\n\t--mol_theme_card: oklch( 99% .01 var(--mol_theme_hue) / .5 );\n\t--mol_theme_field: oklch( 100% 0 var(--mol_theme_hue) / .5 );\n\t--mol_theme_hover: oklch( 70% 0 var(--mol_theme_hue) / .1 );\n\t\n\t--mol_theme_text: oklch( 20% 0 var(--mol_theme_hue) );\n\t--mol_theme_shade: oklch( 60% 0 var(--mol_theme_hue) );\n\t--mol_theme_line: oklch( 50% 0 var(--mol_theme_hue) / .25 );\n\t--mol_theme_focus: oklch( 60% .2 calc( var(--mol_theme_hue) + 180deg ) );\n\t\n\t--mol_theme_control: oklch( 40% .15 var(--mol_theme_hue) );\n\t--mol_theme_current: oklch( 50% .2 calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ) );\n\t--mol_theme_special: oklch( 50% .2 calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ) );\n\n} }\n\n:where( :root, [mol_theme=\"$mol_theme_dark\"] ) [mol_theme=\"$mol_theme_base\"] {\n\t--mol_theme_back: oklch( 25% .05 var(--mol_theme_hue) );\n\t--mol_theme_card: oklch( 35% .1 var(--mol_theme_hue) / .25 );\n}\n:where( [mol_theme=\"$mol_theme_light\"] ) [mol_theme=\"$mol_theme_base\"] {\n\t--mol_theme_back: oklch( 85% .05 var(--mol_theme_hue) );\n\t--mol_theme_card: oklch( 98% .03 var(--mol_theme_hue) / .25 );\n}\n\n:where( :root, [mol_theme=\"$mol_theme_dark\"] ) [mol_theme=\"$mol_theme_current\"] {\n\t--mol_theme_back: oklch( 25% .05 calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ) );\n\t--mol_theme_card: oklch( 35% .1 calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ) / .25 );\n}\n:where( [mol_theme=\"$mol_theme_light\"] ) [mol_theme=\"$mol_theme_current\"] {\n\t--mol_theme_back: oklch( 85% .05 calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ) );\n\t--mol_theme_card: oklch( 98% .03 calc( var(--mol_theme_hue) - var(--mol_theme_hue_spread) ) / .25 );\n}\n\n:where( :root, [mol_theme=\"$mol_theme_dark\"] ) [mol_theme=\"$mol_theme_special\"] {\n\t--mol_theme_back: oklch( 25% .05 calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ) );\n\t--mol_theme_card: oklch( 35% .1 calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ) / .25 );\n}\n:where( [mol_theme=\"$mol_theme_light\"] ) [mol_theme=\"$mol_theme_special\"] {\n\t--mol_theme_back: oklch( 85% .05 calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ) );\n\t--mol_theme_card: oklch( 98% .03 calc( var(--mol_theme_hue) + var(--mol_theme_hue_spread) ) / .25 );\n}\n\n:where( :root, [mol_theme=\"$mol_theme_dark\"] ) [mol_theme=\"$mol_theme_accent\"] {\n\t--mol_theme_back: oklch( 35% .1 calc( var(--mol_theme_hue) + 180deg ) );\n\t--mol_theme_card: oklch( 45% .15 calc( var(--mol_theme_hue) + 180deg ) / .25 );\n}\n:where( [mol_theme=\"$mol_theme_light\"] ) [mol_theme=\"$mol_theme_accent\"] {\n\t--mol_theme_back: oklch( 83% .1 calc( var(--mol_theme_hue) + 180deg ) );\n\t--mol_theme_card: oklch( 98% .03 calc( var(--mol_theme_hue) + 180deg ) / .25 );\n}\n\n");
 })($ || ($ = {}));
 
 ;
@@ -2140,7 +2222,6 @@ var $;
         return suffix;
     }
     $.$mol_view_state_key = $mol_view_state_key;
-    const error_showed = new WeakMap();
     class $mol_view extends $mol_object {
         static Root(id) {
             return new this;
@@ -2283,18 +2364,17 @@ var $;
             }
             catch (error) {
                 $mol_fail_log(error);
-                const mol_view_error = $mol_promise_like(error) ? 'Promise' : error.name || error.constructor.name;
+                const mol_view_error = $mol_promise_like(error)
+                    ? error.constructor[Symbol.toStringTag] ?? 'Promise'
+                    : error.name || error.constructor.name;
                 $mol_dom_render_attributes(node, { mol_view_error });
                 if ($mol_promise_like(error))
-                    break render;
-                if ((error_showed.get(error) ?? this) !== this)
                     break render;
                 try {
                     const message = error.message || error;
                     node.innerText = message.replace(/^|$/mg, '\xA0\xA0');
                 }
                 catch { }
-                error_showed.set(error, this);
             }
             try {
                 this.auto();
@@ -2432,9 +2512,14 @@ var $;
             return $mol_dev_format_span({}, $mol_dev_format_native(this));
         }
         *view_find(check, path = []) {
-            if (check(this))
-                return yield [...path, this];
+            if (path.length === 0 && check(this))
+                return yield [this];
             try {
+                for (const item of this.sub()) {
+                    if (item instanceof $mol_view && check(item)) {
+                        return yield [...path, this, item];
+                    }
+                }
                 for (const item of this.sub()) {
                     if (item instanceof $mol_view) {
                         yield* item.view_find(check, [...path, this]);
@@ -2476,8 +2561,7 @@ var $;
             const win = this.$.$mol_dom_context;
             if (win.parent !== win.self && !win.document.hasFocus())
                 return;
-            new this.$.$mol_after_frame(() => {
-                this.dom_node().scrollIntoView({ block: 'start', inline: 'nearest' });
+            new this.$.$mol_after_timeout(0, () => {
                 this.focused(true);
             });
         }
@@ -2560,7 +2644,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/view/view/view.css", "[mol_view] {\n\ttransition-property: height, width, min-height, min-width, max-width, max-height, transform;\n\ttransition-duration: .2s;\n\ttransition-timing-function: ease-out;\n\t-webkit-appearance: none;\n\tbox-sizing: border-box;\n\tdisplay: flex;\n\tflex-shrink: 0;\n\tcontain: style;\n\tscrollbar-color: var(--mol_theme_line) transparent;\n\tscrollbar-width: thin;\n}\t\n\n[mol_view]::selection {\n\tbackground: var(--mol_theme_line);\n}\t\n\n[mol_view]::-webkit-scrollbar {\n\twidth: .25rem;\n\theight: .25rem;\n}\n\n[mol_view]::-webkit-scrollbar-corner {\n\tbackground-color: var(--mol_theme_line);\n}\n\n[mol_view]::-webkit-scrollbar-track {\n\tbackground-color: transparent;\n}\n\n[mol_view]::-webkit-scrollbar-thumb {\n\tbackground-color: var(--mol_theme_line);\n\tborder-radius: var(--mol_gap_round);\n}\n\n[mol_view] > * {\n\tword-break: inherit;\n}\n\n[mol_view_root] {\n\tmargin: 0;\n\tpadding: 0;\n\twidth: 100%;\n\theight: 100%;\n\tbox-sizing: border-box;\n\tfont-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n\tfont-size: 1rem;\n\tline-height: 1.5rem;\n\tbackground: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n\tcontain: unset; /** Fixes bg ignoring when applied to body on Chrome */\n\ttab-size: 4;\n\toverscroll-behavior: contain; /** Disable navigation gestures **/\n}\n\n@media print {\n\t[mol_view_root] {\n\t\theight: auto;\n\t}\n}\n\n[mol_view][mol_view_error]:not([mol_view_error=\"Promise\"]) {\n\tbackground-image: repeating-linear-gradient(\n\t\t-45deg,\n\t\t#f92323,\n\t\t#f92323 .5rem,\n\t\t#ff3d3d .5rem,\n\t\t#ff3d3d 1.5rem\n\t);\n\tcolor: black;\n\talign-items: center;\n\tjustify-content: center;\n}\n\n@keyframes mol_view_wait {\n\tfrom {\n\t\topacity: .25;\n\t}\n\t20% {\n\t\topacity: .75;\n\t}\n\tto {\n\t\topacity: .25;\n\t}\n}\n\n:where([mol_view][mol_view_error=\"Promise\"]) {\n\tbackground: var(--mol_theme_hover);\n}\n\n[mol_view][mol_view_error=\"Promise\"] {\n\tanimation: mol_view_wait 1s steps( 20, end ) infinite;\n}\n");
+    $mol_style_attach("mol/view/view/view.css", "[mol_view] {\n\ttransition-property: height, width, min-height, min-width, max-width, max-height, transform;\n\ttransition-duration: .2s;\n\ttransition-timing-function: ease-out;\n\t-webkit-appearance: none;\n\tbox-sizing: border-box;\n\tdisplay: flex;\n\tflex-shrink: 0;\n\tcontain: style;\n\tscrollbar-color: var(--mol_theme_line) transparent;\n\tscrollbar-width: thin;\n}\t\n\n[mol_view]::selection {\n\tbackground: var(--mol_theme_line);\n}\t\n\n[mol_view]::-webkit-scrollbar {\n\twidth: .25rem;\n\theight: .25rem;\n}\n\n[mol_view]::-webkit-scrollbar-corner {\n\tbackground-color: var(--mol_theme_line);\n}\n\n[mol_view]::-webkit-scrollbar-track {\n\tbackground-color: transparent;\n}\n\n[mol_view]::-webkit-scrollbar-thumb {\n\tbackground-color: var(--mol_theme_line);\n\tborder-radius: var(--mol_gap_round);\n}\n\n[mol_view] > * {\n\tword-break: inherit;\n}\n\n[mol_view_root] {\n\tmargin: 0;\n\tpadding: 0;\n\twidth: 100%;\n\theight: 100%;\n\tbox-sizing: border-box;\n\tfont-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n\tfont-size: 1rem;\n\tline-height: 1.5rem;\n\tbackground: var(--mol_theme_back);\n\tcolor: var(--mol_theme_text);\n\tcontain: unset; /** Fixes bg ignoring when applied to body on Chrome */\n\ttab-size: 4;\n\toverscroll-behavior: contain; /** Disable navigation gestures **/\n}\n\n@media print {\n\t[mol_view_root] {\n\t\theight: auto;\n\t}\n}\n[mol_view][mol_view_error]:not([mol_view_error=\"Promise\"], [mol_view_error=\"$mol_promise_blocker\"]) {\n\tbackground-image: repeating-linear-gradient(\n\t\t-45deg,\n\t\t#f92323,\n\t\t#f92323 .5rem,\n\t\t#ff3d3d .5rem,\n\t\t#ff3d3d 1.5rem\n\t);\n\tcolor: black;\n\talign-items: center;\n\tjustify-content: center;\n}\n\n@keyframes mol_view_wait {\n\tfrom {\n\t\topacity: .25;\n\t}\n\t20% {\n\t\topacity: .75;\n\t}\n\tto {\n\t\topacity: .25;\n\t}\n}\n\n:where([mol_view][mol_view_error=\"$mol_promise_blocker\"]),\n:where([mol_view][mol_view_error=\"Promise\"]) {\n\tbackground: var(--mol_theme_hover);\n}\n\n[mol_view][mol_view_error=\"Promise\"] {\n\tanimation: mol_view_wait 1s steps(20,end) infinite;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -2602,8 +2686,8 @@ var $;
 			if(next !== undefined) return next;
 			return 0;
 		}
-		field(){
-			return {...(super.field()), "tabIndex": (this.tabindex())};
+		attr(){
+			return {...(super.attr()), "tabindex": (this.tabindex())};
 		}
 		event(){
 			return {...(super.event()), "scroll": (next) => (this.event_scroll(next))};
@@ -2867,7 +2951,6 @@ var $;
             contain: 'content',
             '>': {
                 $mol_view: {
-                    transform: 'translateZ(0)',
                     gridArea: '1/1',
                 },
             },
@@ -2883,7 +2966,7 @@ var $;
             },
             '@media': {
                 'print': {
-                    overflow: 'visible',
+                    overflow: 'hidden',
                     contain: 'none',
                     maxHeight: 'unset',
                 },
@@ -2974,7 +3057,8 @@ var $;
                 return this.pages()[0]?.title() || this.title();
             }
             sub() {
-                const next = [...this.pages(), this.Placeholder()];
+                const placeholder = this.Placeholder();
+                const next = [...this.pages(), placeholder];
                 const prev = $mol_mem_cached(() => this.sub()) ?? [];
                 for (let i = 1; i++;) {
                     const p = prev[prev.length - i];
@@ -2983,7 +3067,16 @@ var $;
                         break;
                     if (p === n)
                         continue;
-                    n.bring();
+                    if (n === placeholder)
+                        continue;
+                    new this.$.$mol_after_tick(() => {
+                        const b = this.dom_node();
+                        const p = n.dom_node();
+                        b.scroll({
+                            left: p.offsetLeft + p.offsetWidth - b.offsetWidth,
+                            behavior: 'smooth',
+                        });
+                    });
                     break;
                 }
                 return next;
@@ -3007,7 +3100,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/book2/book2.view.css", "[mol_book2] {\n\tdisplay: flex;\n\tflex-flow: row nowrap;\n\talign-items: stretch;\n\tflex: 1 1 auto;\n\talign-self: stretch;\n\tmargin: 0;\n\t/* box-shadow: 0 0 0 1px var(--mol_theme_line); */\n\t/* transform: translateZ(0); */\n\ttransition: none;\n\toverflow: overlay;\n\tscroll-snap-type: x mandatory;\n\t/* padding: 0 1px;\n\tscroll-padding: 0 1px;\n\tgap: 1px; */\n}\n\n[mol_book2] > * {\n/* \tflex: none; */\n\tscroll-snap-stop: always;\n\tscroll-snap-align: end;\n\tposition: relative;\n\tmin-height: 100%;\n\tmax-height: 100%;\n\tmax-width: 100%;\n\tflex-shrink: 0;\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_field);\n}\n\n[mol_book2] > *:not(:first-of-type):before,\n[mol_book2] > *:not(:last-of-type)::after {\n\tcontent: '';\n\tposition: absolute;\n\ttop: 1.5rem;\n\twidth: 2px;\n\theight: 1rem;\n\tbackground: linear-gradient(\n\t\tto bottom,\n\t\tvar(--mol_theme_focus) 0%,\n\t\tvar(--mol_theme_focus) 14%,\n\t\ttransparent 15%,\n\t\ttransparent 42%,\n\t\tvar(--mol_theme_focus) 43%,\n\t\tvar(--mol_theme_focus) 57%,\n\t\ttransparent 58%,\n\t\ttransparent 85%,\n\t\tvar(--mol_theme_focus) 86%,\n\t\tvar(--mol_theme_focus) 100%\n\t);\n\topacity: .5;\n\tz-index: var(--mol_layer_speck);\n}\n[mol_book2] > *:not(:first-of-type):before {\n\tleft: -1px;\n}\n[mol_book2] > *:not(:last-of-type)::after {\n\tright: -1px;\n}\n\n:where([mol_book2]) > * {\n\tbackground-color: var(--mol_theme_card);\n\t/* box-shadow: 0 0 0 1px var(--mol_theme_back); */\n}\n\n[mol_book2] > [mol_book2] {\n\tdisplay: contents;\n}\n\n[mol_book2] > *:first-child {\n\tscroll-snap-align: start;\n}\n\n[mol_book2] > [mol_view] {\n\ttransform: none; /* prevent content clipping */\n}\n\n[mol_book2_placeholder] {\n\tflex: 1 1 0;\n\tbackground: none;\n}\n\n[mol_book2_gap] {\n\tbackground: none;\n\tflex-grow: 1;\n\tscroll-snap-align: none;\n\tmargin-right: -1px;\n\tbox-shadow: none;\n}\n\n[mol_book2_gap]::before,\n[mol_book2_gap]::after {\n\tdisplay: none;\n}\n");
+    $mol_style_attach("mol/book2/book2.view.css", "[mol_book2] {\n\tdisplay: flex;\n\tflex-flow: row nowrap;\n\talign-items: stretch;\n\tflex: 1 1 auto;\n\talign-self: stretch;\n\tmargin: 0;\n\t/* box-shadow: 0 0 0 1px var(--mol_theme_line); */\n\t/* transform: translateZ(0); */\n\ttransition: none;\n\tscroll-snap-type: x mandatory;\n\t/* padding: 0 1px;\n\tscroll-padding: 0 1px;\n\tgap: 1px; */\n}\n\n[mol_book2] > * {\n/* \tflex: none; */\n\tscroll-snap-stop: always;\n\tscroll-snap-align: end;\n\tposition: relative;\n\tmin-height: 100%;\n\tmax-height: 100%;\n\tmax-width: 100%;\n\tflex-shrink: 0;\n\tbox-shadow: inset 0 0 0 1px var(--mol_theme_field);\n}\n\n[mol_book2] > *:not(:first-of-type):before,\n[mol_book2] > *:not(:last-of-type)::after {\n\tcontent: '';\n\tposition: absolute;\n\ttop: 1.5rem;\n\twidth: 3px;\n\theight: 1rem;\n\tbackground: linear-gradient(\n\t\tto bottom,\n\t\tvar(--mol_theme_focus) 0%,\n\t\tvar(--mol_theme_focus) 14%,\n\t\ttransparent 15%,\n\t\ttransparent 42%,\n\t\tvar(--mol_theme_focus) 43%,\n\t\tvar(--mol_theme_focus) 57%,\n\t\ttransparent 58%,\n\t\ttransparent 85%,\n\t\tvar(--mol_theme_focus) 86%,\n\t\tvar(--mol_theme_focus) 100%\n\t);\n\topacity: .5;\n\tz-index: var(--mol_layer_speck);\n}\n[mol_book2] > *:not(:first-of-type):before {\n\tleft: -1px;\n}\n[mol_book2] > *:not(:last-of-type)::after {\n\tright: -1px;\n}\n\n:where([mol_book2]) > * {\n\tbackground-color: var(--mol_theme_card);\n\t/* box-shadow: 0 0 0 1px var(--mol_theme_back); */\n}\n\n[mol_book2] > [mol_book2] {\n\tdisplay: contents;\n}\n\n[mol_book2] > *:first-child {\n\tscroll-snap-align: start;\n}\n\n[mol_book2] > [mol_view] {\n\ttransform: none; /* prevent content clipping */\n}\n\n[mol_book2_placeholder] {\n\tflex: 1 1 0;\n\tbackground: none;\n}\n\n[mol_book2_gap] {\n\tbackground: none;\n\tflex-grow: 1;\n\tscroll-snap-align: none;\n\tmargin-right: -1px;\n\tbox-shadow: none;\n}\n\n[mol_book2_gap]::before,\n[mol_book2_gap]::after {\n\tdisplay: none;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -3107,8 +3200,11 @@ var $;
             }
             return new URL('#' + this.prolog + chunks.join(this.separator), this.href_absolute()).toString();
         }
+        static commit() {
+            $mol_dom.history.pushState($mol_dom.history.state, $mol_dom.document.title, this.href());
+        }
         static go(next) {
-            $mol_dom_context.location.href = this.make_link(next);
+            $mol_dom_context.location.href = this.link(next);
         }
         static encode(str) {
             return encodeURIComponent(str).replace(/\(/g, '%28').replace(/\)/g, '%29');
@@ -3155,12 +3251,34 @@ var $;
     ], $mol_state_arg, "make_link", null);
     __decorate([
         $mol_action
+    ], $mol_state_arg, "commit", null);
+    __decorate([
+        $mol_action
     ], $mol_state_arg, "go", null);
     $.$mol_state_arg = $mol_state_arg;
     function $mol_state_arg_change() {
         $mol_state_arg.href($mol_dom_context.location.href);
     }
     self.addEventListener('hashchange', $mol_state_arg_change);
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_media extends $mol_object2 {
+        static match(query, next) {
+            if (next !== undefined)
+                return next;
+            const res = this.$.$mol_dom_context.matchMedia?.(query) ?? {};
+            res.onchange = () => this.match(query, res.matches);
+            return res.matches;
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $mol_media, "match", null);
+    $.$mol_media = $mol_media;
 })($ || ($ = {}));
 
 ;
@@ -3174,10 +3292,19 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    const factories = new WeakMap();
+    function factory(val) {
+        let make = factories.get(val);
+        if (make)
+            return make;
+        make = $mol_func_name_from((...args) => new val(...args), val);
+        factories.set(val, make);
+        return make;
+    }
     function $mol_wire_sync(obj) {
         return new Proxy(obj, {
             get(obj, field) {
-                const val = obj[field];
+                let val = obj[field];
                 if (typeof val !== 'function')
                     return val;
                 const temp = $mol_wire_task.getter(val);
@@ -3186,10 +3313,13 @@ var $;
                     return fiber.sync();
                 };
             },
+            construct(obj, args) {
+                const temp = $mol_wire_task.getter(factory(obj));
+                return temp(obj, args).sync();
+            },
             apply(obj, self, args) {
                 const temp = $mol_wire_task.getter(obj);
-                const fiber = temp(self, args);
-                return fiber.sync();
+                return temp(self, args).sync();
             },
         });
     }
@@ -3321,7 +3451,7 @@ var $;
     }
     function $mol_lights(next) {
         const arg = parse(this.$mol_state_arg.value('mol_lights'));
-        const base = false;
+        const base = this.$mol_media.match('(prefers-color-scheme: light)');
         if (next === undefined) {
             return arg ?? this.$mol_state_local.value('$mol_lights') ?? base;
         }
@@ -3524,7 +3654,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/pop/pop.view.css", "[mol_pop] {\n\tposition: relative;\n\tdisplay: inline-flex;\n}\n\n[mol_pop_bubble] {\n\tbox-shadow: 0 0 1rem hsla(0,0%,0%,.5);\n\tborder-radius: var(--mol_gap_round);\n\tposition: absolute;\n\tz-index: var(--mol_layer_popup);\n\tbackground: var(--mol_theme_back);\n\tmax-width: none;\n\tmax-height: none;\n\t/* overflow: hidden;\n\toverflow-y: scroll;\n\toverflow-y: overlay; */\n\tword-break: normal;\n\twidth: max-content;\n\theight: max-content;\n\tflex-direction: column;\n\tmax-width: 80vw;\n\tmax-height: 80vw;\n\tcontain: paint;\n\ttransition-property: opacity;\n}\n\n:where( [mol_pop_bubble] > * ) {\n\tbackground: var(--mol_theme_card);\n}\n\n[mol_pop_bubble][mol_scroll] {\n\tbackground: var(--mol_theme_back);\n}\n\n[mol_pop_bubble]:focus {\n\toutline: none;\n}\n\n[mol_pop_align=\"suspense_suspense\"] {\n\topacity: 0;\n}\n\n[mol_pop_align=\"left_top\"] {\n\ttransform: translate(-100%);\n\tleft: 0;\n\tbottom: 0;\n}\n\n[mol_pop_align=\"left_center\"] {\n\ttransform: translate(-100%, -50%);\n\tleft: 0;\n\ttop: 50%;\n}\n\n[mol_pop_align=\"left_bottom\"] {\n\ttransform: translate(-100%);\n\tleft: 0;\n\ttop: 0;\n}\n\n[mol_pop_align=\"right_top\"] {\n\ttransform: translate(100%);\n\tright: 0;\n\tbottom: 0;\n}\n\n[mol_pop_align=\"right_center\"] {\n\ttransform: translate(100%, -50%);\n\tright: 0;\n\ttop: 50%;\n}\n\n[mol_pop_align=\"right_bottom\"] {\n\ttransform: translate(100%);\n\tright: 0;\n\ttop: 0;\n}\n\n[mol_pop_align=\"center\"] {\n\tleft: 50%;\n\ttop: 50%;\n\ttransform: translate(-50%, -50%);\n}\n\n[mol_pop_align=\"top_left\"] {\n\tright: 0;\n\tbottom: 100%;\n}\n\n[mol_pop_align=\"top_center\"] {\n\ttransform: translate(-50%);\n\tleft: 50%;\n\tbottom: 100%;\n}\n\n[mol_pop_align=\"top_right\"] {\n\tleft: 0;\n\tbottom: 100%;\n}\n\n[mol_pop_align=\"bottom_left\"] {\n\tright: 0;\n\ttop: 100%;\n}\n\n[mol_pop_align=\"bottom_center\"] {\n\ttransform: translate(-50%);\n\tleft: 50%;\n\ttop: 100%;\n}\n\n[mol_pop_align=\"bottom_right\"] {\n\tleft: 0;\n\ttop: 100%;\n}\n");
+    $mol_style_attach("mol/pop/pop.view.css", "[mol_pop] {\n\tposition: relative;\n\tdisplay: inline-flex;\n}\n\n[mol_pop_bubble] {\n\tbox-shadow: 0 0 1rem hsla(0,0%,0%,.5);\n\tborder-radius: var(--mol_gap_round);\n\tposition: absolute;\n\tz-index: var(--mol_layer_popup);\n\tbackground: var(--mol_theme_back);\n\tmax-width: none;\n\tmax-height: none;\n\t/* overflow: hidden;\n\toverflow-y: scroll;\n\toverflow-y: overlay; */\n\tword-break: normal;\n\twidth: max-content;\n\t/* height: max-content; */\n\tflex-direction: column;\n\tmax-width: 80vw;\n\tmax-height: 80vw;\n\tcontain: paint;\n\ttransition-property: opacity;\n}\n\n:where( [mol_pop_bubble] > * ) {\n\tbackground: var(--mol_theme_card);\n}\n\n[mol_pop_bubble][mol_scroll] {\n\tbackground: var(--mol_theme_back);\n}\n\n[mol_pop_bubble]:focus {\n\toutline: none;\n}\n\n[mol_pop_align=\"suspense_suspense\"] {\n\topacity: 0;\n}\n\n[mol_pop_align=\"left_top\"] {\n\ttransform: translate(-100%);\n\tleft: 0;\n\tbottom: 0;\n}\n\n[mol_pop_align=\"left_center\"] {\n\ttransform: translate(-100%, -50%);\n\tleft: 0;\n\ttop: 50%;\n}\n\n[mol_pop_align=\"left_bottom\"] {\n\ttransform: translate(-100%);\n\tleft: 0;\n\ttop: 0;\n}\n\n[mol_pop_align=\"right_top\"] {\n\ttransform: translate(100%);\n\tright: 0;\n\tbottom: 0;\n}\n\n[mol_pop_align=\"right_center\"] {\n\ttransform: translate(100%, -50%);\n\tright: 0;\n\ttop: 50%;\n}\n\n[mol_pop_align=\"right_bottom\"] {\n\ttransform: translate(100%);\n\tright: 0;\n\ttop: 0;\n}\n\n[mol_pop_align=\"center\"] {\n\tleft: 50%;\n\ttop: 50%;\n\ttransform: translate(-50%, -50%);\n}\n\n[mol_pop_align=\"top_left\"] {\n\tright: 0;\n\tbottom: 100%;\n}\n\n[mol_pop_align=\"top_center\"] {\n\ttransform: translate(-50%);\n\tleft: 50%;\n\tbottom: 100%;\n}\n\n[mol_pop_align=\"top_right\"] {\n\tleft: 0;\n\tbottom: 100%;\n}\n\n[mol_pop_align=\"bottom_left\"] {\n\tright: 0;\n\ttop: 100%;\n}\n\n[mol_pop_align=\"bottom_center\"] {\n\ttransform: translate(-50%);\n\tleft: 50%;\n\ttop: 100%;\n}\n\n[mol_pop_align=\"bottom_right\"] {\n\tleft: 0;\n\ttop: 100%;\n}\n");
 })($ || ($ = {}));
 
 ;
@@ -3867,6 +3997,58 @@ var $;
 
 ;
 "use strict";
+var $;
+(function ($) {
+    class $mol_lock extends $mol_object {
+        promise = null;
+        async wait() {
+            let next = () => { };
+            let destructed = false;
+            const task = $mol_wire_auto();
+            if (!task)
+                return next;
+            const destructor = task.destructor.bind(task);
+            task.destructor = () => {
+                destructor();
+                destructed = true;
+                next();
+            };
+            let promise;
+            do {
+                promise = this.promise;
+                await promise;
+                if (destructed)
+                    return next;
+            } while (promise !== this.promise);
+            this.promise = new Promise(done => { next = done; });
+            return next;
+        }
+        grab() { return $mol_wire_sync(this).wait(); }
+    }
+    $.$mol_lock = $mol_lock;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_compare_array(a, b) {
+        if (a === b)
+            return true;
+        if (Object.getPrototypeOf(a) !== Object.getPrototypeOf(b))
+            return false;
+        if (a.length !== b.length)
+            return false;
+        for (let i = 0; i < a.length; i++)
+            if (a[i] !== b[i])
+                return false;
+        return true;
+    }
+    $.$mol_compare_array = $mol_compare_array;
+})($ || ($ = {}));
+
+;
+"use strict";
 
 ;
 "use strict";
@@ -3905,12 +4087,55 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_file_not_found extends Error {
+    class $mol_file_transaction extends $mol_object {
+        path() { return ''; }
+        modes() { return []; }
+        write(options) {
+            return 0;
+        }
+        read() {
+            return new Uint8Array();
+        }
+        truncate(size) { }
+        close() { }
+        destructor() {
+            this.close();
+        }
     }
-    $.$mol_file_not_found = $mol_file_not_found;
-    class $mol_file extends $mol_object {
+    $.$mol_file_transaction = $mol_file_transaction;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_file_transaction_web extends $mol_file_transaction {
+        write(options) {
+            throw new Error('Not implemented');
+        }
+        truncate(size) {
+            throw new Error('Not implemented');
+        }
+        read() {
+            throw new Error('Not implemented');
+        }
+        close() {
+            throw new Error('Not implemented');
+        }
+    }
+    $.$mol_file_transaction_web = $mol_file_transaction_web;
+    $.$mol_file_transaction = $mol_file_transaction_web;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_file_base extends $mol_object {
         static absolute(path) {
-            throw new Error('Not implemented yet');
+            return this.make({
+                path: $mol_const(path)
+            });
         }
         static relative(path) {
             throw new Error('Not implemented yet');
@@ -3922,27 +4147,164 @@ var $;
         parent() {
             return this.resolve('..');
         }
-        reset() {
+        exists_cut() { return this.exists(); }
+        root() {
+            const path = this.path();
+            const base = this.constructor.base;
+            return base.startsWith(path) || this == this.parent();
+        }
+        stat(next, virt) {
+            const path = this.path();
+            const parent = this.parent();
+            if (!this.root()) {
+                parent.version();
+            }
+            parent.watcher();
+            if (virt)
+                return next ?? null;
+            return next ?? this.info(path);
+        }
+        static changed = new Set;
+        static frame = null;
+        static changed_add(type, path) {
+            if (/([\/\\]\.|___$)/.test(path))
+                return;
+            const file = this.relative(path.at(-1) === '/' ? path.slice(0, -1) : path);
+            this.changed.add(file);
+            if (!this.watching)
+                return;
+            this.frame?.destructor();
+            this.frame = new this.$.$mol_after_timeout(this.watch_debounce(), () => {
+                if (!this.watching)
+                    return;
+                this.watching = false;
+                $mol_wire_async(this).flush();
+            });
+        }
+        static watch_debounce() { return 500; }
+        static flush() {
+            for (const file of this.changed) {
+                const parent = file.parent();
+                try {
+                    if ($mol_wire_probe(() => parent.sub()))
+                        parent.sub(null);
+                    file.reset();
+                }
+                catch (error) {
+                    if ($mol_fail_catch(error))
+                        $mol_fail_log(error);
+                }
+            }
+            this.changed.clear();
+            this.watching = true;
+        }
+        static watching = true;
+        static lock = new $mol_lock;
+        static watch_off(path) {
+            this.watching = false;
+            this.flush();
+            this.watching = false;
+            this.changed.add(this.absolute(path));
+        }
+        static unwatched(side_effect, affected_dir) {
+            const unlock = this.lock.grab();
+            this.watch_off(affected_dir);
             try {
-                this.stat(null);
+                const result = side_effect();
+                this.flush();
+                unlock();
+                return result;
+            }
+            catch (e) {
+                if (!$mol_promise_like(e)) {
+                    this.flush();
+                    unlock();
+                }
+                $mol_fail_hidden(e);
+            }
+        }
+        reset() {
+            this.stat(null);
+        }
+        modified() { return this.stat()?.mtime ?? null; }
+        version() {
+            const next = this.stat()?.mtime.getTime().toString(36).toUpperCase() ?? '';
+            return next;
+        }
+        info(path) { return null; }
+        ensure() { }
+        drop() { }
+        copy(to) { }
+        read() { return new Uint8Array; }
+        write(buffer) { }
+        kids() {
+            return [];
+        }
+        readable(opts) {
+            return new ReadableStream;
+        }
+        writable(opts) {
+            return new WritableStream;
+        }
+        buffer(next) {
+            let readed = new Uint8Array();
+            if (next === undefined) {
+                if (this.version())
+                    readed = this.read();
+            }
+            const prev = $mol_mem_cached(() => this.buffer());
+            const changed = prev === undefined || !$mol_compare_array(prev, next ?? readed);
+            if (prev !== undefined && changed) {
+                this.$.$mol_log3_rise({
+                    place: `$mol_file_node.buffer()`,
+                    message: 'Changed',
+                    path: this.relate(),
+                });
+            }
+            if (next === undefined)
+                return changed ? readed : prev;
+            if (!changed && this.exists())
+                return prev;
+            this.parent().exists(true);
+            this.stat(this.stat_make(next.length), 'virt');
+            this.write(next);
+            return next;
+        }
+        stat_make(size) {
+            const now = new Date();
+            return {
+                type: 'file',
+                size,
+                atime: now,
+                mtime: now,
+                ctime: now,
+            };
+        }
+        clone(to) {
+            if (!this.exists())
+                return null;
+            const target = this.constructor.absolute(to);
+            try {
+                this.version();
+                target.parent().exists(true);
+                this.copy(to);
+                target.reset();
+                return target;
             }
             catch (error) {
-                if (error instanceof $mol_file_not_found)
-                    return;
-                return $mol_fail_hidden(error);
+                if ($mol_fail_catch(error)) {
+                    console.error(error);
+                }
             }
-        }
-        version() {
-            return this.stat()?.mtime.getTime().toString(36).toUpperCase() ?? '';
+            return null;
         }
         watcher() {
-            console.warn('$mol_file_web.watcher() not implemented');
             return {
                 destructor() { }
             };
         }
         exists(next) {
-            let exists = Boolean(this.stat());
+            const exists = Boolean(this.stat());
             if (next === undefined)
                 return exists;
             if (next === exists)
@@ -3968,25 +4330,39 @@ var $;
             return match ? match[1].substring(1) : '';
         }
         text(next, virt) {
+            if (next !== undefined)
+                this.exists();
+            return this.text_int(next, virt);
+        }
+        text_int(next, virt) {
             if (virt) {
-                const now = new Date;
-                this.stat({
-                    type: 'file',
-                    size: 0,
-                    atime: now,
-                    mtime: now,
-                    ctime: now,
-                }, 'virt');
+                this.stat(this.stat_make(0), 'virt');
                 return next;
             }
             if (next === undefined) {
-                return $mol_charset_decode(this.buffer(undefined));
+                return $mol_charset_decode(this.buffer());
             }
             else {
-                const buffer = next === undefined ? undefined : $mol_charset_encode(next);
+                const buffer = $mol_charset_encode(next);
                 this.buffer(buffer);
                 return next;
             }
+        }
+        sub(reset) {
+            if (!this.exists())
+                return [];
+            if (this.type() !== 'dir')
+                return [];
+            this.version();
+            return this.kids().filter(file => file.exists());
+        }
+        resolve(path) {
+            throw new Error('implement');
+        }
+        relate(base = this.constructor.relative('.')) {
+            const base_path = base.path();
+            const path = this.path();
+            return path.startsWith(base_path) ? path.slice(base_path.length) : path;
         }
         find(include, exclude) {
             const found = [];
@@ -4011,22 +4387,79 @@ var $;
                 default: return 0;
             }
         }
-        open(...modes) {
-            return 0;
-        }
         toJSON() {
             return this.path();
         }
+        open(...modes) {
+            return this.$.$mol_file_transaction.make({
+                path: () => this.path(),
+                modes: () => modes
+            });
+        }
     }
     __decorate([
-        $mol_mem
-    ], $mol_file.prototype, "exists", null);
+        $mol_action
+    ], $mol_file_base.prototype, "exists_cut", null);
     __decorate([
         $mol_mem
-    ], $mol_file.prototype, "text", null);
+    ], $mol_file_base.prototype, "stat", null);
+    __decorate([
+        $mol_mem
+    ], $mol_file_base.prototype, "modified", null);
+    __decorate([
+        $mol_mem
+    ], $mol_file_base.prototype, "version", null);
     __decorate([
         $mol_mem_key
-    ], $mol_file, "absolute", null);
+    ], $mol_file_base.prototype, "readable", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_file_base.prototype, "writable", null);
+    __decorate([
+        $mol_mem
+    ], $mol_file_base.prototype, "buffer", null);
+    __decorate([
+        $mol_action
+    ], $mol_file_base.prototype, "stat_make", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_file_base.prototype, "clone", null);
+    __decorate([
+        $mol_mem
+    ], $mol_file_base.prototype, "exists", null);
+    __decorate([
+        $mol_mem
+    ], $mol_file_base.prototype, "type", null);
+    __decorate([
+        $mol_mem
+    ], $mol_file_base.prototype, "text_int", null);
+    __decorate([
+        $mol_mem
+    ], $mol_file_base.prototype, "sub", null);
+    __decorate([
+        $mol_mem
+    ], $mol_file_base.prototype, "size", null);
+    __decorate([
+        $mol_action
+    ], $mol_file_base.prototype, "open", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_file_base, "absolute", null);
+    __decorate([
+        $mol_action
+    ], $mol_file_base, "flush", null);
+    __decorate([
+        $mol_action
+    ], $mol_file_base, "watch_off", null);
+    $.$mol_file_base = $mol_file_base;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_file extends $mol_file_base {
+    }
     $.$mol_file = $mol_file;
 })($ || ($ = {}));
 
@@ -4085,6 +4518,9 @@ var $;
         json() {
             return $mol_wire_sync(this.native).json();
         }
+        blob() {
+            return $mol_wire_sync(this.native).blob();
+        }
         buffer() {
             return $mol_wire_sync(this.native).arrayBuffer();
         }
@@ -4106,9 +4542,6 @@ var $;
     ], $mol_fetch_response.prototype, "text", null);
     __decorate([
         $mol_action
-    ], $mol_fetch_response.prototype, "buffer", null);
-    __decorate([
-        $mol_action
     ], $mol_fetch_response.prototype, "xml", null);
     __decorate([
         $mol_action
@@ -4119,10 +4552,9 @@ var $;
     $.$mol_fetch_response = $mol_fetch_response;
     class $mol_fetch extends $mol_object2 {
         static request(input, init = {}) {
-            const native = globalThis.fetch ?? $node['undici'].fetch;
             const controller = new AbortController();
             let done = false;
-            const promise = native(input, {
+            const promise = fetch(input, {
                 ...init,
                 signal: controller.signal,
             }).finally(() => {
@@ -4142,7 +4574,7 @@ var $;
             const response = this.response(input, init);
             if (response.status() === 'success')
                 return response;
-            throw new Error(response.message());
+            throw new Error(response.message(), { cause: response });
         }
         static stream(input, init) {
             return this.success(input, init).stream();
@@ -4152,6 +4584,9 @@ var $;
         }
         static json(input, init) {
             return this.success(input, init).json();
+        }
+        static blob(input, init) {
+            return this.success(input, init).blob();
         }
         static buffer(input, init) {
             return this.success(input, init).buffer();
@@ -4183,6 +4618,9 @@ var $;
     ], $mol_fetch, "json", null);
     __decorate([
         $mol_action
+    ], $mol_fetch, "blob", null);
+    __decorate([
+        $mol_action
     ], $mol_fetch, "buffer", null);
     __decorate([
         $mol_action
@@ -4200,41 +4638,9 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_file_web extends $mol_file {
-        static absolute(path) {
-            return this.make({
-                path: $mol_const(path)
-            });
-        }
+    class $mol_file_webdav extends $mol_file_base {
         static relative(path) {
             return this.absolute(new URL(path, this.base).toString());
-        }
-        static base = $mol_dom_context.document?.currentScript
-            ? new URL('.', $mol_dom_context.document.currentScript['src']).toString()
-            : '';
-        buffer(next) {
-            if (next !== undefined)
-                throw new Error(`Saving content not supported: ${this.path}`);
-            const response = $mol_fetch.response(this.path());
-            if (response.native.status === 404)
-                throw new $mol_file_not_found(`File not found: ${this.path()}`);
-            return new Uint8Array(response.buffer());
-        }
-        stat(next, virt) {
-            let stat = next;
-            if (next === undefined) {
-                const content = this.text();
-                const ctime = new Date();
-                stat = {
-                    type: 'file',
-                    size: content.length,
-                    ctime,
-                    atime: ctime,
-                    mtime: ctime
-                };
-            }
-            this.parent().watcher();
-            return stat;
         }
         resolve(path) {
             let res = this.path() + '/' + path;
@@ -4244,36 +4650,150 @@ var $;
                 if (prev === res)
                     break;
             }
+            res = res.replace(/\/\.\.\/?$/, '');
+            if (res === this.path())
+                return this;
             return this.constructor.absolute(res);
         }
-        ensure() {
-            throw new Error('$mol_file_web.ensure() not implemented');
+        static headers() { return {}; }
+        headers() { return this.constructor.headers(); }
+        fetch(init) {
+            return this.$.$mol_fetch.success(this.path(), {
+                ...init,
+                headers: {
+                    ...this.headers(),
+                    ...init.headers,
+                }
+            });
         }
-        drop() {
-            throw new Error('$mol_file_web.drop() not implemented');
+        read() {
+            try {
+                const response = this.fetch({});
+                return new Uint8Array(response.buffer());
+            }
+            catch (error) {
+                if (error instanceof Error
+                    && error.cause instanceof $mol_fetch_response
+                    && error.cause.native.status === 404)
+                    return new Uint8Array;
+                $mol_fail_hidden(error);
+            }
         }
-        sub() {
-            throw new Error('$mol_file_web.sub() not implemented');
+        write(body) { this.fetch({ method: 'PUT', body }); }
+        ensure() { this.fetch({ method: 'MKCOL' }); }
+        drop() { this.fetch({ method: 'DELETE' }); }
+        copy(to) {
+            this.fetch({
+                method: 'COPY',
+                headers: { Destination: to }
+            });
         }
-        relate(base = this.constructor.relative('.')) {
-            throw new Error('$mol_file_web.relate() not implemented');
+        kids() {
+            const response = this.fetch({ method: 'PROPFIND' });
+            const xml = response.xml();
+            const result = [];
+            for (const multistatus of xml.childNodes) {
+                if (multistatus.nodeName !== 'D:multistatus')
+                    continue;
+                for (const response of multistatus.childNodes) {
+                    let path;
+                    if (response.nodeName === 'D:href')
+                        path = response.textContent ?? '';
+                    if (!path)
+                        continue;
+                    if (response.nodeName !== 'D:propstat')
+                        continue;
+                    const stat = webdav_stat(response);
+                    const file = this.resolve(path);
+                    file.stat(stat, 'virt');
+                    result.push(file);
+                }
+            }
+            return result;
         }
-        append(next) {
-            throw new Error('$mol_file_web.append() not implemented');
+        readable(opts) {
+            return this.fetch({
+                headers: !opts.start ? {} : {
+                    'Range': `bytes=${opts.start}-${opts.end ?? ''}`
+                }
+            }).stream() || $mol_fail(new Error('Not found'));
+        }
+        info() {
+            return this.kids().at(0)?.stat() ?? null;
         }
     }
     __decorate([
-        $mol_mem
-    ], $mol_file_web.prototype, "buffer", null);
-    __decorate([
-        $mol_mem
-    ], $mol_file_web.prototype, "stat", null);
-    __decorate([
-        $mol_mem
-    ], $mol_file_web.prototype, "sub", null);
-    __decorate([
         $mol_mem_key
-    ], $mol_file_web, "absolute", null);
+    ], $mol_file_webdav.prototype, "readable", null);
+    $.$mol_file_webdav = $mol_file_webdav;
+    function webdav_stat(prop_stat) {
+        const now = new Date();
+        const stat = {
+            type: 'file',
+            size: 0,
+            atime: now,
+            mtime: now,
+            ctime: now,
+        };
+        for (const prop of prop_stat.childNodes) {
+            if (prop.nodeName !== 'D:prop')
+                continue;
+            for (const value of prop.childNodes) {
+                const name = value.nodeName;
+                const text = value.textContent ?? '';
+                if (name === 'D:getcontenttype') {
+                    stat.type = text.endsWith('directory') ? 'dir' : 'file';
+                }
+                if (name === 'D:getcontentlength') {
+                    stat.size = Number(value.textContent || '0');
+                    if (Number.isNaN(stat.size))
+                        stat.size = 0;
+                }
+                if (name === 'D:getlastmodified')
+                    stat.mtime = stat.atime = new Date(text);
+                if (name === 'D:creationdate')
+                    stat.ctime = new Date(text);
+            }
+        }
+        return stat;
+    }
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_file_web extends $mol_file_webdav {
+        static base = $mol_dom_context.document?.currentScript
+            ? new URL('.', $mol_dom_context.document.currentScript['src']).toString()
+            : '';
+        version() { return '1'; }
+        info() {
+            try {
+                const response = this.fetch({ method: 'HEAD' });
+                const headers = response.headers();
+                let size = Number(headers.get('Content-Length'));
+                if (Number.isNaN(size))
+                    size = 0;
+                const last = headers.get('Last-Modified');
+                const mtime = last ? new Date(last) : new Date();
+                return {
+                    type: 'file',
+                    size,
+                    mtime,
+                    atime: mtime,
+                    ctime: mtime,
+                };
+            }
+            catch (error) {
+                if (error instanceof Error
+                    && error.cause instanceof $mol_fetch_response
+                    && error.cause.native.status === 404)
+                    return null;
+                $mol_fail_hidden(error);
+            }
+        }
+    }
     $.$mol_file_web = $mol_file_web;
     $.$mol_file = $mol_file_web;
 })($ || ($ = {}));
@@ -4478,7 +4998,7 @@ var $;
             event_change(next) {
                 if (!next)
                     return;
-                const el = next.target;
+                const el = this.dom_node();
                 const from = el.selectionStart;
                 const to = el.selectionEnd;
                 try {
@@ -4539,13 +5059,17 @@ var $;
             }
             selection_start() {
                 const el = this.dom_node();
-                if (el.selectionStart === null)
+                if (!this.focused())
+                    return undefined;
+                if (el.selectionStart == null)
                     return undefined;
                 return this.selection()[0];
             }
             selection_end() {
                 const el = this.dom_node();
-                if (el.selectionEnd === null)
+                if (!this.focused())
+                    return undefined;
+                if (el.selectionEnd == null)
                     return undefined;
                 return this.selection()[1];
             }
@@ -4589,27 +5113,6 @@ var $;
 		}
 	};
 
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_after_timeout extends $mol_object2 {
-        delay;
-        task;
-        id;
-        constructor(delay, task) {
-            super();
-            this.delay = delay;
-            this.task = task;
-            this.id = setTimeout(task, delay);
-        }
-        destructor() {
-            clearTimeout(this.id);
-        }
-    }
-    $.$mol_after_timeout = $mol_after_timeout;
-})($ || ($ = {}));
 
 ;
 "use strict";
@@ -4760,9 +5263,9 @@ var $;
 "use strict";
 
 ;
-	($.$mol_icon_cross) = class $mol_icon_cross extends ($.$mol_icon) {
+	($.$mol_icon_close) = class $mol_icon_close extends ($.$mol_icon) {
 		path(){
-			return "M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z";
+			return "M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z";
 		}
 	};
 
@@ -5694,7 +6197,7 @@ var $;
 			return obj;
 		}
 		Clear_icon(){
-			const obj = new this.$.$mol_icon_cross();
+			const obj = new this.$.$mol_icon_close();
 			return obj;
 		}
 		Clear(){
@@ -5713,6 +6216,11 @@ var $;
 		Menu(){
 			const obj = new this.$.$mol_list();
 			(obj.rows) = () => ((this.menu_items()));
+			return obj;
+		}
+		Bubble_pane(){
+			const obj = new this.$.$mol_scroll();
+			(obj.sub) = () => ([(this.Menu())]);
 			return obj;
 		}
 		suggest_select(id, next){
@@ -5753,7 +6261,7 @@ var $;
 			return obj;
 		}
 		bubble_content(){
-			return [(this.Menu())];
+			return [(this.Bubble_pane())];
 		}
 		Suggest(id){
 			const obj = new this.$.$mol_button_minor();
@@ -5773,6 +6281,7 @@ var $;
 	($mol_mem(($.$mol_search.prototype), "Clear_icon"));
 	($mol_mem(($.$mol_search.prototype), "Clear"));
 	($mol_mem(($.$mol_search.prototype), "Menu"));
+	($mol_mem(($.$mol_search.prototype), "Bubble_pane"));
 	($mol_mem_key(($.$mol_search.prototype), "suggest_select"));
 	($mol_mem_key(($.$mol_search.prototype), "Suggest_label"));
 	($mol_mem(($.$mol_search.prototype), "Anchor"));
@@ -5870,7 +6379,7 @@ var $;
 ;
 	($.$mol_icon_bullseye) = class $mol_icon_bullseye extends ($.$mol_icon) {
 		path(){
-			return "M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M12,4C16.42,4 20,7.58 20,12C20,16.42 16.42,20 12,20C7.58,20 4,16.42 4,12C4,7.58 7.58,4 12,4M12,6C8.69,6 6,8.69 6,12C6,15.31 8.69,18 12,18C15.31,18 18,15.31 18,12C18,8.69 15.31,6 12,6M12,8C14.21,8 16,9.79 16,12C16,14.21 14.21,16 12,16C9.79,16 8,14.21 8,12C8,9.79 9.79,8 12,8M12,10C10.9,10 10,10.9 10,12C10,13.1 10.9,14 12,14C13.1,14 14,13.1 14,12C14,10.9 13.1,10 12,10Z";
+			return "M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10Z";
 		}
 	};
 
@@ -5881,7 +6390,7 @@ var $;
 ;
 	($.$mol_icon_bullseye_arrow) = class $mol_icon_bullseye_arrow extends ($.$mol_icon) {
 		path(){
-			return "M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,10.84 21.79,9.69 21.39,8.61L19.79,10.21C19.93,10.8 20,11.4 20,12C20,16.42 16.42,20 12,20C7.58,20 4,16.42 4,12C4,7.58 7.58,4 12,4C12.6,4 13.2,4.07 13.79,4.21L15.4,2.6C14.31,2.21 13.16,2 12,2M19,2L15,6V7.5L12.45,10.05C12.3,10 12.15,10 12,10C10.9,10 10,10.9 10,12C10,13.1 10.9,14 12,14C13.1,14 14,13.1 14,12C14,11.85 14,11.7 13.95,11.55L16.5,9H18L22,5H19V2M12,6C8.69,6 6,8.69 6,12C6,15.31 8.69,18 12,18C15.31,18 18,15.31 18,12H16C16,14.21 14.21,16 12,16C9.79,16 8,14.21 8,12C8,9.79 9.79,8 12,8V6Z";
+			return "M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,10.84 21.79,9.69 21.39,8.61L19.79,10.21C19.93,10.8 20,11.4 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4C12.6,4 13.2,4.07 13.79,4.21L15.4,2.6C14.31,2.21 13.16,2 12,2M19,2L15,6V7.5L12.45,10.05C12.3,10 12.15,10 12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12C14,11.85 14,11.7 13.95,11.55L16.5,9H18L22,5H19V2M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12H16A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8V6Z";
 		}
 	};
 
@@ -6000,7 +6509,7 @@ var $;
 ;
 	($.$mol_icon_minus_circle) = class $mol_icon_minus_circle extends ($.$mol_icon) {
 		path(){
-			return "M17,13H7V11H17M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2Z";
+			return "M17,13H7V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z";
 		}
 	};
 
@@ -6011,7 +6520,7 @@ var $;
 ;
 	($.$mol_icon_minus_circle_outline) = class $mol_icon_minus_circle_outline extends ($.$mol_icon) {
 		path(){
-			return "M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M7,13H17V11H7";
+			return "M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7";
 		}
 	};
 
@@ -6098,7 +6607,7 @@ var $;
 ;
 	($.$mol_icon_dots_vertical) = class $mol_icon_dots_vertical extends ($.$mol_icon) {
 		path(){
-			return "M12,16C13.1,16 14,16.9 14,18C14,19.1 13.1,20 12,20C10.9,20 10,19.1 10,18C10,16.9 10.9,16 12,16M12,10C13.1,10 14,10.9 14,12C14,13.1 13.1,14 12,14C10.9,14 10,13.1 10,12C10,10.9 10.9,10 12,10M12,4C13.1,4 14,4.9 14,6C14,7.1 13.1,8 12,8C10.9,8 10,7.1 10,6C10,4.9 10.9,4 12,4Z";
+			return "M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z";
 		}
 	};
 
@@ -6821,8 +7330,8 @@ var $;
 		dom_name(){
 			return "article";
 		}
-		field(){
-			return {...(super.field()), "tabIndex": (this.tabindex())};
+		attr(){
+			return {...(super.attr()), "tabIndex": (this.tabindex())};
 		}
 		sub(){
 			return [
@@ -6850,7 +7359,7 @@ var $;
     var $$;
     (function ($$) {
         const { per, rem } = $mol_style_unit;
-        const { hsla } = $mol_style_func;
+        const { hsla, blur } = $mol_style_func;
         $mol_style_define($mol_page, {
             display: 'flex',
             flex: {
@@ -6882,9 +7391,19 @@ var $;
                     radius: $mol_gap.round,
                 },
                 box: {
-                    shadow: [[0, `0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)]],
+                    shadow: [
+                        [0, `-0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
+                        [0, `0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
+                    ],
                 },
                 zIndex: 2,
+                '@media': {
+                    'print': {
+                        box: {
+                            shadow: [[0, `1px`, 0, 0, hsla(0, 0, 0, .25)]],
+                        },
+                    },
+                },
             },
             Title: {
                 minHeight: rem(2),
@@ -6906,13 +7425,18 @@ var $;
             Tools: {
                 flex: {
                     basis: 'auto',
-                    grow: 1000,
+                    grow: 0,
                     shrink: 1,
                 },
                 display: 'flex',
                 justifyContent: 'flex-end',
                 alignItems: 'flex-start',
                 flexWrap: 'wrap',
+                '@media': {
+                    'print': {
+                        display: 'none',
+                    },
+                },
             },
             Body: {
                 flex: {
@@ -6944,7 +7468,10 @@ var $;
                     radius: $mol_gap.round,
                 },
                 box: {
-                    shadow: [[0, `-0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)]],
+                    shadow: [
+                        [0, `-0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
+                        [0, `0.5rem`, `0.5rem`, `-0.5rem`, hsla(0, 0, 0, .25)],
+                    ],
                 },
                 zIndex: 1,
                 padding: $mol_gap.block,
@@ -6959,7 +7486,7 @@ var $;
 ;
 	($.$mol_icon_gift) = class $mol_icon_gift extends ($.$mol_icon) {
 		path(){
-			return "M9.06,1.93C7.17,1.92 5.33,3.74 6.17,6H3C1.9,6 1,6.9 1,8V10C1,10.55 1.45,11 2,11H11V8H13V11H22C22.55,11 23,10.55 23,10V8C23,6.9 22.1,6 21,6H17.83C19,2.73 14.6,0.42 12.57,3.24L12,4L11.43,3.22C10.8,2.33 9.93,1.94 9.06,1.93M9,4C9.89,4 10.34,5.08 9.71,5.71C9.08,6.34 8,5.89 8,5C8,4.45 8.45,4 9,4M15,4C15.89,4 16.34,5.08 15.71,5.71C15.08,6.34 14,5.89 14,5C14,4.45 14.45,4 15,4M2,12V20C2,21.1 2.9,22 4,22H20C21.1,22 22,21.1 22,20V12H13V20H11V12H2Z";
+			return "M9.06,1.93C7.17,1.92 5.33,3.74 6.17,6H3A2,2 0 0,0 1,8V10A1,1 0 0,0 2,11H11V8H13V11H22A1,1 0 0,0 23,10V8A2,2 0 0,0 21,6H17.83C19,2.73 14.6,0.42 12.57,3.24L12,4L11.43,3.22C10.8,2.33 9.93,1.94 9.06,1.93M9,4C9.89,4 10.34,5.08 9.71,5.71C9.08,6.34 8,5.89 8,5A1,1 0 0,1 9,4M15,4C15.89,4 16.34,5.08 15.71,5.71C15.08,6.34 14,5.89 14,5A1,1 0 0,1 15,4M2,12V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V12H13V20H11V12H2Z";
 		}
 	};
 
@@ -6970,7 +7497,7 @@ var $;
 ;
 	($.$mol_icon_gift_outline) = class $mol_icon_gift_outline extends ($.$mol_icon) {
 		path(){
-			return "M22,12V20C22,21.1 21.1,22 20,22H4C2.9,22 2,21.1 2,20V12C1.45,12 1,11.55 1,11V8C1,6.9 1.9,6 3,6H6.17C6.06,5.69 6,5.35 6,5C6,3.34 7.34,2 9,2C10,2 10.88,2.5 11.43,3.24V3.23L12,4L12.57,3.23V3.24C13.12,2.5 14,2 15,2C16.66,2 18,3.34 18,5C18,5.35 17.94,5.69 17.83,6H21C22.1,6 23,6.9 23,8V11C23,11.55 22.55,12 22,12M4,20H11V12H4V20M20,20V12H13V20H20M9,4C8.45,4 8,4.45 8,5C8,5.55 8.45,6 9,6C9.55,6 10,5.55 10,5C10,4.45 9.55,4 9,4M15,4C14.45,4 14,4.45 14,5C14,5.55 14.45,6 15,6C15.55,6 16,5.55 16,5C16,4.45 15.55,4 15,4M3,8V10H11V8H3M13,8V10H21V8H13Z";
+			return "M22,12V20A2,2 0 0,1 20,22H4A2,2 0 0,1 2,20V12A1,1 0 0,1 1,11V8A2,2 0 0,1 3,6H6.17C6.06,5.69 6,5.35 6,5A3,3 0 0,1 9,2C10,2 10.88,2.5 11.43,3.24V3.23L12,4L12.57,3.23V3.24C13.12,2.5 14,2 15,2A3,3 0 0,1 18,5C18,5.35 17.94,5.69 17.83,6H21A2,2 0 0,1 23,8V11A1,1 0 0,1 22,12M4,20H11V12H4V20M20,20V12H13V20H20M9,4A1,1 0 0,0 8,5A1,1 0 0,0 9,6A1,1 0 0,0 10,5A1,1 0 0,0 9,4M15,4A1,1 0 0,0 14,5A1,1 0 0,0 15,6A1,1 0 0,0 16,5A1,1 0 0,0 15,4M3,8V10H11V8H3M13,8V10H21V8H13Z";
 		}
 	};
 
@@ -6979,9 +7506,9 @@ var $;
 "use strict";
 
 ;
-	($.$mol_icon_brightness_6) = class $mol_icon_brightness_6 extends ($.$mol_icon) {
+	($.$mol_icon_brightness_4) = class $mol_icon_brightness_4 extends ($.$mol_icon) {
 		path(){
-			return "M12,18V6C15.31,6 18,8.69 18,12C18,15.31 15.31,18 12,18M20,15.31L23.31,12L20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31Z";
+			return "M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z";
 		}
 	};
 
@@ -6992,7 +7519,7 @@ var $;
 ;
 	($.$mol_lights_toggle) = class $mol_lights_toggle extends ($.$mol_check_icon) {
 		Lights_icon(){
-			const obj = new this.$.$mol_icon_brightness_6();
+			const obj = new this.$.$mol_icon_brightness_4();
 			return obj;
 		}
 		lights(next){
@@ -7073,17 +7600,6 @@ var $;
 "use strict";
 
 ;
-	($.$mol_icon_close) = class $mol_icon_close extends ($.$mol_icon) {
-		path(){
-			return "M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z";
-		}
-	};
-
-
-;
-"use strict";
-
-;
 	($.$mol_stack) = class $mol_stack extends ($.$mol_view) {};
 
 
@@ -7096,6 +7612,59 @@ var $;
 
 ;
 "use strict";
+
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_syntax2 {
+        lexems;
+        constructor(lexems) {
+            this.lexems = lexems;
+            for (let name in lexems) {
+                this.rules.push({
+                    name: name,
+                    regExp: lexems[name],
+                    size: RegExp('^$|' + lexems[name].source).exec('').length - 1,
+                });
+            }
+            const parts = '(' + this.rules.map(rule => rule.regExp.source).join(')|(') + ')';
+            this.regexp = RegExp(`([\\s\\S]*?)(?:(${parts})|$(?![^]))`, 'gmu');
+        }
+        rules = [];
+        regexp;
+        tokenize(text, handle) {
+            let end = 0;
+            lexing: while (end < text.length) {
+                const start = end;
+                this.regexp.lastIndex = start;
+                var found = this.regexp.exec(text);
+                end = this.regexp.lastIndex;
+                if (start === end)
+                    throw new Error('Empty token');
+                var prefix = found[1];
+                if (prefix)
+                    handle('', prefix, [prefix], start);
+                var suffix = found[2];
+                if (!suffix)
+                    continue;
+                let offset = 4;
+                for (let rule of this.rules) {
+                    if (found[offset - 1]) {
+                        handle(rule.name, suffix, found.slice(offset, offset + rule.size), start + prefix.length);
+                        continue lexing;
+                    }
+                    offset += rule.size + 1;
+                }
+                $mol_fail(new Error('$mol_syntax2 is broken'));
+            }
+        }
+        parse(text, handlers) {
+            this.tokenize(text, (name, ...args) => handlers[name](...args));
+        }
+    }
+    $.$mol_syntax2 = $mol_syntax2;
+})($ || ($ = {}));
 
 ;
 	($.$mol_text_code_token) = class $mol_text_code_token extends ($.$mol_dimmer) {
@@ -7187,7 +7756,7 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_text_code_row) = class $mol_text_code_row extends ($.$mol_paragraph) {
+	($.$mol_text_code_line) = class $mol_text_code_line extends ($.$mol_paragraph) {
 		numb(){
 			return 0;
 		}
@@ -7241,63 +7810,10 @@ var $;
 			return null;
 		}
 	};
-	($mol_mem(($.$mol_text_code_row.prototype), "Numb"));
-	($mol_mem_key(($.$mol_text_code_row.prototype), "Token"));
-	($mol_mem_key(($.$mol_text_code_row.prototype), "Token_link"));
+	($mol_mem(($.$mol_text_code_line.prototype), "Numb"));
+	($mol_mem_key(($.$mol_text_code_line.prototype), "Token"));
+	($mol_mem_key(($.$mol_text_code_line.prototype), "Token_link"));
 
-
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_syntax2 {
-        lexems;
-        constructor(lexems) {
-            this.lexems = lexems;
-            for (let name in lexems) {
-                this.rules.push({
-                    name: name,
-                    regExp: lexems[name],
-                    size: RegExp('^$|' + lexems[name].source).exec('').length - 1,
-                });
-            }
-            const parts = '(' + this.rules.map(rule => rule.regExp.source).join(')|(') + ')';
-            this.regexp = RegExp(`([\\s\\S]*?)(?:(${parts})|$(?![^]))`, 'gmu');
-        }
-        rules = [];
-        regexp;
-        tokenize(text, handle) {
-            let end = 0;
-            lexing: while (end < text.length) {
-                const start = end;
-                this.regexp.lastIndex = start;
-                var found = this.regexp.exec(text);
-                end = this.regexp.lastIndex;
-                if (start === end)
-                    throw new Error('Empty token');
-                var prefix = found[1];
-                if (prefix)
-                    handle('', prefix, [prefix], start);
-                var suffix = found[2];
-                if (!suffix)
-                    continue;
-                let offset = 4;
-                for (let rule of this.rules) {
-                    if (found[offset - 1]) {
-                        handle(rule.name, suffix, found.slice(offset, offset + rule.size), start + prefix.length);
-                        continue lexing;
-                    }
-                    offset += rule.size + 1;
-                }
-                $mol_fail(new Error('$mol_syntax2 is broken'));
-            }
-        }
-        parse(text, handlers) {
-            this.tokenize(text, (name, ...args) => handlers[name](...args));
-        }
-    }
-    $.$mol_syntax2 = $mol_syntax2;
-})($ || ($ = {}));
 
 ;
 "use strict";
@@ -7305,10 +7821,11 @@ var $;
 (function ($) {
     $.$mol_syntax2_md_flow = new $mol_syntax2({
         'quote': /^((?:(?:[>"] )(?:[^]*?)$(\r?\n?))+)([\n\r]*)/,
+        'spoiler': /^((?:(?:[\?] )(?:[^]*?)$(\r?\n?))+)([\n\r]*)/,
         'header': /^([#=]+)(\s+)(.*?)$([\n\r]*)/,
         'list': /^((?:(?: ?([*+-])|(?:\d+[\.\)])+) +(?:[^]*?)$(?:\r?\n?)(?:  (?:[^]*?)$(?:\r?\n?))*)+)((?:\r?\n)*)/,
         'code': /^(```\s*)([\w.-]*)[\r\n]+([^]*?)^(```)$([\n\r]*)/,
-        'code-indent': /^((?:(?:  |\t)(?:[^]*?)$\r?\n?)+)([\n\r]*)/,
+        'code-indent': /^((?:(?: |\t)(?:[^]*?)$\r?\n?)+)([\n\r]*)/,
         'table': /((?:^\|.+?$\r?\n?)+)([\n\r]*)/,
         'grid': /((?:^ *! .*?$\r?\n?)+)([\n\r]*)/,
         'cut': /^--+$((?:\r?\n)*)/,
@@ -7331,8 +7848,8 @@ var $;
         'code-docs': /\/\/\/.*?$/,
         'code-comment-block': /(?:\/\*[^]*?\*\/|\/\+[^]*?\+\/|<![^]*?>)/,
         'code-link': /(?:\w+:\/\/|#)\S+?(?=\s|\\\\|""|$)/,
-        'code-comment-inline': /\/\/.*?(?:$|\/\/)/,
-        'code-string': /(?:".*?"|'.*?'|`.*?`|\/.+?\/[dygimsu]*(?!\p{Letter})|(?:^|[ \t])\\[^\n]*\n)/,
+        'code-comment-inline': /\/\/.*?(?:$|\/\/)|- \\(?!\\).*|#!? .*/,
+        'code-string': /(?:".*?"|'.*?'|`.*?`| ?\\\\.+?\\\\|\/.+?\/[dygimsu]*(?!\p{Letter})|[ \t]*\\[^\n]*)/u,
         'code-number': /[+-]?(?:\d*\.)?\d+\w*/,
         'code-call': /\.?\w+ *(?=\()/,
         'code-sexpr': /\((\w+ )/,
@@ -7355,7 +7872,7 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        class $mol_text_code_row extends $.$mol_text_code_row {
+        class $mol_text_code_line extends $.$mol_text_code_line {
             maximal_width() {
                 return this.text().length * this.letter_width();
             }
@@ -7437,29 +7954,29 @@ var $;
         }
         __decorate([
             $mol_mem_key
-        ], $mol_text_code_row.prototype, "tokens", null);
+        ], $mol_text_code_line.prototype, "tokens", null);
         __decorate([
             $mol_mem_key
-        ], $mol_text_code_row.prototype, "row_content", null);
+        ], $mol_text_code_line.prototype, "row_content", null);
         __decorate([
             $mol_mem_key
-        ], $mol_text_code_row.prototype, "token_type", null);
+        ], $mol_text_code_line.prototype, "token_type", null);
         __decorate([
             $mol_mem_key
-        ], $mol_text_code_row.prototype, "token_content", null);
+        ], $mol_text_code_line.prototype, "token_content", null);
         __decorate([
             $mol_mem_key
-        ], $mol_text_code_row.prototype, "token_text", null);
+        ], $mol_text_code_line.prototype, "token_text", null);
         __decorate([
             $mol_mem_key
-        ], $mol_text_code_row.prototype, "token_uri", null);
+        ], $mol_text_code_line.prototype, "token_uri", null);
         __decorate([
             $mol_mem_key
-        ], $mol_text_code_row.prototype, "find_pos", null);
+        ], $mol_text_code_line.prototype, "find_pos", null);
         __decorate([
             $mol_mem_key
-        ], $mol_text_code_row.prototype, "find_token_pos", null);
-        $$.$mol_text_code_row = $mol_text_code_row;
+        ], $mol_text_code_line.prototype, "find_token_pos", null);
+        $$.$mol_text_code_line = $mol_text_code_line;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 
@@ -7470,7 +7987,7 @@ var $;
     var $$;
     (function ($$) {
         const { rem } = $mol_style_unit;
-        $mol_style_define($mol_text_code_row, {
+        $mol_style_define($mol_text_code_line, {
             display: 'block',
             position: 'relative',
             font: {
@@ -7502,7 +8019,7 @@ var $;
 ;
 	($.$mol_icon_clipboard) = class $mol_icon_clipboard extends ($.$mol_icon) {
 		path(){
-			return "M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M12,3C12.55,3 13,3.45 13,4C13,4.55 12.55,5 12,5C11.45,5 11,4.55 11,4C11,3.45 11.45,3 12,3";
+			return "M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3";
 		}
 	};
 
@@ -7513,7 +8030,7 @@ var $;
 ;
 	($.$mol_icon_clipboard_outline) = class $mol_icon_clipboard_outline extends ($.$mol_icon) {
 		path(){
-			return "M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M12,3C12.55,3 13,3.45 13,4C13,4.55 12.55,5 12,5C11.45,5 11,4.55 11,4C11,3.45 11.45,3 12,3M7,7H17V5H19V19H5V5H7V7Z";
+			return "M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7Z";
 		}
 	};
 
@@ -7639,7 +8156,7 @@ var $;
 			return "";
 		}
 		Row(id){
-			const obj = new this.$.$mol_text_code_row();
+			const obj = new this.$.$mol_text_code_line();
 			(obj.numb_showed) = () => ((this.sidebar_showed()));
 			(obj.numb) = () => ((this.row_numb(id)));
 			(obj.text) = () => ((this.row_text(id)));
@@ -7704,7 +8221,7 @@ var $;
                 return this.$.$mol_support_css_overflow_anchor();
             }
             text_lines() {
-                return this.text().split('\n');
+                return (this.text() ?? '').split('\n');
             }
             rows() {
                 return this.text_lines().map((_, index) => this.Row(index + 1));
@@ -7803,7 +8320,7 @@ var $;
             '@': {
                 'mol_text_code_sidebar_showed': {
                     true: {
-                        $mol_text_code_row: {
+                        $mol_text_code_line: {
                             margin: {
                                 left: rem(1.75),
                             },
@@ -7880,6 +8397,10 @@ var $;
 		highlight(){
 			return "";
 		}
+		syntax(){
+			const obj = new this.$.$mol_syntax2();
+			return obj;
+		}
 		View(){
 			const obj = new this.$.$mol_text_code();
 			(obj.text) = () => ((this.value()));
@@ -7887,6 +8408,7 @@ var $;
 			(obj.row_numb) = (id) => ((this.row_numb(id)));
 			(obj.sidebar_showed) = () => ((this.sidebar_showed()));
 			(obj.highlight) = () => ((this.highlight()));
+			(obj.syntax) = () => ((this.syntax()));
 			return obj;
 		}
 		attr(){
@@ -7958,6 +8480,7 @@ var $;
 	($mol_mem(($.$mol_textarea.prototype), "selection"));
 	($mol_mem(($.$mol_textarea.prototype), "submit"));
 	($mol_mem(($.$mol_textarea.prototype), "Edit"));
+	($mol_mem(($.$mol_textarea.prototype), "syntax"));
 	($mol_mem(($.$mol_textarea.prototype), "View"));
 	($.$mol_textarea_edit) = class $mol_textarea_edit extends ($.$mol_string) {
 		dom_name(){
@@ -8057,6 +8580,9 @@ var $;
             }
             row_numb(index) {
                 return index;
+            }
+            syntax() {
+                return this.$.$mol_syntax2_md_code;
             }
         }
         __decorate([
@@ -8219,27 +8745,8 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_promise() {
-        let done;
-        let fail;
-        const promise = new Promise((d, f) => {
-            done = d;
-            fail = f;
-        });
-        return Object.assign(promise, {
-            done,
-            fail,
-        });
-    }
-    $.$mol_promise = $mol_promise;
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
     function $mol_wait_timeout_async(timeout) {
-        const promise = $mol_promise();
+        const promise = new $mol_promise();
         const task = new this.$mol_after_timeout(timeout, () => promise.done());
         return Object.assign(promise, {
             destructor: () => task.destructor()
@@ -8448,7 +8955,7 @@ var $;
 ;
 	($.$mol_icon_backup_restore) = class $mol_icon_backup_restore extends ($.$mol_icon) {
 		path(){
-			return "M12,3C7.03,3 3,7.03 3,12H0L4,16L8,12H5C5,8.13 8.13,5 12,5C15.87,5 19,8.13 19,12C19,15.87 15.87,19 12,19C10.5,19 9.09,18.5 7.94,17.7L6.5,19.14C8.04,20.3 9.94,21 12,21C16.97,21 21,16.97 21,12C21,7.03 16.97,3 12,3M14,12C14,10.9 13.1,10 12,10C10.9,10 10,10.9 10,12C10,13.1 10.9,14 12,14C13.1,14 14,13.1 14,12Z";
+			return "M12,3A9,9 0 0,0 3,12H0L4,16L8,12H5A7,7 0 0,1 12,5A7,7 0 0,1 19,12A7,7 0 0,1 12,19C10.5,19 9.09,18.5 7.94,17.7L6.5,19.14C8.04,20.3 9.94,21 12,21A9,9 0 0,0 21,12A9,9 0 0,0 12,3M14,12A2,2 0 0,0 12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12Z";
 		}
 	};
 
@@ -8459,7 +8966,7 @@ var $;
 ;
 	($.$mol_icon_book) = class $mol_icon_book extends ($.$mol_icon) {
 		path(){
-			return "M18,22C19.1,22 20,21.1 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6C4.9,2 4,2.9 4,4V20C4,21.1 4.9,22 6,22H18Z";
+			return "M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z";
 		}
 	};
 
@@ -8470,7 +8977,7 @@ var $;
 ;
 	($.$mol_icon_book_open) = class $mol_icon_book_open extends ($.$mol_icon) {
 		path(){
-			return "M13,12H20V13.5H13M13,9.5H20V11H13M13,14.5H20V16H13M21,4H3C1.9,4 1,4.9 1,6V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V6C23,4.9 22.1,4 21,4M21,19H12V6H21";
+			return "M13,12H20V13.5H13M13,9.5H20V11H13M13,14.5H20V16H13M21,4H3A2,2 0 0,0 1,6V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V6A2,2 0 0,0 21,4M21,19H12V6H21";
 		}
 	};
 
@@ -8481,7 +8988,7 @@ var $;
 ;
 	($.$mol_icon_book_open_outline) = class $mol_icon_book_open_outline extends ($.$mol_icon) {
 		path(){
-			return "M21,4H3C1.9,4 1,4.9 1,6V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V6C23,4.9 22.1,4 21,4M3,19V6H11V19H3M21,19H13V6H21V19M14,9.5H20V11H14V9.5M14,12H20V13.5H14V12M14,14.5H20V16H14V14.5Z";
+			return "M21,4H3A2,2 0 0,0 1,6V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V6A2,2 0 0,0 21,4M3,19V6H11V19H3M21,19H13V6H21V19M14,9.5H20V11H14V9.5M14,12H20V13.5H14V12M14,14.5H20V16H14V14.5Z";
 		}
 	};
 
@@ -9019,7 +9526,7 @@ var $;
 			return obj;
 		}
 		Result_ban_icon(id){
-			const obj = new this.$.$mol_icon_cross();
+			const obj = new this.$.$mol_icon_close();
 			return obj;
 		}
 		result_ban_options(id){
@@ -9346,17 +9853,36 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function cause_serialize(cause) {
+        return JSON.stringify(cause, null, '  ')
+            .replace(/\(/, '<')
+            .replace(/\)/, ' >');
+    }
+    function frame_normalize(frame) {
+        return (typeof frame === 'string' ? frame : cause_serialize(frame))
+            .trim()
+            .replace(/at /gm, '   at ')
+            .replace(/^(?!    +at )(.*)/gm, '    at | $1 (#)');
+    }
     class $mol_error_mix extends AggregateError {
         cause;
         name = $$.$mol_func_name(this.constructor).replace(/^\$/, '') + '_Error';
         constructor(message, cause = {}, ...errors) {
             super(errors, message, { cause });
             this.cause = cause;
-            const stack_get = Object.getOwnPropertyDescriptor(this, 'stack')?.get ?? (() => super.stack);
+            const desc = Object.getOwnPropertyDescriptor(this, 'stack');
+            const stack_get = () => desc?.get?.() ?? super.stack ?? desc?.value ?? this.message;
             Object.defineProperty(this, 'stack', {
-                get: () => (stack_get.call(this) ?? this.message) + '\n' + [JSON.stringify(this.cause, null, '  ') ?? 'no cause', ...this.errors.map(e => e.stack)].map(e => e.trim()
-                    .replace(/at /gm, '   at ')
-                    .replace(/^(?!    +at )(.*)/gm, '    at | $1 (#)')).join('\n')
+                get: () => stack_get() + '\n' + [
+                    this.cause ?? 'no cause',
+                    ...this.errors.flatMap(e => [
+                        e.stack,
+                        ...e instanceof $mol_error_mix || !e.cause ? [] : [e.cause]
+                    ])
+                ].map(frame_normalize).join('\n')
+            });
+            Object.defineProperty(this, 'cause', {
+                get: () => cause
             });
         }
         static [Symbol.toPrimitive]() {
@@ -9610,7 +10136,7 @@ var $;
         }
         future(query) {
             $mol_wire_solid();
-            const promise = $mol_promise();
+            const promise = new $mol_promise();
             return { promise };
         }
         async execute_async(query) {
@@ -9675,8 +10201,7 @@ var $;
                 self.skipWaiting();
             });
             self.addEventListener('activate', (event) => {
-                caches.delete('v1');
-                caches.delete('$mol_offline');
+                ;
                 self.clients.claim();
                 $$.$mol_log3_done({
                     place: '$mol_offline',
@@ -9699,13 +10224,26 @@ var $;
                     return;
                 if (request.cache === 'no-store')
                     return;
-                const fresh = fetch(request).then(response => {
+                const fetch_data = () => fetch(new Request(request, { credentials: 'omit' })).then(response => {
                     if (response.status !== 200)
                         return response;
                     event.waitUntil(caches.open('$mol_offline').then(cache => cache.put(request, response)));
                     return response.clone();
                 });
-                event.waitUntil(fresh);
+                const enrich = (response) => {
+                    if (!response.status)
+                        return response;
+                    const headers = new Headers(response.headers);
+                    headers.set("$mol_offline", "");
+                    return new Response(response.body, {
+                        status: response.status,
+                        statusText: response.statusText,
+                        headers,
+                    });
+                };
+                const fresh = request.cache === 'force-cache' ? null : fetch_data();
+                if (fresh)
+                    event.waitUntil(fresh.then(enrich));
                 event.respondWith(caches.match(request).then(cached => request.cache === 'no-cache' || request.cache === 'reload'
                     ? (cached
                         ? fresh
@@ -9721,12 +10259,9 @@ var $;
                             return cloned;
                         })
                         : fresh)
-                    : (cached || fresh)));
+                    : (cached || fresh || fetch_data())).then(enrich));
             });
-            self.addEventListener('beforeinstallprompt', (event) => {
-                console.log(event);
-                event.prompt();
-            });
+            self.addEventListener('beforeinstallprompt', (event) => event.prompt());
         }
         else if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
             console.warn('HTTPS or localhost is required for service workers.');
@@ -9735,7 +10270,8 @@ var $;
             console.warn('Service Worker is not supported.');
         }
         else {
-            navigator.serviceWorker.register('web.js');
+            navigator.serviceWorker.register('web.js').then(reg => {
+            });
         }
     }
     $.$mol_offline_web = $mol_offline_web;
@@ -9949,8 +10485,8 @@ var $;
                 all.sort((a, b) => words.get(b) - words.get(a));
                 return all;
             }
-            exclude_badge_title(index) {
-                return '-' + this.exclude()[index];
+            exclude_badge_title(word) {
+                return '-' + word;
             }
             result_ban_options(index) {
                 const names = this.result_host(index).split('.');

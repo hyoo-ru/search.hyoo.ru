@@ -1,9 +1,9 @@
 $mol_scroll $mol_view
 	scroll_top? 0
 	scroll_left? 0
-	field *
+	attr *
 		^
-		tabIndex <= tabindex -1
+		tabindex <= tabindex -1
 	event *
 		^
 		scroll?event <=> event_scroll?event null
@@ -135,7 +135,7 @@ $mol_icon $mol_svg_root
 		<= Path $mol_svg_path
 			geometry <= path \
 
-$mol_icon_cross $mol_icon path \M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z
+$mol_icon_close $mol_icon path \M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z
 
 $mol_speck $mol_view
 	attr *
@@ -228,10 +228,12 @@ $mol_search $mol_pop
 				hint @ \Clear
 				click?event <=> clear?event null
 				sub /
-					<= Clear_icon $mol_icon_cross
+					<= Clear_icon $mol_icon_close
 	bubble_content /$mol_view_content
-		<= Menu $mol_list
-			rows <= menu_items /$mol_view
+		<= Bubble_pane $mol_scroll
+			sub /
+				<= Menu $mol_list
+					rows <= menu_items /$mol_view
 	Suggest* $mol_button_minor
 		click?event <=> suggest_select*?event null
 		sub <= suggest_content* /$mol_view_content
@@ -239,9 +241,9 @@ $mol_search $mol_pop
 				haystack <= suggest_label* \
 				needle <= query? \
 
-$mol_icon_bullseye $mol_icon path \M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M12,4C16.42,4 20,7.58 20,12C20,16.42 16.42,20 12,20C7.58,20 4,16.42 4,12C4,7.58 7.58,4 12,4M12,6C8.69,6 6,8.69 6,12C6,15.31 8.69,18 12,18C15.31,18 18,15.31 18,12C18,8.69 15.31,6 12,6M12,8C14.21,8 16,9.79 16,12C16,14.21 14.21,16 12,16C9.79,16 8,14.21 8,12C8,9.79 9.79,8 12,8M12,10C10.9,10 10,10.9 10,12C10,13.1 10.9,14 12,14C13.1,14 14,13.1 14,12C14,10.9 13.1,10 12,10Z
+$mol_icon_bullseye $mol_icon path \M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12A2,2 0 0,0 12,10Z
 
-$mol_icon_bullseye_arrow $mol_icon path \M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,10.84 21.79,9.69 21.39,8.61L19.79,10.21C19.93,10.8 20,11.4 20,12C20,16.42 16.42,20 12,20C7.58,20 4,16.42 4,12C4,7.58 7.58,4 12,4C12.6,4 13.2,4.07 13.79,4.21L15.4,2.6C14.31,2.21 13.16,2 12,2M19,2L15,6V7.5L12.45,10.05C12.3,10 12.15,10 12,10C10.9,10 10,10.9 10,12C10,13.1 10.9,14 12,14C13.1,14 14,13.1 14,12C14,11.85 14,11.7 13.95,11.55L16.5,9H18L22,5H19V2M12,6C8.69,6 6,8.69 6,12C6,15.31 8.69,18 12,18C15.31,18 18,15.31 18,12H16C16,14.21 14.21,16 12,16C9.79,16 8,14.21 8,12C8,9.79 9.79,8 12,8V6Z
+$mol_icon_bullseye_arrow $mol_icon path \M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,10.84 21.79,9.69 21.39,8.61L19.79,10.21C19.93,10.8 20,11.4 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4C12.6,4 13.2,4.07 13.79,4.21L15.4,2.6C14.31,2.21 13.16,2 12,2M19,2L15,6V7.5L12.45,10.05C12.3,10 12.15,10 12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12C14,11.85 14,11.7 13.95,11.55L16.5,9H18L22,5H19V2M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12H16A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8V6Z
 
 $mol_check $mol_button_minor
 	attr *
@@ -260,9 +262,9 @@ $mol_check_icon $mol_check
 
 $mol_icon_minus $mol_icon path \M19,13H5V11H19V13Z
 
-$mol_icon_minus_circle $mol_icon path \M17,13H7V11H17M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2Z
+$mol_icon_minus_circle $mol_icon path \M17,13H7V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z
 
-$mol_icon_minus_circle_outline $mol_icon path \M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M7,13H17V11H7
+$mol_icon_minus_circle_outline $mol_icon path \M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7,13H17V11H7
 
 $mol_pick $mol_pop
 	event *
@@ -278,7 +280,7 @@ $mol_pick $mol_pop
 			<= title
 		hint <= hint \
 
-$mol_icon_dots_vertical $mol_icon path \M12,16C13.1,16 14,16.9 14,18C14,19.1 13.1,20 12,20C10.9,20 10,19.1 10,18C10,16.9 10.9,16 12,16M12,10C13.1,10 14,10.9 14,12C14,13.1 13.1,14 12,14C10.9,14 10,13.1 10,12C10,10.9 10.9,10 12,10M12,4C13.1,4 14,4.9 14,6C14,7.1 13.1,8 12,8C10.9,8 10,7.1 10,6C10,4.9 10.9,4 12,4Z
+$mol_icon_dots_vertical $mol_icon path \M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z
 
 $mol_select $mol_pick
 	dictionary? *
@@ -363,7 +365,7 @@ $mol_link $mol_view
 
 $mol_page $mol_view
 	dom_name \article
-	field *
+	attr *
 		^
 		tabIndex <= tabindex -1
 	sub /
@@ -387,14 +389,14 @@ $mol_page $mol_view
 			dom_name \footer
 			sub <= foot /$mol_view
 
-$mol_icon_gift $mol_icon path \M9.06,1.93C7.17,1.92 5.33,3.74 6.17,6H3C1.9,6 1,6.9 1,8V10C1,10.55 1.45,11 2,11H11V8H13V11H22C22.55,11 23,10.55 23,10V8C23,6.9 22.1,6 21,6H17.83C19,2.73 14.6,0.42 12.57,3.24L12,4L11.43,3.22C10.8,2.33 9.93,1.94 9.06,1.93M9,4C9.89,4 10.34,5.08 9.71,5.71C9.08,6.34 8,5.89 8,5C8,4.45 8.45,4 9,4M15,4C15.89,4 16.34,5.08 15.71,5.71C15.08,6.34 14,5.89 14,5C14,4.45 14.45,4 15,4M2,12V20C2,21.1 2.9,22 4,22H20C21.1,22 22,21.1 22,20V12H13V20H11V12H2Z
+$mol_icon_gift $mol_icon path \M9.06,1.93C7.17,1.92 5.33,3.74 6.17,6H3A2,2 0 0,0 1,8V10A1,1 0 0,0 2,11H11V8H13V11H22A1,1 0 0,0 23,10V8A2,2 0 0,0 21,6H17.83C19,2.73 14.6,0.42 12.57,3.24L12,4L11.43,3.22C10.8,2.33 9.93,1.94 9.06,1.93M9,4C9.89,4 10.34,5.08 9.71,5.71C9.08,6.34 8,5.89 8,5A1,1 0 0,1 9,4M15,4C15.89,4 16.34,5.08 15.71,5.71C15.08,6.34 14,5.89 14,5A1,1 0 0,1 15,4M2,12V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V12H13V20H11V12H2Z
 
-$mol_icon_gift_outline $mol_icon path \M22,12V20C22,21.1 21.1,22 20,22H4C2.9,22 2,21.1 2,20V12C1.45,12 1,11.55 1,11V8C1,6.9 1.9,6 3,6H6.17C6.06,5.69 6,5.35 6,5C6,3.34 7.34,2 9,2C10,2 10.88,2.5 11.43,3.24V3.23L12,4L12.57,3.23V3.24C13.12,2.5 14,2 15,2C16.66,2 18,3.34 18,5C18,5.35 17.94,5.69 17.83,6H21C22.1,6 23,6.9 23,8V11C23,11.55 22.55,12 22,12M4,20H11V12H4V20M20,20V12H13V20H20M9,4C8.45,4 8,4.45 8,5C8,5.55 8.45,6 9,6C9.55,6 10,5.55 10,5C10,4.45 9.55,4 9,4M15,4C14.45,4 14,4.45 14,5C14,5.55 14.45,6 15,6C15.55,6 16,5.55 16,5C16,4.45 15.55,4 15,4M3,8V10H11V8H3M13,8V10H21V8H13Z
+$mol_icon_gift_outline $mol_icon path \M22,12V20A2,2 0 0,1 20,22H4A2,2 0 0,1 2,20V12A1,1 0 0,1 1,11V8A2,2 0 0,1 3,6H6.17C6.06,5.69 6,5.35 6,5A3,3 0 0,1 9,2C10,2 10.88,2.5 11.43,3.24V3.23L12,4L12.57,3.23V3.24C13.12,2.5 14,2 15,2A3,3 0 0,1 18,5C18,5.35 17.94,5.69 17.83,6H21A2,2 0 0,1 23,8V11A1,1 0 0,1 22,12M4,20H11V12H4V20M20,20V12H13V20H20M9,4A1,1 0 0,0 8,5A1,1 0 0,0 9,6A1,1 0 0,0 10,5A1,1 0 0,0 9,4M15,4A1,1 0 0,0 14,5A1,1 0 0,0 15,6A1,1 0 0,0 16,5A1,1 0 0,0 15,4M3,8V10H11V8H3M13,8V10H21V8H13Z
 
-$mol_icon_brightness_6 $mol_icon path \M12,18V6C15.31,6 18,8.69 18,12C18,15.31 15.31,18 12,18M20,15.31L23.31,12L20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31Z
+$mol_icon_brightness_4 $mol_icon path \M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z
 
 $mol_lights_toggle $mol_check_icon
-	Icon <= Lights_icon $mol_icon_brightness_6
+	Icon <= Lights_icon $mol_icon_brightness_4
 	hint @ \Toggle lights
 	checked? <=> lights? false
 
@@ -406,8 +408,6 @@ $mol_link_source $mol_link
 	hint @ \Source code
 	sub /
 		<= Icon $mol_icon_script_text
-
-$mol_icon_close $mol_icon path \M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z
 
 $mol_stack $mol_view
 
@@ -424,7 +424,7 @@ $mol_text_code_token_link $mol_text_code_token
 		href <= uri \
 		target \_blank
 
-$mol_text_code_row $mol_paragraph
+$mol_text_code_line $mol_paragraph
 	text \
 	minimal_height 24
 	numb_showed true
@@ -443,9 +443,9 @@ $mol_text_code_row $mol_paragraph
 		uri <= token_uri* \
 	find_pos* null
 
-$mol_icon_clipboard $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M12,3C12.55,3 13,3.45 13,4C13,4.55 12.55,5 12,5C11.45,5 11,4.55 11,4C11,3.45 11.45,3 12,3
+$mol_icon_clipboard $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3
 
-$mol_icon_clipboard_outline $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M12,3C12.55,3 13,3.45 13,4C13,4.55 12.55,5 12,5C11.45,5 11,4.55 11,4C11,3.45 11.45,3 12,3M7,7H17V5H19V19H5V5H7V7Z
+$mol_icon_clipboard_outline $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7Z
 
 $mol_button_copy $mol_button_minor
 	blobs /$mol_blob
@@ -473,7 +473,7 @@ $mol_text_code $mol_stack
 		<= Rows $mol_list
 			render_visible_only <= render_visible_only false
 			rows <= rows /
-				<= Row*0 $mol_text_code_row
+				<= Row*0 $mol_text_code_line
 					numb_showed <= sidebar_showed
 					numb <= row_numb* 0
 					text <= row_text* \
@@ -509,6 +509,7 @@ $mol_textarea $mol_stack
 			row_numb* <= row_numb* 0
 			sidebar_showed <= sidebar_showed
 			highlight <= highlight \
+			syntax <= syntax $mol_syntax2
 	symbols_alt *string
 		comma \<
 		period \>
@@ -612,13 +613,13 @@ $mol_image $mol_view
 
 $mol_row $mol_view
 
-$mol_icon_backup_restore $mol_icon path \M12,3C7.03,3 3,7.03 3,12H0L4,16L8,12H5C5,8.13 8.13,5 12,5C15.87,5 19,8.13 19,12C19,15.87 15.87,19 12,19C10.5,19 9.09,18.5 7.94,17.7L6.5,19.14C8.04,20.3 9.94,21 12,21C16.97,21 21,16.97 21,12C21,7.03 16.97,3 12,3M14,12C14,10.9 13.1,10 12,10C10.9,10 10,10.9 10,12C10,13.1 10.9,14 12,14C13.1,14 14,13.1 14,12Z
+$mol_icon_backup_restore $mol_icon path \M12,3A9,9 0 0,0 3,12H0L4,16L8,12H5A7,7 0 0,1 12,5A7,7 0 0,1 19,12A7,7 0 0,1 12,19C10.5,19 9.09,18.5 7.94,17.7L6.5,19.14C8.04,20.3 9.94,21 12,21A9,9 0 0,0 21,12A9,9 0 0,0 12,3M14,12A2,2 0 0,0 12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12Z
 
-$mol_icon_book $mol_icon path \M18,22C19.1,22 20,21.1 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6C4.9,2 4,2.9 4,4V20C4,21.1 4.9,22 6,22H18Z
+$mol_icon_book $mol_icon path \M18,22A2,2 0 0,0 20,20V4C20,2.89 19.1,2 18,2H12V9L9.5,7.5L7,9V2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18Z
 
-$mol_icon_book_open $mol_icon path \M13,12H20V13.5H13M13,9.5H20V11H13M13,14.5H20V16H13M21,4H3C1.9,4 1,4.9 1,6V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V6C23,4.9 22.1,4 21,4M21,19H12V6H21
+$mol_icon_book_open $mol_icon path \M13,12H20V13.5H13M13,9.5H20V11H13M13,14.5H20V16H13M21,4H3A2,2 0 0,0 1,6V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V6A2,2 0 0,0 21,4M21,19H12V6H21
 
-$mol_icon_book_open_outline $mol_icon path \M21,4H3C1.9,4 1,4.9 1,6V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V6C23,4.9 22.1,4 21,4M3,19V6H11V19H3M21,19H13V6H21V19M14,9.5H20V11H14V9.5M14,12H20V13.5H14V12M14,14.5H20V16H14V14.5Z
+$mol_icon_book_open_outline $mol_icon path \M21,4H3A2,2 0 0,0 1,6V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V6A2,2 0 0,0 21,4M3,19V6H11V19H3M21,19H13V6H21V19M14,9.5H20V11H14V9.5M14,12H20V13.5H14V12M14,14.5H20V16H14V14.5Z
 
 $mol_link_iconed $mol_link
 	sub /
@@ -785,7 +786,7 @@ $hyoo_search_app $mol_book2
 			<= Result_tools!index $mol_list
 				rows /
 					<= Result_ban!index $mol_select
-						Trigger_icon <= Result_ban_icon!index $mol_icon_cross
+						Trigger_icon <= Result_ban_icon!index $mol_icon_close
 						hint @ \Ban site..
 						Filter null
 						align_hor \left
