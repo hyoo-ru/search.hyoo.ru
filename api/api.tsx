@@ -156,7 +156,7 @@ namespace $ {
 		@ $mol_mem_key
 		future( query: string ) {
 			$mol_wire_solid()
-			const promise = $mol_promise< typeof Results.Value >()
+			const promise = new $mol_promise< typeof Results.Value >()
 			return { promise }
 		}
 		
