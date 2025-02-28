@@ -267,8 +267,8 @@ namespace $.$$ {
 			return all as readonly string[]
 		}
 		
-		exclude_badge_title( index: number ) {
-			return '-' + this.exclude()[ index ]
+		exclude_badge_title( word: string ) {
+			return '-' + word
 		}
 		
 		@ $mol_mem_key
