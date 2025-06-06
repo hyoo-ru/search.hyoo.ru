@@ -1263,6 +1263,16 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_maybe(value) {
+        return (value == null) ? [] : [value];
+    }
+    $.$mol_maybe = $mol_maybe;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_tree2 extends Object {
         type;
         value;
@@ -1326,33 +1336,38 @@ var $;
             return $$.$mol_tree2_to_string(this);
         }
         insert(value, ...path) {
+            return this.update($mol_maybe(value), ...path)[0];
+        }
+        update(value, ...path) {
             if (path.length === 0)
                 return value;
             const type = path[0];
             if (typeof type === 'string') {
                 let replaced = false;
-                const sub = this.kids.map((item, index) => {
+                const sub = this.kids.flatMap((item, index) => {
                     if (item.type !== type)
                         return item;
                     replaced = true;
-                    return item.insert(value, ...path.slice(1));
+                    return item.update(value, ...path.slice(1));
                 }).filter(Boolean);
                 if (!replaced && value) {
-                    sub.push(this.struct(type, []).insert(value, ...path.slice(1)));
+                    sub.push(...this.struct(type, []).update(value, ...path.slice(1)));
                 }
-                return this.clone(sub);
+                return [this.clone(sub)];
             }
             else if (typeof type === 'number') {
-                const sub = this.kids.slice();
-                sub[type] = (sub[type] || this.list([]))
-                    .insert(value, ...path.slice(1));
-                return this.clone(sub.filter(Boolean));
+                const ins = (this.kids[type] || this.list([]))
+                    .update(value, ...path.slice(1));
+                return [this.clone([
+                        ...this.kids.slice(0, type),
+                        ...ins,
+                        ...this.kids.slice(type + 1),
+                    ])];
             }
             else {
                 const kids = ((this.kids.length === 0) ? [this.list([])] : this.kids)
-                    .map(item => item.insert(value, ...path.slice(1)))
-                    .filter(Boolean);
-                return this.clone(kids);
+                    .flatMap(item => item.update(value, ...path.slice(1)));
+                return [this.clone(kids)];
             }
         }
         select(...path) {
@@ -6830,6 +6845,7 @@ var $;
 		Clear(){
 			const obj = new this.$.$mol_button_minor();
 			(obj.hint) = () => ((this.$.$mol_locale.text("$mol_search_Clear_hint")));
+			(obj.enabled) = () => ((this.enabled()));
 			(obj.click) = (next) => ((this.clear(next)));
 			(obj.sub) = () => ([(this.Clear_icon())]);
 			return obj;
@@ -7066,16 +7082,6 @@ var $;
 	($mol_mem(($.$mol_check.prototype), "checked"));
 	($mol_mem(($.$mol_check.prototype), "Title"));
 
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_maybe(value) {
-        return (value == null) ? [] : [value];
-    }
-    $.$mol_maybe = $mol_maybe;
-})($ || ($ = {}));
 
 ;
 "use strict";
