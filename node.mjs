@@ -8828,6 +8828,9 @@ var $;
 		row_numb(id){
 			return 0;
 		}
+		row_theme(id){
+			return "";
+		}
 		row_text(id){
 			return "";
 		}
@@ -8844,6 +8847,7 @@ var $;
 			const obj = new this.$.$mol_text_code_line();
 			(obj.numb_showed) = () => ((this.sidebar_showed()));
 			(obj.numb) = () => ((this.row_numb(id)));
+			(obj.theme) = () => ((this.row_theme(id)));
 			(obj.text) = () => ((this.row_text(id)));
 			(obj.syntax) = () => ((this.syntax()));
 			(obj.uri_resolve) = (id) => ((this.uri_resolve(id)));
@@ -8882,6 +8886,9 @@ var $;
 		}
 		uri_base(){
 			return "";
+		}
+		row_themes(){
+			return [];
 		}
 		sub(){
 			return [(this.Rows()), (this.Copy())];
@@ -8954,6 +8961,9 @@ var $;
             }
             text_export() {
                 return this.text() + '\n';
+            }
+            row_theme(row) {
+                return this.row_themes()[row - 1];
             }
         }
         __decorate([
