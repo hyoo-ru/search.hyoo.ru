@@ -100,7 +100,7 @@ $hyoo_search_app $mol_book2
 							Content <= Searchers $mol_textarea
 								hint @ \Every search query prefix on new line
 								value?next <=> searchers?next \
-									\https://www.google.com/search?q=
+									\https://google.com/search?udm=14&q=
 									\https://yandex.ru/search/?text=
 									\https://duckduckgo.com/?q=
 									\https://searx.tuxcloud.net/search?q=
