@@ -10087,7 +10087,7 @@ var $;
 		}
 		searchers(next){
 			if(next !== undefined) return next;
-			return "https://www.google.com/search?q=\nhttps://yandex.ru/search/?text=\nhttps://duckduckgo.com/?q=\nhttps://searx.tuxcloud.net/search?q=";
+			return "https://google.com/search?udm=14&q=\nhttps://yandex.ru/search/?text=\nhttps://duckduckgo.com/?q=\nhttps://searx.tuxcloud.net/search?q=";
 		}
 		Searchers(){
 			const obj = new this.$.$mol_textarea();
