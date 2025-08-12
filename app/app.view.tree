@@ -76,10 +76,10 @@ $hyoo_search_app $mol_book2
 		<= Settings $mol_page
 			title @ \Settings
 			tools /
-				<= Donate $mol_link_donate
-					uri \https://t.me/hd4ru/72
 				<= Support $mol_link_donate
 					uri \https://boosty.to/hyoo
+				<= Donate $mol_link_support
+					uri \https://t.me/hd4ru/72
 				<= Lights $mol_lights_toggle
 				<= Info $mol_link
 					hint @ \Article about
