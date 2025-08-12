@@ -2841,6 +2841,35 @@ declare namespace $ {
 //# sourceMappingURL=donate.view.tree.d.ts.map
 declare namespace $ {
 
+	export class $mol_icon_face extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=face.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_icon_face_agent extends $mol_icon {
+		path( ): string
+	}
+	
+}
+
+//# sourceMappingURL=agent.view.tree.d.ts.map
+declare namespace $ {
+
+	export class $mol_link_support extends $mol_link {
+		Icon( ): $mol_icon_face_agent
+		hint( ): string
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=support.view.tree.d.ts.map
+declare namespace $ {
+
 	export class $mol_icon_brightness_4 extends $mol_icon {
 		path( ): string
 	}
@@ -4162,10 +4191,10 @@ declare namespace $ {
 		,
 		ReturnType< $mol_link_donate['uri'] >
 	>
-	type $mol_link_donate__uri_hyoo_search_app_37 = $mol_type_enforce<
+	type $mol_link_support__uri_hyoo_search_app_37 = $mol_type_enforce<
 		string
 		,
-		ReturnType< $mol_link_donate['uri'] >
+		ReturnType< $mol_link_support['uri'] >
 	>
 	type $mol_link__hint_hyoo_search_app_38 = $mol_type_enforce<
 		string
@@ -4474,8 +4503,8 @@ declare namespace $ {
 		Content( ): $mol_view
 		searcher_links( ): readonly(any)[]
 		Main( ): $mol_page
-		Donate( ): $mol_link_donate
 		Support( ): $mol_link_donate
+		Donate( ): $mol_link_support
 		Lights( ): $mol_lights_toggle
 		Info_icon( ): $mol_icon_information_slab_circle_outline
 		Info( ): $mol_link
