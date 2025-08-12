@@ -1,7 +1,6 @@
 {
 	"$hyoo_search_app_Blacklist_field_name": "Domain Black List",
 	"$hyoo_search_app_Blacklist_hint": "Every domain on new line",
-	"$hyoo_search_app_Donate_hint": "Support Us",
 	"$hyoo_search_app_Exact_hint": "Exact Match",
 	"$hyoo_search_app_Exclude_pick_hint": "Exclude words..",
 	"$hyoo_search_app_Info_hint": "Article about",
@@ -22,6 +21,7 @@
 	"$hyoo_search_app_Where_dictionary_anywhere": "Anywhere",
 	"$hyoo_search_app_result_list_empty": "No results",
 	"$mol_lights_toggle_hint": "Toggle lights",
+	"$mol_link_donate_hint": "Donate",
 	"$mol_link_source_hint": "Source code",
 	"$mol_search_Clear_hint": "Clear",
 	"$mol_search_hint": "Search...",

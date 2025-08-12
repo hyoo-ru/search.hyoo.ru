@@ -8149,6 +8149,25 @@ var $;
 "use strict";
 
 ;
+	($.$mol_link_donate) = class $mol_link_donate extends ($.$mol_link) {
+		Icon(){
+			const obj = new this.$.$mol_icon_gift_outline();
+			return obj;
+		}
+		hint(){
+			return (this.$.$mol_locale.text("$mol_link_donate_hint"));
+		}
+		sub(){
+			return [(this.Icon())];
+		}
+	};
+	($mol_mem(($.$mol_link_donate.prototype), "Icon"));
+
+
+;
+"use strict";
+
+;
 	($.$mol_icon_brightness_4) = class $mol_icon_brightness_4 extends ($.$mol_icon) {
 		path(){
 			return "M12,18C11.11,18 10.26,17.8 9.5,17.45C11.56,16.5 13,14.42 13,12C13,9.58 11.56,7.5 9.5,6.55C10.26,6.2 11.11,6 12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31L23.31,12L20,8.69Z";
@@ -9450,6 +9469,7 @@ var $;
         class $mol_embed_native extends $.$mol_embed_native {
             window() {
                 $mol_wire_solid();
+                this.uri_resource();
                 return $mol_wire_sync(this).load(this.dom_node_actual());
             }
             load(frame) {
@@ -10035,15 +10055,14 @@ var $;
 			(obj.foot) = () => ((this.searcher_links()));
 			return obj;
 		}
-		Donate_icon(){
-			const obj = new this.$.$mol_icon_gift_outline();
+		Donate(){
+			const obj = new this.$.$mol_link_donate();
+			(obj.uri) = () => ("https://t.me/hd4ru/72");
 			return obj;
 		}
-		Donate(){
-			const obj = new this.$.$mol_link();
-			(obj.hint) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Donate_hint")));
+		Support(){
+			const obj = new this.$.$mol_link_donate();
 			(obj.uri) = () => ("https://boosty.to/hyoo");
-			(obj.sub) = () => ([(this.Donate_icon())]);
 			return obj;
 		}
 		Lights(){
@@ -10136,6 +10155,7 @@ var $;
 			(obj.title) = () => ((this.$.$mol_locale.text("$hyoo_search_app_Settings_title")));
 			(obj.tools) = () => ([
 				(this.Donate()), 
+				(this.Support()), 
 				(this.Lights()), 
 				(this.Info()), 
 				(this.Sources()), 
@@ -10332,8 +10352,8 @@ var $;
 	($mol_mem(($.$hyoo_search_app.prototype), "Attribution_loader"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Content"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Main"));
-	($mol_mem(($.$hyoo_search_app.prototype), "Donate_icon"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Donate"));
+	($mol_mem(($.$hyoo_search_app.prototype), "Support"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Lights"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Info_icon"));
 	($mol_mem(($.$hyoo_search_app.prototype), "Info"));

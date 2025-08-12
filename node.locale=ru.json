@@ -1,7 +1,6 @@
 {
 	"$hyoo_search_app_Blacklist_field_name": "Чёрный Список Доменов",
 	"$hyoo_search_app_Blacklist_hint": "Каждый домен на новой строке",
-	"$hyoo_search_app_Donate_hint": "Поддержать рублём",
 	"$hyoo_search_app_Exact_hint": "Точное Совпадение",
 	"$hyoo_search_app_Exclude_pick_hint": "Исключить слова..",
 	"$hyoo_search_app_Info_hint": "Статья об этом",
@@ -22,6 +21,7 @@
 	"$hyoo_search_app_Where_dictionary_anywhere": "Везде",
 	"$hyoo_search_app_result_list_empty": "Нет результатов",
 	"$mol_lights_toggle_hint": "Переключить освещение",
+	"$mol_link_donate_hint": "Задонатить",
 	"$mol_link_source_hint": "Исходные коды",
 	"$mol_search_Clear_hint": "Очистить",
 	"$mol_search_hint": "Поиск..",
