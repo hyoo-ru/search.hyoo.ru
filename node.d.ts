@@ -4652,6 +4652,7 @@ declare namespace $ {
 		plugins( ): readonly(any)[]
 		Placeholder( ): any
 		query_results( next?: string ): string
+		title_suffix( ): string
 		pages( ): readonly(any)[]
 		Sideview( id: any): $mol_view
 		Result_item( id: any): $mol_link

@@ -10347,6 +10347,9 @@ var $;
 			if(next !== undefined) return next;
 			return "";
 		}
+		title_suffix(){
+			return (this.$.$mol_locale.text("$hyoo_search_app_title_suffix"));
+		}
 		pages(){
 			return [(this.Main()), (this.Settings())];
 		}
