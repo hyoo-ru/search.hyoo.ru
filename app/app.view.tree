@@ -3,6 +3,7 @@ $hyoo_search_app $mol_book2
 		<= Theme $mol_theme_auto
 	Placeholder null
 	query_results?next \
+	title_suffix @ \Hyper 🔍 Search
 	pages /
 		<= Main $mol_page
 			title <= query
