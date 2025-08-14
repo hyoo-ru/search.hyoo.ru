@@ -125,8 +125,9 @@ namespace $.$$ {
 			]
 		}
 		
+		@ $mol_mem
 		title() {
-			return `${ super.title() } | $hyoo_search`
+			return `${ super.title() } | ${ this.title_suffix() }`
 		}
 		
 		@ $mol_mem
