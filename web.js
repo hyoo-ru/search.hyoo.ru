@@ -10680,7 +10680,7 @@ var $;
                 ];
             }
             title() {
-                return `${super.title()} | $hyoo_search`;
+                return `${super.title()} | ${this.title_suffix()}`;
             }
             main_content() {
                 if (!this.query_backend())
@@ -10850,6 +10850,9 @@ var $;
         __decorate([
             $mol_mem
         ], $hyoo_search_app.prototype, "pages", null);
+        __decorate([
+            $mol_mem
+        ], $hyoo_search_app.prototype, "title", null);
         __decorate([
             $mol_mem
         ], $hyoo_search_app.prototype, "main_content", null);
