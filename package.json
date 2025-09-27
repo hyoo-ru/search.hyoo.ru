@@ -226,6 +226,8 @@
     "$mol_html",
     "$mol_form_field",
     "$mol_form",
+    "$mol_button_major",
+    "$mol_status",
     "$mol_row",
     "$mol_labeler",
     "$mol_embed_native",

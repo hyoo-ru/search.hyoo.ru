@@ -657,18 +657,36 @@ $mol_link_iconed $mol_link
 		<= title <= uri
 	host \
 
+$mol_button_major $mol_button_minor
+	theme \$mol_theme_base
+
+$mol_status $mol_view
+	status <= title
+	minimal_height 24
+	minimal_width 0
+	sub /
+		<= message \
+
 $mol_form $mol_list
 	submit_allowed true
 	submit_blocked false
 	event *
 		^
 		keydown?event <=> keydown?event null
-	submit?event null
+	save?event null
+	message_done @ \Saved
+	message_invalid @ \Form is not valid
 	rows /
 		<= Body $mol_list
 			sub <= body <= form_fields /$mol_form_field
 		<= Foot $mol_row
 			sub <= foot <= buttons /$mol_view
+				<= Submit $mol_button_major
+					title <= submit_title @ \Save
+					hint <= submit_hint \
+					click? <=> submit? null
+				<= Result $mol_status
+					message <= result? null
 
 $hyoo_search_app $mol_book2
 	plugins /
