@@ -1294,9 +1294,6 @@ declare namespace $ {
             [key: string]: string | number | boolean | null;
         };
         attr(): {};
-        style_size(): {
-            [key: string]: string | number;
-        };
         style(): {
             [key: string]: string | number;
         };
@@ -3308,8 +3305,8 @@ declare namespace $.$$ {
             found: string;
             chunks: string[];
         }[]>;
-        sub(): $mol_view[];
-        row_content(path: number[]): $mol_text_code_token[];
+        sub(): (string | $mol_view)[];
+        row_content(path: number[]): string[] | $mol_text_code_token[];
         Token(path: number[]): $mol_text_code_token;
         token_type(path: number[]): string;
         token_content(path: number[]): (string | $mol_text_code_token)[];
