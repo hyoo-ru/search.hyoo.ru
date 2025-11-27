@@ -35,10 +35,14 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_fail(error) {
-        throw error;
+    const mod = require('module');
+    const internals = mod.builtinModules;
+    function $node_internal_check(name) {
+        if (name.startsWith('node:'))
+            return true;
+        return internals.includes(name);
     }
-    $.$mol_fail = $mol_fail;
+    $.$node_internal_check = $node_internal_check;
 })($ || ($ = {}));
 
 ;
@@ -54,6 +58,16 @@ var $;
         }
     }
     $.$mol_promise_like = $mol_promise_like;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_fail(error) {
+        throw error;
+    }
+    $.$mol_fail = $mol_fail;
 })($ || ($ = {}));
 
 ;
@@ -120,39 +134,44 @@ var $node = new Proxy({ require }, {
     get(target, name, wrapper) {
         if (target[name])
             return target[name];
-        if (name.startsWith('node:'))
+        const $$ = $;
+        if ($$.$node_internal_check(name, target))
             return target.require(name);
         if (name[0] === '.')
-            return target.require(name);
-        const mod = target.require('module');
-        if (mod.builtinModules.indexOf(name) >= 0)
             return target.require(name);
         try {
             target.require.resolve(name);
         }
         catch {
-            const $$ = $;
-            $$.$mol_exec('.', 'npm', 'install', '--omit=dev', name);
+            try {
+                $$.$mol_exec('.', 'npm', 'install', '--omit=dev', name);
+            }
+            catch (e) {
+                if ($$.$mol_promise_like(e))
+                    $$.$mol_fail_hidden(e);
+            }
             try {
                 $$.$mol_exec('.', 'npm', 'install', '--omit=dev', '@types/' + name);
             }
             catch (e) {
-                if ($$.$mol_fail_catch(e)) {
-                    $$.$mol_fail_log(e);
-                }
+                if ($$.$mol_promise_like(e))
+                    $$.$mol_fail_hidden(e);
+                $$.$mol_fail_log(e);
             }
         }
         try {
             return target.require(name);
         }
         catch (error) {
-            if ($.$mol_fail_catch(error) && error.code === 'ERR_REQUIRE_ESM') {
+            if ($$.$mol_promise_like(error))
+                $$.$mol_fail_hidden(error);
+            if (error && typeof error === 'object' && error.code === 'ERR_REQUIRE_ESM') {
                 const module = cache.get(name);
                 if (module)
                     return module;
                 throw Object.assign(import(name).then(module => cache.set(name, module)), { cause: error });
             }
-            $.$mol_fail_log(error);
+            $$.$mol_fail_log(error);
             return null;
         }
     },
@@ -11823,8 +11842,6 @@ var $;
     function $mol_assert_equal(...args) {
         for (let i = 1; i < args.length; ++i) {
             if ($mol_compare_deep(args[0], args[i]))
-                continue;
-            if (args[0] instanceof $mol_dom_context.Element && args[i] instanceof $mol_dom_context.Element && args[0].outerHTML === args[i].outerHTML)
                 continue;
             return $mol_fail(new Error(`Equality assertion failure`, { cause: { 0: args[0], [i]: args[i] } }));
         }
