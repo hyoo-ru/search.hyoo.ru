@@ -153,6 +153,8 @@
     "$mol_theme_auto",
     "$mol_search",
     "$mol_pop",
+    "$mol_follower",
+    "$mol_ghost",
     "$mol_hotkey",
     "$mol_keyboard_code",
     "$mol_keyboard",
