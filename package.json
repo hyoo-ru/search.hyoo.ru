@@ -204,6 +204,7 @@
     "$mol_icon_plus",
     "$mol_icon_settings",
     "$mol_link",
+    "$mol_dom_safe",
     "$mol_page",
     "$mol_link_donate",
     "$mol_icon_gift_outline",
