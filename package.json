@@ -241,6 +241,7 @@
     "$mol_status",
     "$mol_row",
     "$mol_labeler",
+    "$mol_error_fence",
     "$mol_embed_native",
     "$mol_embed",
     "$mol_wait_timeout",
