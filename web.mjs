@@ -2423,14 +2423,14 @@ var $;
     class $mol_view_selection extends $mol_object {
         static focused(next, notify) {
             const parents = [];
-            let element = next?.[0] ?? $mol_dom_context.document.activeElement;
+            let element = next?.[0] ?? $mol_dom.document.activeElement;
             while (element?.shadowRoot) {
                 element = element.shadowRoot.activeElement;
             }
             while (element) {
                 parents.push(element);
                 const parent = element.parentNode;
-                if (parent instanceof ShadowRoot)
+                if (parent instanceof $mol_dom.ShadowRoot)
                     element = parent.host;
                 else
                     element = parent;
@@ -2442,7 +2442,7 @@ var $;
                 if (element)
                     element.focus();
                 else
-                    $mol_dom_context.blur();
+                    $mol_dom.blur();
             });
             return parents;
         }
